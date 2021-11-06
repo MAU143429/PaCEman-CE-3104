@@ -1,50 +1,77 @@
 package Socket;
-
 import java.io.*;
 import java.net.*;
 
+public class Client{
 
-/**
- * this class create a client and connect to server port using sockets.
- * i used threads and encapsulated some  variable, with help from constructor i used a port parameter to connect with server
- */
-public class Client {
+    private Socket socket;
+    private String hostname;
+    private int port;
+    private InputStream input;
+    private DataOutputStream output;
+    private InputStreamReader reader;
 
-        private Socket s;
-        private DataInputStream in;
-        private DataOutputStream out;
-        /**
-         *in run method i used inheritance from Thread class, then i connect to local host and created a socket that allowed me to communicate
-         * with a port to transfers a string.I used try catch to avoid error
-         */
+    public Client(String hostname, int port) {
+        this.hostname = hostname;
+        this.port = port;
+    }
 
-        public Client(String address, int port){
-            try{
-                s = new Socket(address, port);
-                System.out.println("Connected");
+    public boolean connect() {
+        try {
+            socket = new Socket(hostname, port);
+            input = socket.getInputStream();
+            output = new DataOutputStream(socket.getOutputStream());
 
-                in = new DataInputStream(System.in);
-                out = new DataOutputStream(s.getOutputStream());
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-
-            String line ="";
-            while(!line.equals("Exit")){
-                try{
-
-                    line = in.readLine();
-                    out.writeUTF(line);
-
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                }
-            }
-
+            return true;
+        } catch (UnknownHostException ex) {
+            System.out.println("Server not found: " + ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("I/O error: " + ex.getMessage());
         }
-    public static void main(String[] args) {
-        Client client = new Client("127.0.0.1",8888);
+        return false;
+    }
 
+    public void disconnect() {
+        try {
+            socket.close();
+        } catch (UnknownHostException ex) {
+            System.out.println("Server not found: " + ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("I/O error: " + ex.getMessage());
+        }
+    }
+
+    public String read() {
+        try {
+            reader = new InputStreamReader(input);
+            int character;
+            StringBuilder buffer = new StringBuilder();
+
+            while ((character = reader.read()) != -1 && character != ';') {
+                buffer.append((char) character);
+            }
+            if (character == -1) {
+                return "-1";
+            }
+            return buffer.toString();
+        } catch (UnknownHostException ex) {
+            System.out.println("Servidor no encontrado al intentar leer: " + ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("I/O error: " + ex.getMessage());
+        }
+        return "-1";
+    }
+
+    public void send(String msg) {
+        try {
+            byte[] data = msg.getBytes();
+            output.write(data, 0, data.length);
+            output.flush();
+        } catch (UnknownHostException ex) {
+            System.out.println("Servidor no encontrado al intentar leer: " + ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("I/O error: " + ex.getMessage());
+        }
     }
 
 }

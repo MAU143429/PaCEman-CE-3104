@@ -1,5 +1,7 @@
 package Game;
 
+import Socket.Client;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,12 +37,54 @@ public class Game extends JPanel implements ActionListener{
     private int pacman_x, pacman_y, pacmand_x, pacmand_y;
     private int req_dx, req_dy;
 
+    private String message_received;
+    private Client client;
 
-    public Game() {
 
+    public Game(Client client) {
+        this.client = client;
+        connect();
+        send("HOLA SOY UN NUEVO CLIENTE");
+
+    }
+
+    public void connect() {
+        if (client.connect()) {
+            System.out.println("Conexion exitosa!");
+            startReading();
+        } else {
+            System.out.println("No se pudo establecer conexion con el servidor.");
+        }
+    }
+
+    // Inicia un nuevo hilo para recibir los mensajes del servidor
+    public void startReading() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    message_received = client.read();
+                    if (message_received != "-1") {
+                        System.out.println("Recibido: " + message_received);
+                    } else {
+                        break;
+                    }
+                }
+                System.out.println("Cliente desconectado.");
+                client.disconnect();
+            }
+        });
+        thread.start();
+    }
+
+
+    public void send(String msg) {
+        System.out.println("Enviando: " + msg);
+        client.send(msg);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
     }
 }
