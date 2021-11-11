@@ -1,15 +1,19 @@
 package Game;
 
+import Socket.Client;
+
 import javax.swing.JFrame;
 
 public class Pacman extends JFrame{
-    /**
-    public Pacman() {
-        add(new Game());
+
+    public Pacman(Client client) {
+        add(new Game(client));
     }
 
-    public static void main(String[] args) {
-        Pacman pac = new Pacman();
+
+
+    public static void startGame(Client client) {
+        Pacman pac = new Pacman(client);
         pac.setVisible(true);
         pac.setTitle("Pacman");
         pac.setSize(380,420);
@@ -17,5 +21,5 @@ public class Pacman extends JFrame{
         pac.setLocationRelativeTo(null);
 
     }
-     */
+
 }

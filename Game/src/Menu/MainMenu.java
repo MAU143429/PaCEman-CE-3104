@@ -2,6 +2,7 @@ package Menu;
 
 import Game.Game;
 import Socket.Client;
+import Game.Pacman;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -83,8 +84,10 @@ public class MainMenu extends JFrame implements ActionListener {
         if (e.getSource() == play_btn) {
 
             Client client = new Client("127.0.0.1", 8888);
-            new Game(client);
+            Pacman.startGame(client);
             init_frame.setVisible(false);
+
+
         }
         if (e.getSource() == observer_btn) {
             ObserverMenu newObserver = ObserverMenu.getInstance();

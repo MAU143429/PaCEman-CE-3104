@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import Game.TAdapter;
 
 /**
  * Main game class, it constructs the board game and have functions to handle socket communication
@@ -47,6 +48,7 @@ public class Game extends JPanel implements ActionListener{
     private int currentSpeed = 3; // current speed of the game at the start
     private short[] screenData; // get game data to know what to show
     private Timer timer; // for animation
+    private TAdapter adapterKey;
 
     // Socket connection
     private String message_received;
@@ -97,18 +99,19 @@ public class Game extends JPanel implements ActionListener{
         // game
         loadImages();
         initVariables();
-        addKeyListener(new TAdapter());
+        addKeyListener(new TAdapter(inGame,req_dx,req_dy,timer));
         setFocusable(true);
         initGame();
+
     }
 
     private void loadImages() {
-        down = new ImageIcon("/src/images/down.gif").getImage();
-        up = new ImageIcon("/src/images/up.gif").getImage();
-        left = new ImageIcon("/src/images/left.gif").getImage();
-        right = new ImageIcon("/src/images/right.gif").getImage();
-        ghost = new ImageIcon("/src/images/ghost.gif").getImage();
-        heart = new ImageIcon("/src/images/heart.png").getImage();
+        down = new ImageIcon("/src/Resources/down.gif").getImage();
+        up = new ImageIcon("/src/Resources/up.gif").getImage();
+        left = new ImageIcon("/src/Resources/left.gif").getImage();
+        right = new ImageIcon("/src/Resources/right.gif").getImage();
+        ghost = new ImageIcon("/src/Resources/ghost1.gif").getImage();
+        heart = new ImageIcon("/src/Resources/heart.png").getImage();
 
     }
     private void initVariables() {
@@ -127,6 +130,10 @@ public class Game extends JPanel implements ActionListener{
         timer.start();
     }
 
+    /**
+     * Metodo que inicia el juego con todos los valores iniciales para vidas, puntajes
+     * numero de fantasmas y velocidad
+     */
     private void initGame() {
 
         lives = 3;
@@ -136,6 +143,10 @@ public class Game extends JPanel implements ActionListener{
         currentSpeed = 3;
     }
 
+    /**
+     * Metodo que inicia el nivel por medio de un for tomando la informacion del atributo
+     * levelData
+     */
     private void initLevel() {
 
         int i;
@@ -145,122 +156,195 @@ public class Game extends JPanel implements ActionListener{
 
         continueLevel();
     }
+
     /**
+     * Define la posicion de Pacman y la de los fantasmas, les asigna una velocidad
+     * aleatoria
+     */
+    private void continueLevel() {
+
+        int dx = 1;
+        int random;
+        // Se define la posicion de los fantasmas
+        for (int i = 0; i < N_GHOSTS; i++) {
+
+            ghost_y[i] = 4 * BLOCK_SIZE; // posicion inicial en y
+            ghost_x[i] = 4 * BLOCK_SIZE; // posicion inicial en x
+            ghost_dy[i] = 0; //
+            ghost_dx[i] = dx;
+            dx = -dx;
+
+            // Se define la velocidad de los fantasmas
+            random = (int) (Math.random() * (currentSpeed + 1));
+            if (random > currentSpeed) {
+                random = currentSpeed;
+            }
+
+            ghostSpeed[i] = validSpeeds[random]; // velocidades aceptadas
+        }
+        // Se define la posicion de pacman
+        pacman_x = 7 * BLOCK_SIZE;  // posicion inicial en x
+        pacman_y = 11 * BLOCK_SIZE; // posicion inicial en y
+        pacmand_x = 0;	// reset de direccion de movimiento en x
+        pacmand_y = 0; // reset direccion de movimiento en y
+        req_dx = 0;	// reset de los controles de las teclas en x
+        req_dy = 0; // reset de los controles de las teclas en y
+        isAlive = false; // pacman esta vivo
+    }
+
+    /**
+     * Metodo que analiza si pacman esta vivo, llama a las funciones de movimiento y dibujo de
+     * los componentes y chequea el mapa
+     * @param g2d
+     */
     private void playGame(Graphics2D g2d) {
 
         if (isAlive) {
 
-            death();
+            death(); // cuando pacman muere, se llama a la funcion death() para saber que hacer en el juego
 
-        } else {
+        } else { // si pacman esta vivo
 
             movePacman();
             drawPacman(g2d);
             moveGhosts(g2d);
             checkMaze();
         }
-    }*/
-
-    private void continueLevel() {
-
-        int dx = 1;
-        int random;
-
-        for (int i = 0; i < N_GHOSTS; i++) {
-
-            ghost_y[i] = 4 * BLOCK_SIZE; //start position
-            ghost_x[i] = 4 * BLOCK_SIZE;
-            ghost_dy[i] = 0;
-            ghost_dx[i] = dx;
-            dx = -dx;
-            random = (int) (Math.random() * (currentSpeed + 1));
-
-            if (random > currentSpeed) {
-                random = currentSpeed;
-            }
-
-            ghostSpeed[i] = validSpeeds[random];
-        }
-
-        pacman_x = 7 * BLOCK_SIZE;  //start position
-        pacman_y = 11 * BLOCK_SIZE;
-        pacmand_x = 0;	//reset direction move
-        pacmand_y = 0;
-        req_dx = 0;		// reset direction controls
-        req_dy = 0;
-        isAlive = false;
     }
 
     //------------------Draw and paint the game-------------------//
-    private void showIntroScreen(Graphics2D g2d) {
 
-        String start = "Press SPACE to start";
-        g2d.setColor(Color.yellow);
-        g2d.drawString(start, (SCREEN_SIZE)/4, 150);
+    /**
+     * Dibuja los componentes
+     * @param g
+     */
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g); // hereda y construye de la clase padre
+
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setColor(Color.black); // color de fondo
+        g2d.fillRect(0, 0, dimension.width, dimension.height); // dibuja los rectangulos que seran los bloques
+
+        drawMaze(g2d);
+        drawScore(g2d);
+
+        if (inGame) { // si pacman aun esta vivo en el juego
+            playGame(g2d);
+        } else {
+            showIntroScreen(g2d);
+        }
+
+        Toolkit.getDefaultToolkit().sync();
+        g2d.dispose();
     }
 
+    /**
+     * Dibuja el texto que explica como iniciar el juego
+     * @param g2d
+     */
+    private void showIntroScreen(Graphics2D g2d) {
+
+        String start = "Press SPACE to start"; // se debe presionar espacio para comenzar el juego
+        g2d.setColor(Color.yellow); // color
+        g2d.drawString(start, (SCREEN_SIZE)/4, 150); // dibuja el string en el tablero
+    }
+
+    /**
+     * Dibuja el texto que muestra puntaje del jugador
+     * @param g
+     */
     private void drawScore(Graphics2D g) {
         g.setFont(smallFont);
-        g.setColor(new Color(5, 181, 79));
+        g.setColor(new Color(31, 187, 1));
         String s = "Score: " + score;
         g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
 
-        for (int i = 0; i < lives; i++) {
-            g.drawImage(heart, i * 28 + 8, SCREEN_SIZE + 1, this);
+        for (int i = 0; i < lives; i++) { // cuantas vidas tiene pacman
+            g.drawImage(heart, i * 28 + 8, SCREEN_SIZE + 1, this); // dibuja las vidas en la pantalla de juego
         }
     }
 
+    /**
+     * Dibuja los gantasmas en la posicion x, y que se necesite
+     * @param g2d
+     * @param x
+     * @param y
+     */
     private void drawGhost(Graphics2D g2d, int x, int y) {
         g2d.drawImage(ghost, x, y, this);
     }
 
+    /**
+     * Dibuja a Pacman en la interfaz, llama a las imagenes cargadas en loadImages() para asociar la direccion
+     * con la imagen que corresponde
+     * @param g2d
+     */
     private void drawPacman(Graphics2D g2d) {
 
-        if (req_dx == -1) {
+        if (req_dx == -1) { // movimiento izquierda -> imagen a la izquierda
             g2d.drawImage(left, pacman_x + 1, pacman_y + 1, this);
-        } else if (req_dx == 1) {
+        } else if (req_dx == 1) { // movimiento derecha -> imagen a la derecha
             g2d.drawImage(right, pacman_x + 1, pacman_y + 1, this);
-        } else if (req_dy == -1) {
+        } else if (req_dy == -1) { // movimiento arriba -> imagen a la arriba
             g2d.drawImage(up, pacman_x + 1, pacman_y + 1, this);
-        } else {
+        } else { // movimiento abajo -> imagen a la abajo
             g2d.drawImage(down, pacman_x + 1, pacman_y + 1, this);
         }
     }
 
+    /** structure of the level 15x15
+     * 0 -> blocks, obstacles inside the board
+     * 1 -> left wall
+     * 2 -> top wall
+     * 4 -> right wall
+     * 8 -> bottom wall
+     * 16 -> dots to eat
+     * 19 -> need 1 + need 2 + need 16 = 19
+     * 28 -> need 8 + need 4 + need 16 = 28
+     * 22 -> need 2 + need 4 + need 16 = 22
+     * 20 -> need 4 + need 16 = 20
+     * 25 ->
+     * */
+
+    /**
+     * Dibuja el tablero
+     * @param g2d
+     */
     private void drawMaze(Graphics2D g2d) {
 
         short i = 0;
         int x, y;
-
+        // recorre el arreglo
         for (y = 0; y < SCREEN_SIZE; y += BLOCK_SIZE) {
             for (x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
 
-                g2d.setColor(new Color(0,72,251));
-                g2d.setStroke(new BasicStroke(5));
+                g2d.setColor(new Color(0,72,251)); // color
+                g2d.setStroke(new BasicStroke(5)); // grosor del borde
 
-                if ((levelData[i] == 0)) {
-                    g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+                if ((levelData[i] == 0)) { // si es un bloque, obstaculo
+                    g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE); //dibuja el bloque
                 }
 
-                if ((screenData[i] & 1) != 0) {
-                    g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
+                if ((screenData[i] & 1) != 0) { // si es una pared o borde izquierdo
+                    g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1); //dibuja linea
                 }
 
-                if ((screenData[i] & 2) != 0) {
-                    g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
+                if ((screenData[i] & 2) != 0) { // si es una pared o borde arriba
+                    g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y); //dibuja linea
                 }
 
-                if ((screenData[i] & 4) != 0) {
+                if ((screenData[i] & 4) != 0) { // si es una pared o borde derecho
                     g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1,
-                            y + BLOCK_SIZE - 1);
+                            y + BLOCK_SIZE - 1); //dibuja linea
                 }
 
-                if ((screenData[i] & 8) != 0) {
+                if ((screenData[i] & 8) != 0) { // si es una pared o borde abajo
                     g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1,
-                            y + BLOCK_SIZE - 1);
+                            y + BLOCK_SIZE - 1); //dibuja linea
                 }
 
-                if ((screenData[i] & 16) != 0) {
+                if ((screenData[i] & 16) != 0) { // dibuja los puntos pequenos para comer
                     g2d.setColor(new Color(255,255,255));
                     g2d.fillOval(x + 10, y + 10, 6, 6);
                 }
@@ -270,28 +354,180 @@ public class Game extends JPanel implements ActionListener{
         }
     }
 
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
 
-        Graphics2D g2d = (Graphics2D) g;
+    //------------------------Check status------------------------//
 
-        g2d.setColor(Color.black);
-        g2d.fillRect(0, 0, dimension.width, dimension.height);
+    /**
+     * Metodo que analiza constantemente el tablero
+     */
+    private void checkMaze() {
 
-        drawMaze(g2d);
-        drawScore(g2d);
+        int i = 0;
+        boolean finished = true;
 
-        if (inGame) {
-           // playGame(g2d);
-        } else {
-            showIntroScreen(g2d);
+        while (i < N_BLOCKS * N_BLOCKS && finished) {
+
+            if ((screenData[i]) != 0) {
+                finished = false;
+            }
+
+            i++;
         }
 
-        Toolkit.getDefaultToolkit().sync();
-        g2d.dispose();
+        if (finished) { // todos los puntos pequenos fueron comidos
+
+            score += 50;
+            if (N_GHOSTS < MAX_GHOSTS) {
+                N_GHOSTS++;
+            }
+
+            if (currentSpeed < maxSpeed) {
+                currentSpeed++;
+            }
+
+            initLevel(); // se reinicia el nivel
+        }
+    }
+
+    /**
+     * Determina lo que sucede cuando pacman pierde una vida, si ya no tiene vidas pacman muere y termina el juego
+     */
+    private void death() {
+
+        lives--;
+
+        if (lives == 0) {
+            inGame = false;
+        }
+
+        continueLevel();
+    }
+
+    //--------------------------Movement--------------------------//
+
+    /**
+     * Controla el movimiento de los fantasmas
+     * @param g2d
+     */
+    private void moveGhosts(Graphics2D g2d) {
+
+        int pos;
+        int count;
+
+        for (int i = 0; i < N_GHOSTS; i++) { //Posicion de todos los fantasmas en el tablero
+            if (ghost_x[i] % BLOCK_SIZE == 0 && ghost_y[i] % BLOCK_SIZE == 0) {
+                pos = ghost_x[i] / BLOCK_SIZE + N_BLOCKS * (int) (ghost_y[i] / BLOCK_SIZE);
+                count = 0;
+
+                if ((screenData[pos] & 1) == 0 && ghost_dx[i] != 1) { // tiene una pared izquierda
+                    dx[count] = -1;
+                    dy[count] = 0;
+                    count++;
+                }
+
+                if ((screenData[pos] & 2) == 0 && ghost_dy[i] != 1) { // pared arriba
+                    dx[count] = 0;
+                    dy[count] = -1;
+                    count++;
+                }
+
+                if ((screenData[pos] & 4) == 0 && ghost_dx[i] != -1) { // pared derecha
+                    dx[count] = 1;
+                    dy[count] = 0;
+                    count++;
+                }
+
+                if ((screenData[pos] & 8) == 0 && ghost_dy[i] != -1) { // pared abajo
+                    dx[count] = 0;
+                    dy[count] = 1;
+                    count++;
+                }
+
+                if (count == 0) {
+
+                    if ((screenData[pos] & 15) == 15) { //
+                        ghost_dx[i] = 0;
+                        ghost_dy[i] = 0;
+                    } else { // posicion, en cual bloque esta del tablero
+                        ghost_dx[i] = -ghost_dx[i];
+                        ghost_dy[i] = -ghost_dy[i];
+                    } // lo mueve hacia la izquierda sino tiene obstaculo ni tampoco se estaba moviendo a la derecha
+
+                } else { // no tienes obstaculos ni paredes
+
+                    count = (int) (Math.random() * count);
+
+                    if (count > 3) {
+                        count = 3;
+                    }
+
+                    ghost_dx[i] = dx[count];
+                    ghost_dy[i] = dy[count];
+                }
+
+            }
+
+            ghost_x[i] = ghost_x[i] + (ghost_dx[i] * ghostSpeed[i]);
+            ghost_y[i] = ghost_y[i] + (ghost_dy[i] * ghostSpeed[i]);
+            drawGhost(g2d, ghost_x[i] + 1, ghost_y[i] + 1); // dibuja los fantasmas
+
+            // Pacman pierde una vida si choca contra un fantasma
+            if (pacman_x > (ghost_x[i] - 12) && pacman_x < (ghost_x[i] + 12)
+                    && pacman_y > (ghost_y[i] - 12) && pacman_y < (ghost_y[i] + 12)
+                    && inGame) {
+
+                isAlive = true; // cambia el estado de pacman y cuando se chequee el juego va a llamar la funcion death()
+            }
+        }
+    }
+
+    /**
+     * Controla el movimiento de pacman
+     */
+    private void movePacman() {
+
+        int pos; // posicion de pacman
+        short checkData;
+
+
+        if (pacman_x % BLOCK_SIZE == 0 && pacman_y % BLOCK_SIZE == 0) {
+            pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman_y / BLOCK_SIZE);
+            checkData = screenData[pos];
+
+
+            if ((checkData & 16) != 0) { // Posicion donde pacman puede comer un punto
+                screenData[pos] = (short) (checkData & 15);
+                score++; // si pacman paso por ahi, se suma en el score
+            }
+            // control de pacman
+            if (req_dx != 0 || req_dy != 0) {
+                if (!((req_dx == -1 && req_dy == 0 && (checkData & 1) != 0)  // si no se mueve izq en x, no se mueve en y y no hay pared a la izq
+                        || (req_dx == 1 && req_dy == 0 && (checkData & 4) != 0) // se mueve a la derecha en x, no se mueve en y, y
+                        || (req_dx == 0 && req_dy == -1 && (checkData & 2) != 0)
+                        || (req_dx == 0 && req_dy == 1 && (checkData & 8) != 0))) {
+                    pacmand_x = req_dx;
+                    pacmand_y = req_dy;
+                }
+            }
+
+            // Analiza si para
+            if ((pacmand_x == -1 && pacmand_y == 0 && (checkData & 1) != 0)
+                    || (pacmand_x == 1 && pacmand_y == 0 && (checkData & 4) != 0)
+                    || (pacmand_x == 0 && pacmand_y == -1 && (checkData & 2) != 0)
+                    || (pacmand_x == 0 && pacmand_y == 1 && (checkData & 8) != 0)) {
+                pacmand_x = 0;
+                pacmand_y = 0;
+            }
+        }
+        pacman_x = pacman_x + PACMAN_SPEED * pacmand_x;
+        pacman_y = pacman_y + PACMAN_SPEED * pacmand_y;
     }
 
     //--------------Functions for socket connection---------------//
+
+    /**
+     * Conecta el cliente con el servidor
+     */
     public void connect() {
         if (client.connect()) {
             System.out.println("Conexion exitosa!");
@@ -301,7 +537,9 @@ public class Game extends JPanel implements ActionListener{
         }
     }
 
-    // Inicia un nuevo hilo para recibir los mensajes del servidor
+    /**
+     * Inicia un nuevo hilo para recibir los mensajes del servidor
+     */
     public void startReading() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -321,7 +559,10 @@ public class Game extends JPanel implements ActionListener{
         thread.start();
     }
 
-
+    /**
+     * Envia mensajes hacia el servidor
+     * @param msg
+     */
     public void send(String msg) {
         System.out.println("Enviando: " + msg);
         client.send(msg);
