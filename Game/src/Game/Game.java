@@ -97,7 +97,7 @@ public class Game extends JPanel implements ActionListener{
         // game
         loadImages();
         initVariables();
-        addKeyListener(new TAdapter());
+        //addKeyListener(new TAdapter());
         setFocusable(true);
         initGame();
     }

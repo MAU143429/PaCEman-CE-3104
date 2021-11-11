@@ -10,7 +10,7 @@ public class ObserverMenu extends JFrame implements ActionListener {
     public JFrame mFrame;
     public JPanel mPanel;
     private JLabel O_Background;
-    private JButton player1_btn, player2_btn;
+    private JButton obs_player1, obs_player2;
 
 
     /**
@@ -31,9 +31,9 @@ public class ObserverMenu extends JFrame implements ActionListener {
 
         //############################Frame###############################
 
-        mFrame = new JFrame("PaCEman");
-        mFrame.setBounds(0, 0, 1280, 900);
-        mFrame.setTitle("PaCEman");
+        mFrame = new JFrame("PaCEman Observer Menu");
+        mFrame.setBounds(0, 0, 1294, 937);
+        mFrame.setTitle("PaCEman Observer Menu");
         mFrame.setLocationRelativeTo(null);
         mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -41,27 +41,29 @@ public class ObserverMenu extends JFrame implements ActionListener {
 
         mPanel = new JPanel();
         mPanel.setLayout(null);
-        mPanel.setSize(1280, 900);
+        mPanel.setSize(1294, 937);
         mFrame.add(mPanel);
 
         //############################Botones###############################
 
-        player1_btn = new JButton();
-        player2_btn = new JButton();
+        obs_player1 = new JButton();
+        obs_player2 = new JButton();
 
-        player1_btn.setBounds(874, 494, 80, 80);
+        obs_player1.setBounds(320, 350, 250, 250);
+        obs_player1.setText("SHOW PLAYER 1 GAME");
         // AGREGAR IMAGEN
         //ImageIcon btnurl1 = new ImageIcon(getClass().getResource("/Inicio/2P.png"));
         //play_btn.setIcon(btnurl1);
-        player1_btn.addActionListener(this);
-        mPanel.add(player1_btn);
+        obs_player1.addActionListener(this);
+        mPanel.add(obs_player1);
 
-        player2_btn.setBounds(874, 632, 80, 80);
+        obs_player2.setBounds(700, 350, 250, 250);
+        obs_player2.setText("SHOW PLAYER 2 GAME");
         // AGREGAR IMAGEN
         //ImageIcon btnurl2 = new ImageIcon(getClass().getResource("/Inicio/3P.png"));
         //observer_btn.setIcon(btnurl2);
-        player2_btn.addActionListener(this);
-        mPanel.add(player2_btn);
+        obs_player2.addActionListener(this);
+        mPanel.add(obs_player2);
 
         //###############################-Background-#######################################
         O_Background = new JLabel();
@@ -99,10 +101,10 @@ public class ObserverMenu extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == player1_btn) {
+        if (e.getSource() == obs_player1) {
             System.out.println("ABRIENDO EL MODO ESPECTADOR 1");
         }
-        if (e.getSource() == player2_btn) {
+        if (e.getSource() == obs_player2) {
             System.out.println("ABRIENDO EL MODO ESPECTADOR 2");
         }
 

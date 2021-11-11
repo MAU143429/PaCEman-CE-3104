@@ -33,27 +33,29 @@ public class MainMenu extends JFrame implements ActionListener {
 
     public MainMenu() {
         init_frame = new JFrame("PaCEman");
-        init_frame.setBounds(0, 0, 1280, 900);
+        init_frame.setBounds(0, 0, 1294, 937);
         init_frame.setTitle("PaCEman");
         init_frame.setLocationRelativeTo(null);
         init_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         init_panel = new JPanel();
         init_panel.setLayout(null);
-        init_panel.setSize(1280, 900);
+        init_panel.setSize(1294, 937);
         init_frame.add(init_panel);
 
         play_btn = new JButton();
         observer_btn = new JButton();
 
-        play_btn.setBounds(320, 325, 250, 250);
+        play_btn.setBounds(320, 350, 250, 250);
+        play_btn.setText("PLAY!");
         // AGREGAR IMAGEN
         //ImageIcon play_url = new ImageIcon(getClass().getResource("/Resources/bg.jpg"));
         //play_btn.setIcon(btnurl1);
         play_btn.addActionListener(this);
         init_panel.add(play_btn);
 
-        observer_btn.setBounds(874, 632, 80, 80);
+        observer_btn.setBounds(700, 350, 250, 250);
+        observer_btn.setText("SHOW A GAME!");
         // AGREGAR IMAGEN
         //ImageIcon btnurl2 = new ImageIcon(getClass().getResource("/Inicio/3P.png"));
         //observer_btn.setIcon(btnurl2);
