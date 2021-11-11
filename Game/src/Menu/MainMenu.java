@@ -84,7 +84,8 @@ public class MainMenu extends JFrame implements ActionListener {
         if (e.getSource() == play_btn) {
 
             Client client = new Client("127.0.0.1", 8888);
-            Pacman.startGame(client);
+            //Pacman.startGame(client);
+            Pacman.startGame();
             init_frame.setVisible(false);
 
 

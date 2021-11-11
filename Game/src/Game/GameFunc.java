@@ -6,13 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /**
  * Main game class, it constructs the board game and have functions to handle socket communication
  */
-public class Game extends JPanel implements ActionListener, KeyListener {
+public class GameFunc extends JPanel implements ActionListener {
     private Dimension dimension; //width x height
     private final Font smallFont = new Font("Monospaced", Font.BOLD, 14);
     private boolean inGame = false; //checks if game is running
@@ -86,8 +86,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * Class constructor
      * @param //client receives a new client to connect
      */
-    //public Game(Client client){
-    public Game() {
+    public GameFunc() {
         // Connection
         //this.client = client; // instantiate a client
         //connect(); // client connect
@@ -96,45 +95,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // game
         loadImages();
         initVariables();
-        initGame();
-        addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                int key = e.getKeyCode();
-                if (inGame) {
-                    if (key == KeyEvent.VK_LEFT) {
-                        req_dx = -1;
-                        req_dy = 0;
-                    } else if (key == KeyEvent.VK_RIGHT) {
-                        req_dx = 1;
-                        req_dy = 0;
-                    } else if (key == KeyEvent.VK_UP) {
-                        req_dx = 0;
-                        req_dy = -1;
-                    } else if (key == KeyEvent.VK_DOWN) {
-                        req_dx = 0;
-                        req_dy = 1;
-                    }
-                } else {
-                    if (key == KeyEvent.VK_SPACE) {
-                        System.out.println(inGame);
-                        inGame = true;
-                        System.out.println(inGame);
-                        System.out.println("Se presiona espacio!!!!!!");
-                        initGame();
-                        repaint();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
+        addKeyListener(new TAdapter());
         setFocusable(true);
-
+        initGame();
 
     }
 
@@ -159,8 +122,28 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         dx = new int[4];
         dy = new int[4];
 
-        //timer = new Timer(40, this);
-        //timer.start();
+        timer = new Timer(40, this);
+        timer.start();
+    }
+
+    /**
+     * Metodo que analiza si pacman esta vivo, llama a las funciones de movimiento y dibujo de
+     * los componentes y chequea el mapa
+     * @param g2d
+     */
+    private void playGame(Graphics2D g2d) {
+
+        if (isAlive) {
+
+            death(); // cuando pacman muere, se llama a la funcion death() para saber que hacer en el juego
+
+        } else { // si pacman esta vivo
+
+            movePacman();
+            drawPacman(g2d);
+            moveGhosts(g2d);
+            checkMaze();
+        }
     }
 
     /**
@@ -225,25 +208,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         isAlive = false; // pacman esta vivo
     }
 
-    /**
-     * Metodo que analiza si pacman esta vivo, llama a las funciones de movimiento y dibujo de
-     * los componentes y chequea el mapa
-     * @param g2d
-     */
-    private void playGame(Graphics2D g2d) {
 
-        if (isAlive) {
-
-            death(); // cuando pacman muere, se llama a la funcion death() para saber que hacer en el juego
-
-        } else { // si pacman esta vivo
-
-            movePacman();
-            drawPacman(g2d);
-            moveGhosts(g2d);
-            checkMaze();
-        }
-    }
 
     //------------------Draw and paint the game-------------------//
 
@@ -588,42 +553,43 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         client.send(msg);
     }
 
+    //controls
+    class TAdapter extends KeyAdapter {
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+            int key = e.getKeyCode();
+
+            if (inGame) {
+                if (key == KeyEvent.VK_LEFT) {
+                    req_dx = -1;
+                    req_dy = 0;
+                } else if (key == KeyEvent.VK_RIGHT) {
+                    req_dx = 1;
+                    req_dy = 0;
+                } else if (key == KeyEvent.VK_UP) {
+                    req_dx = 0;
+                    req_dy = -1;
+                } else if (key == KeyEvent.VK_DOWN) {
+                    req_dx = 0;
+                    req_dy = 1;
+                } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
+                    inGame = false;
+                }
+            } else {
+                if (key == KeyEvent.VK_SPACE) {
+                    System.out.println(inGame);
+                    inGame = true;
+                    System.out.println(inGame);
+                    initGame();
+                }
+            }
+        }
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
         System.out.println(inGame);
-
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-    /*
-        if(inGame){
-            if (e.getKeyChar() == 'w') {
-
-
-            }
-            if (e.getKeyChar() == 'a') {
-
-
-            }
-            if (e.getKeyChar() == 's') {
-
-
-            }
-            if (e.getKeyChar() == 'd') {
-
-
-            }
-        }*/
     }
 }
