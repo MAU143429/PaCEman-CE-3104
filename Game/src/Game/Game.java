@@ -22,13 +22,14 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private Dimension dimension; // Width X Height
     private final Font smallFont = new Font("Monospaced", Font.BOLD, 20); // Tipo y tamaño de fuente
     private boolean inGame = false; // Booleano que verifica si el juego esta corriendo
-    private boolean isAlive = false; // Booleano que verifica si pacman esta vivo
+    private boolean isDeath = false; // Booleano que verifica si pacman esta vivo
 
     private final int BLOCK_SIZE = 24; // Dimension de cada bloque en el juego
     private final int N_BLOCKS = 30; // Cantidad de bloques a colocar, 30x30
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE; // Valor del tamaño de la ventana segun el numero de bloques y su dimension
     private final int MAX_GHOSTS = 4; // Maxima cantidad de fantasmas en el juego
     private int PACMAN_SPEED = 4; // Velocidad de pacman 2-Lento 4-Media 6-Rapido
+    private int GHOST_SPEED = 1;
 
     private int N_GHOSTS = 0; // Cantidad de fantasmas al empezar el juego
     private int lives; // Vidas de Pacman
@@ -55,7 +56,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private int pacmand_x, pacmand_y; // horizontal and vertical directions
     private int req_dx, req_dy; //
 
-    private final int validSpeeds[] = {1, 2, 3, 4, 6, 8}; // Velocidades permitidas en el Juego
+    private final int validSpeeds[] = {2, 4, 6}; // Velocidades permitidas en el Juego
     private final int maxSpeed = 6; // maximum speed of game
     private int currentSpeed = PACMAN_SPEED; // current speed of the game at the start
     private short[] screenData; // get game data to know what to show
@@ -146,18 +147,18 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         up = new ImageIcon(getClass().getResource("/Resources/up.gif")).getImage();
         left = new ImageIcon(getClass().getResource("/Resources/left.gif")).getImage();
         right = new ImageIcon(getClass().getResource("/Resources/right.gif")).getImage();
-        ghost = new ImageIcon(getClass().getResource("/Resources/inky.gif")).getImage();
-        blinky = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
-        pinky = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
-        clyde = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
-        inky = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
+        ghost = new ImageIcon(getClass().getResource("/Resources/blinky.gif")).getImage();
+        blinky = new ImageIcon(getClass().getResource("/Resources/blinky.gif")).getImage();
+        pinky = new ImageIcon(getClass().getResource("/Resources/pinky.gif")).getImage();
+        clyde = new ImageIcon(getClass().getResource("/Resources/clyde.gif")).getImage();
+        inky = new ImageIcon(getClass().getResource("/Resources/inky.gif")).getImage();
         heart = new ImageIcon(getClass().getResource("/Resources/heart.png")).getImage();
         cherry = new ImageIcon(getClass().getResource("/Resources/cherry.png")).getImage();
         orange = new ImageIcon(getClass().getResource("/Resources/orange.png")).getImage();
         melon = new ImageIcon(getClass().getResource("/Resources/melon.png")).getImage();
         strawberry = new ImageIcon(getClass().getResource("/Resources/strawberry.png")).getImage();
         apple = new ImageIcon(getClass().getResource("/Resources/apple.png")).getImage();
-        pill = new ImageIcon(getClass().getResource("/Resources/apple.png")).getImage();
+        pill = new ImageIcon(getClass().getResource("/Resources/pill.png")).getImage();
 
     }
     private void initVariables() {
@@ -199,6 +200,11 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         continueLevel();
     }
 
+    /**
+     * Este metodo permite obtener la matriz de juego, para ello utiliza el numero de nivel
+     * actual, lo busca y lo retorna.
+     * @return la matriz del mapa que este en juego
+     */
     private short[] getLevelData(){
         if (level == 1) {
             return Maps.getLevelData1();
@@ -213,7 +219,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * aleatoria
      */
     private void continueLevel() {
-
         int dx = 1;
         int random;
         for (int i = 0; i < N_GHOSTS; i++) {
@@ -224,16 +229,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             ghost_dx[i] = dx;
             dx = -dx;
 
-
-
             //VELOCIDAD FANTASMAS
             // Se define la velocidad de los fantasmas
-            random = (int) (Math.random() * (currentSpeed + 1));
-            if (random > currentSpeed) {
-                random = currentSpeed;
-            }
-
-            ghostSpeed[i] = validSpeeds[random]; // velocidades aceptadas
+            ghostSpeed[i] = validSpeeds[GHOST_SPEED]; // velocidades aceptadas
         }
         // Se define la posicion de pacman
         pacman_x = 7 * BLOCK_SIZE;  // posicion inicial en x
@@ -242,7 +240,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         pacmand_y = 0; // reset direccion de movimiento en y
         req_dx = 0;	// reset de los controles de las teclas en x
         req_dy = 0; // reset de los controles de las teclas en y
-        isAlive = false; // pacman esta vivo
+        isDeath = false; // pacman esta vivo
     }
 
     /**
@@ -251,13 +249,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * @param g2d
      */
     private void playGame(Graphics2D g2d) {
-
-        if (isAlive) {
-
+        if (isDeath) {
             death(); // cuando pacman muere, se llama a la funcion death() para saber que hacer en el juego
-
         } else { // si pacman esta vivo
-
             movePacman();
             drawPacman(g2d);
             moveGhosts(g2d);
@@ -265,7 +259,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             createFruit(g2d);
         }
     }
-
     //------------------Draw and paint the game-------------------//
 
     /**
@@ -274,12 +267,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      */
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // hereda y construye de la clase padre
-
         Graphics2D g2d = (Graphics2D) g;
-
         g2d.setColor(Color.black); // color de fondo
         g2d.fillRect(0, 0, dimension.width, dimension.height); // dibuja los rectangulos que seran los bloques
-
         drawMaze(g2d);
         drawScore(g2d);
 
@@ -288,7 +278,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         } else {
             showIntroScreen(g2d);
         }
-
         Toolkit.getDefaultToolkit().sync();
         g2d.dispose();
     }
@@ -327,8 +316,21 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * @param x
      * @param y
      */
-    private void drawGhost(Graphics2D g2d, int x, int y) {
-        g2d.drawImage(ghost, x, y, this);
+
+    private void drawBlinky(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(blinky, x, y, this);
+    }
+
+    private void drawPinky(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(pinky, x, y, this);
+    }
+
+    private void drawInky(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(inky, x, y, this);
+    }
+
+    private void drawClyde(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(clyde, x, y, this);
     }
 
     private void drawCherry(Graphics2D g2d, int x, int y) {
@@ -380,7 +382,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * @param g2d
      */
     private void drawMaze(Graphics2D g2d) {
-
         short i = 0;
         int x, y;
         // recorre el arreglo
@@ -444,15 +445,18 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         if (finished) { // todos los puntos pequenos fueron comidos
 
-            score += 50;
+            score += 2500;
+
+            if (level >= 3){
+                level = 1;
+            }else{level++;}
+
             if (N_GHOSTS < MAX_GHOSTS) {
                 N_GHOSTS++;
             }
-
             if (currentSpeed < maxSpeed) {
                 currentSpeed++;
             }
-
             initLevel(); // se reinicia el nivel
         }
     }
@@ -461,7 +465,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * Determina lo que sucede cuando pacman pierde una vida, si ya no tiene vidas pacman muere y termina el juego
      */
     private void death() {
-
         lives--;
 
         if (lives == 0) {
@@ -478,7 +481,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * @param g2d
      */
     private void moveGhosts(Graphics2D g2d) {
-
         int pos;
         int count;
 
@@ -537,14 +539,23 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
             ghost_x[i] = ghost_x[i] + (ghost_dx[i] * ghostSpeed[i]);
             ghost_y[i] = ghost_y[i] + (ghost_dy[i] * ghostSpeed[i]);
-            drawGhost(g2d, ghost_x[i] + 1, ghost_y[i] + 1); // dibuja los fantasmas
+
+            if (N_GHOSTS == 1){
+                drawBlinky(g2d, ghost_x[i] + 1, ghost_y[i] + 1); // dibuja a blinky
+            }else if(N_GHOSTS == 2){
+                drawPinky(g2d, ghost_x[i] + 1, ghost_y[i] + 1); // dibuja a pinky
+            }else if(N_GHOSTS == 3){
+                drawInky(g2d, ghost_x[i] + 1, ghost_y[i] + 1); // dibuja a inky
+            } else if(N_GHOSTS == 4){
+                drawClyde(g2d, ghost_x[i] + 1, ghost_y[i] + 1); // dibuja a clyde
+            }
 
             // Pacman pierde una vida si choca contra un fantasma
             if (pacman_x > (ghost_x[i] - 12) && pacman_x < (ghost_x[i] + 12)
                     && pacman_y > (ghost_y[i] - 12) && pacman_y < (ghost_y[i] + 12)
                     && inGame) {
 
-                isAlive = true; // cambia el estado de pacman y cuando se chequee el juego va a llamar la funcion death()
+                isDeath = true; // cambia el estado de pacman y cuando se chequee el juego va a llamar la funcion death()
             }
         }
     }
@@ -556,7 +567,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         int pos; // posicion de pacman
         short checkData;
-
 
         if (pacman_x % BLOCK_SIZE == 0 && pacman_y % BLOCK_SIZE == 0) {
             pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman_y / BLOCK_SIZE);
@@ -642,13 +652,13 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         System.out.println("CAMBIANDO LA VELOCIDAD");
         if(new_speed == 1){
             PACMAN_SPEED = 2;
-            currentSpeed = 2;
+            GHOST_SPEED = 0;
         }else if (new_speed == 2) {
             PACMAN_SPEED = 4;
-            currentSpeed = 4;
+            GHOST_SPEED = 1;
         }else if(new_speed == 3){
             PACMAN_SPEED = 6;
-            currentSpeed = 6;
+            GHOST_SPEED = 2;
         }
     }
 
