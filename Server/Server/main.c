@@ -6,7 +6,7 @@ static DWORD WINAPI serverThread(void *threadParams)
     start_server();
     return 0;
 }
-
+/**
 int main()
 {
     message[0] = '\0'; // Inicializa el mensaje que se envia a todos los clientes
@@ -32,3 +32,4 @@ int main()
 
     return 0;
 }
+ */
