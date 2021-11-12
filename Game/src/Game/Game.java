@@ -13,16 +13,20 @@ import java.awt.event.KeyListener;
  * Main game class, it constructs the board game and have functions to handle socket communication
  */
 public class Game extends JPanel implements ActionListener, KeyListener {
+    /**
+     * Sinleton para Game
+     */
+    private static Game instance = null;
     private Dimension dimension; //width x height
-    private final Font smallFont = new Font("Monospaced", Font.BOLD, 14);
+    private final Font smallFont = new Font("Monospaced", Font.BOLD, 20);
     private boolean inGame = false; //checks if game is running
     private boolean isAlive = false; //checks if pacman is alive
 
-    private final int BLOCK_SIZE = 24; // block dimension
-    private final int N_BLOCKS = 15; // number of blocks 15x15
+    private final int BLOCK_SIZE = 24; // dimension de bloques
+    private final int N_BLOCKS = 30; // numero de bloques 30x30
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE; // nxn
-    private final int MAX_GHOSTS = 12; // maximum amount of ghosts
-    private final int PACMAN_SPEED = 6; // pacman's speed
+    private final int MAX_GHOSTS = 12; // maxima cantidad de fantasmas
+    private int PACMAN_SPEED = 4; // pacman empieza con velocidad media
 
     private int N_GHOSTS = 6; // amount of ghosts at the start of the game
     private int lives; // pacman lives
@@ -44,19 +48,19 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private final int maxSpeed = 6; // maximum speed of game
     private int currentSpeed = 3; // current speed of the game at the start
     private short[] screenData; // get game data to know what to show
-    private Timer timer; // for animation
+    private Timer timer; // para animacion
 
-    // Socket connection
+    // Conexion Socket
     private String message_received;
     private Client client;
 
     /** structure of the level 15x15
-     * 0 -> blocks, obstacles inside the board
-     * 1 -> left wall
-     * 2 -> top wall
-     * 4 -> right wall
-     * 8 -> bottom wall
-     * 16 -> dots to eat
+     * 0 -> bloques u obstraculos
+     * 1 -> pared de la izquierda
+     * 2 -> pared de arriba
+     * 4 -> pared derecha
+     * 8 -> pared abajo
+     * 16 -> puntos para comer
      * 19 -> need 1 + need 2 + need 16 = 19
      * 28 -> need 8 + need 4 + need 16 = 28
      * 22 -> need 2 + need 4 + need 16 = 22
@@ -65,21 +69,36 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * */
 
     private final short levelData[] = {
-            19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-            17, 16, 16, 16, 16, 24, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            25, 24, 24, 24, 28, 0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-            0,  0,  0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-            19, 18, 18, 18, 18, 18, 16, 16, 16, 16, 24, 24, 24, 24, 20,
-            17, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 16, 24, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 18, 18, 18, 18, 20,
-            17, 24, 24, 28, 0, 25, 24, 24, 16, 16, 16, 16, 16, 16, 20,
-            21, 0,  0,  0,  0,  0,  0,   0, 17, 16, 16, 16, 16, 16, 20,
-            17, 18, 18, 22, 0, 19, 18, 18, 16, 16, 16, 16, 16, 16, 20,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            25, 24, 24, 24, 26, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28
+            19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+            25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28,
     };
 
     /**
@@ -138,6 +157,19 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
     }
 
+    /**
+     * getInstance
+     * @return instance
+     * Método singleton del Jmain
+     * @author Jose A.
+     */
+    public static Game getInstance(){
+        if(instance == null){
+            instance = new Game();
+        }
+        return instance;
+    }
+
     private void loadImages() {
         down = new ImageIcon(getClass().getResource("/Resources/down.gif")).getImage();
         up = new ImageIcon(getClass().getResource("/Resources/up.gif")).getImage();
@@ -145,12 +177,11 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         right = new ImageIcon(getClass().getResource("/Resources/right.gif")).getImage();
         ghost = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
         heart = new ImageIcon(getClass().getResource("/Resources/heart.png")).getImage();
-
     }
     private void initVariables() {
 
         screenData = new short[N_BLOCKS * N_BLOCKS];
-        dimension = new Dimension(400, 400);
+        dimension = new Dimension(900, 900);
         ghost_x = new int[MAX_GHOSTS];
         ghost_dx = new int[MAX_GHOSTS];
         ghost_y = new int[MAX_GHOSTS];
@@ -172,7 +203,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         lives = 3;
         score = 0;
         initLevel();
-        N_GHOSTS = 6;
+        N_GHOSTS = 3;
         currentSpeed = 3;
     }
 
@@ -281,7 +312,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         String start = "Press SPACE to start"; // se debe presionar espacio para comenzar el juego
         g2d.setColor(Color.yellow); // color
-        g2d.drawString(start, (SCREEN_SIZE)/4, 150); // dibuja el string en el tablero
+        g2d.drawString(start, (SCREEN_SIZE)/3, 415); // dibuja el string en el tablero
     }
 
     /**
@@ -289,6 +320,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * @param g
      */
     private void drawScore(Graphics2D g) {
+
         g.setFont(smallFont);
         g.setColor(new Color(31, 187, 1));
         String s = "Score: " + score;
@@ -517,7 +549,13 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
             if ((checkData & 16) != 0) { // Posicion donde pacman puede comer un punto
                 screenData[pos] = (short) (checkData & 15);
-                score++; // si pacman paso por ahi, se suma en el score
+                score+=10; // si pacman paso por ahi, se suma en el score
+            }
+
+            //asigna vidas si come 5k puntos
+            if(lives<3 && score>=5000){
+               lives++;
+               score-=5000;
             }
             // control de pacman
             if (req_dx != 0 || req_dy != 0) {
@@ -543,7 +581,32 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         pacman_y = pacman_y + PACMAN_SPEED * pacmand_y;
     }
 
-    //--------------Functions for socket connection---------------//
+    //--------------Funciones que reciben ordenes----------------//
+
+    public void addFruit(char fruitType, int row, int column, int value){
+        //cereza
+        if(fruitType == 'C'){
+
+        }
+        //fresa
+        if(fruitType == 'F'){
+
+        }
+        //naranja
+        if(fruitType == 'N'){
+
+        }
+        //manzana
+        if(fruitType == 'M'){
+
+        }
+        //melon
+        if(fruitType == 'W'){
+
+        }
+    }
+
+    //--------------Funciones para conexion socket---------------//
 
     /**
      * Conecta el cliente con el servidor

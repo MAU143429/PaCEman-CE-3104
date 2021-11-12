@@ -1,5 +1,7 @@
 package Socket;
 
+import Game.Game;
+
 public class Classify_Action {
 
     public static char action,fruit;
@@ -12,7 +14,6 @@ public class Classify_Action {
         System.out.println(action);
         System.out.println(ROW);
         System.out.println(COL);
-
 
         if (action == 'F'){
             fruit = new_sms.charAt(1);
