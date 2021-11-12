@@ -1,10 +1,13 @@
 //
 // Created by mau14 on 06/11/2021.
 //
+#include <stdlib.h>
 #include "variables.h"
 
 char running = !0; // estado del servidir, mantiene vivo el loop principal
 char message[BUFLEN];
+SOCKET players[MAX_PLAYERS];
+SOCKET observers[MAX_OBSERVERS];
 
 // Funcion que crea y ejecuta el servidor.
 // Retorna 0 si no ocurren errores durante el proceso, 1 en caso contrario.
@@ -12,10 +15,10 @@ char message[BUFLEN];
 int start_server()
 {
     printf("Iniciando servidor...\n");
-
-    int res, sendRes; // Resultados de algunas operaciones
+    int res, sendRes;
 
     // INICIALIZACION DE WINSOCK ===========================
+
     WSADATA wsaData; // informacion de la configuracion
     res = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (res)
@@ -243,17 +246,6 @@ int start_server()
                         break;
                     }
 
-                    // Reenvia el mismo mensaje devuelta al cliente
-                    /*
-                    sendRes = send(sd, recvbuf, res, 0);
-                    if (sendRes == SOCKET_ERROR)
-                    {
-                        printf("Error al enviar mensaje devuelta: %d\n", WSAGetLastError());
-                        shutdown(sd, SD_BOTH);
-                        closesocket(sd);
-                        clients[i] = 0;
-                        curNoClients--;
-                    } */
                 }
                 else
                 {
@@ -304,4 +296,13 @@ int start_server()
     // ==========================================
 
     return 0;
+}
+
+void save_client(char *client_type, SOCKET client){
+
+    if (client_type == "P1" || client_type == "P2"){
+        players[((client_type[CLIENT_TYPE] - '0')- LAST_CLIENT)] = client;
+    }else{
+        observers[((client_type[CLIENT_TYPE] - '0')- LAST_CLIENT)] = client;
+    }
 }

@@ -10,7 +10,10 @@ import Socket.Classify_Action;
 public class Main {
     public static void main(String args[]) {
         MainMenu.getInstance();
-        Classify_Action.Action_recv("FB,34,23");
+        Classify_Action.Action_recv("FC1000,10,10"); // EJEMPLO DE FRUTA
+        Classify_Action.Action_recv("G,4,10"); // EJEMPLO DE FANTASMA
+        Classify_Action.Action_recv("M,15,5"); // EJEMPLO DE PASTILLA
+        Classify_Action.Action_recv("V,3"); // EJEMPLO DE VELOCIDAD
 
     }
 }
