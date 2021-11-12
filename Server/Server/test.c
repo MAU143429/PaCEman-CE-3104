@@ -5,52 +5,64 @@
 #include <stdio.h>
 #include "variables.h"
 
-int seleccionar_jugador() {
+int select_player() {
     int player;
     printf("Seleccione jugador:\n");
     scanf("%d", &player);
     if ((int) player < 1 | (int) player > 2) {
         printf("Solo puede escoger entre los numeros 1 y 2\n");
-        seleccionar_jugador();
+        select_player();
     }
     return player;
 }
 
-int * seleccionar_fruta() {
-    int tipo_fruta;
-    int valor;
-    static int fruta[2];
-    printf("Ingrese un numero para seleccionar la tipo_fruta que desea:\n");
+struct position {
+    int x;
+    int y;
+};
+
+struct fruit {
+    struct position pos;
+    int fruit_type;
+    int points;
+};
+
+struct fruit select_fruit() {
+    int fruit_type;
+    int points;
+    struct fruit fruit_return;
+    printf("Ingrese un numero para seleccionar la fruit_type que desea:\n");
     printf("1) Cereza\n");
     printf("2) Fresa\n");
     printf("3) Naranja\n");
     printf("4) Manzana\n");
     printf("5) Melon\n");
-    scanf_s("%d", &tipo_fruta);
-    if (tipo_fruta < 1 | tipo_fruta > 5) {
+    scanf_s("%d", &fruit_return.fruit_type);
+    if (fruit_return.fruit_type < 1 | fruit_return.fruit_type > 5) {
         printf("Solo puede escoger un numero en el rango del 1 al 5\n");
-        seleccionar_fruta();
+        select_fruit();
     }
-    printf("Ingrese el valor de la tipo_fruta:\n");
-    scanf_s("%d", &valor);
-    fruta[0] = tipo_fruta;
-    fruta[1] = valor;
+    printf("Ingrese el points de la fruit_type:\n");
+    scanf_s("%d", &fruit_return.points);
 
-    return fruta;
+    return fruit_return;
 }
 
-int cambiar_velocidad() {
+int change_speed() {
     int speed;
     printf("Seleccione el nuevo valor de la velocidad:\n");
     printf("1) Baja\n");
     printf("2) Media\n");
     printf("3) Alta\n"); //definir valor aleatorio
     scanf_s("%d", &speed);
-
+    if (speed < 1 | speed > 3) {
+        printf("Solo puede escoger un numero en el rango del 1 al 5\n");
+        select_fruit();
+    }
     return speed;
 }
 
-int seleccionar_opcion() {
+int select_menu() {
     int select;
     printf("Ingrese un numero para definir lo que desea hacer:\n");
     printf("1) Crear fantasma\n");
@@ -61,14 +73,17 @@ int seleccionar_opcion() {
     scanf_s("%d", &select);
     if (select < 1 | select > 5) {
         printf("Solo puede escoger un numero en el rango del 1 al 5\n");
-        seleccionar_opcion();
+        select_menu();
     } else {
         switch (select) {
-            case 3: seleccionar_fruta();
+            case 3:
+                select_fruit();
                 break;
-            case 4: cambiar_velocidad();
+            case 4:
+                change_speed();
                 break;
-            default: seleccionar_opcion();
+            default:
+                select_menu();
 
         }
     }
@@ -78,8 +93,8 @@ int seleccionar_opcion() {
 int main() {
     int player;
     int select;
-    player = seleccionar_jugador();
-    select = seleccionar_opcion();
+    player = select_player();
+    select = select_menu();
 
     printf("%d, %d", player, select);
 
