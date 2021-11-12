@@ -8,7 +8,7 @@
 int select_player() {
     int player;
     printf("Seleccione jugador:\n");
-    scanf("%d", &player);
+    scanf_s("%d", &player);
     if ((int) player < 1 | (int) player > 2) {
         printf("Solo puede escoger entre los numeros 1 y 2\n");
         select_player();
@@ -27,25 +27,43 @@ struct fruit {
     int points;
 };
 
-struct fruit select_fruit() {
-    int fruit_type;
-    int points;
-    struct fruit fruit_return;
-    printf("Ingrese un numero para seleccionar la fruit_type que desea:\n");
+struct position add_ghost() {
+    struct position pos;
+    printf("Ingrese la fila y la columna donde se encontrara el fantasma\n");
+    printf("Fila:\n");
+    scanf_s("%d", &pos.x);
+    printf("Columna:\n");
+    scanf_s("%d", &pos.y);
+    return pos;
+}
+
+struct position add_pill() {
+    struct position pos;
+    printf("Ingrese la fila y la columna donde se encontrara la pastilla\n");
+    printf("Fila:\n");
+    scanf_s("%d", &pos.x);
+    printf("Columna:\n");
+    scanf_s("%d", &pos.y);
+    return pos;
+}
+
+struct fruit add_fruit() {
+    struct fruit fruit_result;
+    printf("Ingrese un numero para seleccionar la fruta que desea:\n");
     printf("1) Cereza\n");
     printf("2) Fresa\n");
     printf("3) Naranja\n");
     printf("4) Manzana\n");
     printf("5) Melon\n");
-    scanf_s("%d", &fruit_return.fruit_type);
-    if (fruit_return.fruit_type < 1 | fruit_return.fruit_type > 5) {
+    scanf_s("%d", &fruit_result.fruit_type);
+    if (fruit_result.fruit_type < 1 | fruit_result.fruit_type > 5) {
         printf("Solo puede escoger un numero en el rango del 1 al 5\n");
-        select_fruit();
+        add_fruit();
     }
-    printf("Ingrese el points de la fruit_type:\n");
-    scanf_s("%d", &fruit_return.points);
+    printf("Ingrese el puntaje de la fruta:\n");
+    scanf_s("%d", &fruit_result.points);
 
-    return fruit_return;
+    return fruit_result;
 }
 
 int change_speed() {
@@ -57,7 +75,7 @@ int change_speed() {
     scanf_s("%d", &speed);
     if (speed < 1 | speed > 3) {
         printf("Solo puede escoger un numero en el rango del 1 al 5\n");
-        select_fruit();
+        add_fruit();
     }
     return speed;
 }
@@ -76,11 +94,20 @@ int select_menu() {
         select_menu();
     } else {
         switch (select) {
+            case 1:
+                add_ghost();
+                break;
+            case 2:
+                add_pill();
+                break;
             case 3:
-                select_fruit();
+                add_fruit();
                 break;
             case 4:
                 change_speed();
+                break;
+            case 5:
+                select_player();
                 break;
             default:
                 select_menu();
@@ -91,12 +118,9 @@ int select_menu() {
 }
 
 int main() {
-    int player;
-    int select;
-    player = select_player();
-    select = select_menu();
-
-    printf("%d, %d", player, select);
+    select_player();
+    select_menu();
+    printf("Gracias.");
 
     return 0;
 };
