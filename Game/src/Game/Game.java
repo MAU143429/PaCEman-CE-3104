@@ -568,6 +568,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                     message_received = client.read();
                     if (message_received != "-1") {
                         System.out.println("Recibido: " + message_received);
+
                     } else {
                         break;
                     }
