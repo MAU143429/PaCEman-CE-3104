@@ -20,3 +20,8 @@
 #define PORT 8888         // Puerto de conexion
 #define ADDRESS "127.0.0.1" // "localhost"
 #define MAX_CLIENTS 4       // Maximo de clientes simultaneos
+#define MAX_PLAYERS 2
+#define MAX_OBSERVERS 2
+#define LAST_CLIENT -1
+#define CLIENT_TYPE 1
+

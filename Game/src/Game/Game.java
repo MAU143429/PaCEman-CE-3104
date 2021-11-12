@@ -1,5 +1,6 @@
 package Game;
 
+import Socket.Classify_Action;
 import Socket.Client;
 
 import javax.swing.*;
@@ -8,79 +9,63 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 /**
  * Main game class, it constructs the board game and have functions to handle socket communication
  */
 public class Game extends JPanel implements ActionListener, KeyListener {
-    private Dimension dimension; //width x height
-    private final Font smallFont = new Font("Monospaced", Font.BOLD, 14);
-    private boolean inGame = false; //checks if game is running
-    private boolean isAlive = false; //checks if pacman is alive
+    /**
+     * Sinleton para Game
+     */
+    private static Game instance = null; //Instancia para el singleton de Game
+    private Dimension dimension; // Width X Height
+    private final Font smallFont = new Font("Monospaced", Font.BOLD, 20); // Tipo y tamaño de fuente
+    private boolean inGame = false; // Booleano que verifica si el juego esta corriendo
+    private boolean isAlive = false; // Booleano que verifica si pacman esta vivo
 
-    private final int BLOCK_SIZE = 24; // block dimension
-    private final int N_BLOCKS = 15; // number of blocks 15x15
-    private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE; // nxn
-    private final int MAX_GHOSTS = 12; // maximum amount of ghosts
-    private final int PACMAN_SPEED = 6; // pacman's speed
+    private final int BLOCK_SIZE = 24; // Dimension de cada bloque en el juego
+    private final int N_BLOCKS = 30; // Cantidad de bloques a colocar, 30x30
+    private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE; // Valor del tamaño de la ventana segun el numero de bloques y su dimension
+    private final int MAX_GHOSTS = 4; // Maxima cantidad de fantasmas en el juego
+    private int PACMAN_SPEED = 4; // Velocidad de pacman 2-Lento 4-Media 6-Rapido
 
-    private int N_GHOSTS = 6; // amount of ghosts at the start of the game
-    private int lives; // pacman lives
-    private int score; // player score
+    private int N_GHOSTS = 0; // Cantidad de fantasmas al empezar el juego
+    private int lives; // Vidas de Pacman
+    private int score; // Puntaje del juego
+    private int level = 1;
+
+    // NO se para que sirve
     private int[] dx, dy; // position of ghosts
     private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed; // for ghosts
 
     // Images
     private Image heart;
-    private Image ghost;
+    private Image blinky,clyde,pinky,inky,ghost;
+    private Image cherry , orange, apple,melon,strawberry;
     private Image up, down, left, right;
+    private Image pill;
+
+    // Lista de Frutas
+
+    private ArrayList<Fruit> fruits = new ArrayList<Fruit>();
 
     // for pacman
     private int pacman_x, pacman_y; //to change pacman's sprites
     private int pacmand_x, pacmand_y; // horizontal and vertical directions
-    private int req_dx, req_dy; // Adapts the keys
+    private int req_dx, req_dy; //
 
-    private final int validSpeeds[] = {1, 2, 3, 4, 6, 8}; // permitted speeds in game
+    private final int validSpeeds[] = {1, 2, 3, 4, 6, 8}; // Velocidades permitidas en el Juego
     private final int maxSpeed = 6; // maximum speed of game
-    private int currentSpeed = 3; // current speed of the game at the start
+    private int currentSpeed = PACMAN_SPEED; // current speed of the game at the start
     private short[] screenData; // get game data to know what to show
-    private Timer timer; // for animation
+    private Timer timer; // para animacion
 
-    // Socket connection
+    // Conexion Socket
     private String message_received;
     private Client client;
 
-    /** structure of the level 15x15
-     * 0 -> blocks, obstacles inside the board
-     * 1 -> left wall
-     * 2 -> top wall
-     * 4 -> right wall
-     * 8 -> bottom wall
-     * 16 -> dots to eat
-     * 19 -> need 1 + need 2 + need 16 = 19
-     * 28 -> need 8 + need 4 + need 16 = 28
-     * 22 -> need 2 + need 4 + need 16 = 22
-     * 20 -> need 4 + need 16 = 20
-     * 25 ->
-     * */
 
-    private final short levelData[] = {
-            19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-            17, 16, 16, 16, 16, 24, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            25, 24, 24, 24, 28, 0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-            0,  0,  0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-            19, 18, 18, 18, 18, 18, 16, 16, 16, 16, 24, 24, 24, 24, 20,
-            17, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 16, 24, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 18, 18, 18, 18, 20,
-            17, 24, 24, 28, 0, 25, 24, 24, 16, 16, 16, 16, 16, 16, 20,
-            21, 0,  0,  0,  0,  0,  0,   0, 17, 16, 16, 16, 16, 16, 20,
-            17, 18, 18, 22, 0, 19, 18, 18, 16, 16, 16, 16, 16, 16, 20,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            25, 24, 24, 24, 26, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28
-    };
 
     /**
      * Class constructor
@@ -96,7 +81,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // game
         loadImages();
         initVariables();
-        initGame();
+        initGame(level);
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
@@ -124,7 +109,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                         inGame = true;
                         System.out.println(inGame);
                         System.out.println("Se presiona espacio!!!!!!");
-                        initGame();
+                        initGame(level);
                         repaint();
                     }
                 }
@@ -138,19 +123,47 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
     }
 
+
+    public ArrayList<Fruit> getFruits() {
+        return fruits;
+    }
+
+    /**
+     * getInstance
+     * @return instance
+     * Método singleton del Jmain
+     * @author Jose A.
+     */
+    public static Game getInstance(){
+        if(instance == null){
+            instance = new Game();
+        }
+        return instance;
+    }
+
     private void loadImages() {
         down = new ImageIcon(getClass().getResource("/Resources/down.gif")).getImage();
         up = new ImageIcon(getClass().getResource("/Resources/up.gif")).getImage();
         left = new ImageIcon(getClass().getResource("/Resources/left.gif")).getImage();
         right = new ImageIcon(getClass().getResource("/Resources/right.gif")).getImage();
-        ghost = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
+        ghost = new ImageIcon(getClass().getResource("/Resources/inky.gif")).getImage();
+        blinky = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
+        pinky = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
+        clyde = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
+        inky = new ImageIcon(getClass().getResource("/Resources/ghost1.gif")).getImage();
         heart = new ImageIcon(getClass().getResource("/Resources/heart.png")).getImage();
+        cherry = new ImageIcon(getClass().getResource("/Resources/cherry.png")).getImage();
+        orange = new ImageIcon(getClass().getResource("/Resources/orange.png")).getImage();
+        melon = new ImageIcon(getClass().getResource("/Resources/melon.png")).getImage();
+        strawberry = new ImageIcon(getClass().getResource("/Resources/strawberry.png")).getImage();
+        apple = new ImageIcon(getClass().getResource("/Resources/apple.png")).getImage();
+        pill = new ImageIcon(getClass().getResource("/Resources/apple.png")).getImage();
 
     }
     private void initVariables() {
 
         screenData = new short[N_BLOCKS * N_BLOCKS];
-        dimension = new Dimension(400, 400);
+        dimension = new Dimension(900, 900);
         ghost_x = new int[MAX_GHOSTS];
         ghost_dx = new int[MAX_GHOSTS];
         ghost_y = new int[MAX_GHOSTS];
@@ -167,12 +180,11 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * Metodo que inicia el juego con todos los valores iniciales para vidas, puntajes
      * numero de fantasmas y velocidad
      */
-    public void initGame() {
-
+    public void initGame(int level) {
         lives = 3;
         score = 0;
         initLevel();
-        N_GHOSTS = 6;
+        N_GHOSTS = 2;
         currentSpeed = 3;
     }
 
@@ -181,15 +193,21 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * levelData
      */
     private void initLevel() {
-
-        int i;
-        for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
-            screenData[i] = levelData[i];
+        for (int i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
+            screenData[i] = getLevelData()[i];
         }
-
         continueLevel();
     }
 
+    private short[] getLevelData(){
+        if (level == 1) {
+            return Maps.getLevelData1();
+        }else if(level == 2){
+            return Maps.getLevelData2();
+        }else{
+            return Maps.getLevelData3();
+        }
+    }
     /**
      * Define la posicion de Pacman y la de los fantasmas, les asigna una velocidad
      * aleatoria
@@ -198,15 +216,17 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         int dx = 1;
         int random;
-        // Se define la posicion de los fantasmas
         for (int i = 0; i < N_GHOSTS; i++) {
 
-            ghost_y[i] = 4 * BLOCK_SIZE; // posicion inicial en y
-            ghost_x[i] = 4 * BLOCK_SIZE; // posicion inicial en x
-            ghost_dy[i] = 0; //
+            ghost_y[i] = 10 * BLOCK_SIZE; // posicion inicial en y
+            ghost_x[i] = 10 * BLOCK_SIZE; // posicion inicial en x
+            ghost_dy[i] = 0;
             ghost_dx[i] = dx;
             dx = -dx;
 
+
+
+            //VELOCIDAD FANTASMAS
             // Se define la velocidad de los fantasmas
             random = (int) (Math.random() * (currentSpeed + 1));
             if (random > currentSpeed) {
@@ -242,6 +262,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             drawPacman(g2d);
             moveGhosts(g2d);
             checkMaze();
+            createFruit(g2d);
         }
     }
 
@@ -281,7 +302,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         String start = "Press SPACE to start"; // se debe presionar espacio para comenzar el juego
         g2d.setColor(Color.yellow); // color
-        g2d.drawString(start, (SCREEN_SIZE)/4, 150); // dibuja el string en el tablero
+        g2d.drawString(start, (SCREEN_SIZE)/3, 415); // dibuja el string en el tablero
     }
 
     /**
@@ -289,6 +310,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      * @param g
      */
     private void drawScore(Graphics2D g) {
+
         g.setFont(smallFont);
         g.setColor(new Color(31, 187, 1));
         String s = "Score: " + score;
@@ -308,6 +330,32 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private void drawGhost(Graphics2D g2d, int x, int y) {
         g2d.drawImage(ghost, x, y, this);
     }
+
+    private void drawCherry(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(cherry, x, y, this);
+    }
+
+    private void drawApple(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(apple, x, y, this);
+    }
+
+    private void drawMelon(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(melon, x, y, this);
+    }
+
+    private void drawStrawberry(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(strawberry, x, y, this);
+    }
+
+    private void drawOrange(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(orange, x, y, this);
+    }
+
+    private void drawPill(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(pill, x, y, this);
+    }
+
+
 
     /**
      * Dibuja a Pacman en la interfaz, llama a las imagenes cargadas en loadImages() para asociar la direccion
@@ -342,7 +390,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 g2d.setColor(new Color(0,72,251)); // color
                 g2d.setStroke(new BasicStroke(5)); // grosor del borde
 
-                if ((levelData[i] == 0)) { // si es un bloque, obstaculo
+                if ((getLevelData()[i] == 0)) { // si es un bloque, obstaculo
                     g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE); //dibuja el bloque
                 }
 
@@ -517,7 +565,13 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
             if ((checkData & 16) != 0) { // Posicion donde pacman puede comer un punto
                 screenData[pos] = (short) (checkData & 15);
-                score++; // si pacman paso por ahi, se suma en el score
+                score+=100; // si pacman paso por ahi, se suma en el score
+            }
+
+            //asigna vidas si come 5k puntos
+            if(lives<3 && score>=10000){
+               lives++;
+               score-=10000;
             }
             // control de pacman
             if (req_dx != 0 || req_dy != 0) {
@@ -543,8 +597,62 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         pacman_y = pacman_y + PACMAN_SPEED * pacmand_y;
     }
 
-    //--------------Functions for socket connection---------------//
+    //--------------Funciones que reciben ordenes----------------//
 
+    public void createFruit(Graphics2D g2d){
+        if (getFruits().size() != 0){
+            System.out.println("AGREGANDO FRUTA");
+            for (int fruit = 0; fruit < getFruits().size(); fruit++) {
+
+                Fruit newFruit = getFruits().get(0);
+                char fruitType = newFruit.getFruitType();
+                //cereza
+                if(fruitType == 'C'){
+                    drawCherry(g2d, (newFruit.getCol() * BLOCK_SIZE), (newFruit.getRow() * BLOCK_SIZE));
+                }
+                //fresa
+                if(fruitType == 'F'){
+                    drawStrawberry(g2d, (newFruit.getCol() * BLOCK_SIZE), (newFruit.getRow() * BLOCK_SIZE));
+                }
+                //naranja
+                if(fruitType == 'N'){
+                    drawOrange(g2d, (newFruit.getCol() * BLOCK_SIZE), (newFruit.getRow() * BLOCK_SIZE));
+                }
+                //manzana
+                if(fruitType == 'M'){
+                    drawApple(g2d, (newFruit.getCol() * BLOCK_SIZE), (newFruit.getRow() * BLOCK_SIZE));
+                }
+                //melon
+                if(fruitType == 'W'){
+                    drawMelon(g2d, (newFruit.getCol() * BLOCK_SIZE), (newFruit.getRow() * BLOCK_SIZE));
+                }
+            }
+            getFruits().clear();
+        }
+    }
+
+    public void addGhost(int row, int column){
+        System.out.println("AGREGANDO FANTASMA");
+
+    }
+    public void addPill(int row, int column){
+        System.out.println("AGREGANDO PASTILLA");
+    }
+    public void changeVelocity(int row, int column, int new_speed){
+        System.out.println("CAMBIANDO LA VELOCIDAD");
+        if(new_speed == 1){
+            PACMAN_SPEED = 2;
+            currentSpeed = 2;
+        }else if (new_speed == 2) {
+            PACMAN_SPEED = 4;
+            currentSpeed = 4;
+        }else if(new_speed == 3){
+            PACMAN_SPEED = 6;
+            currentSpeed = 6;
+        }
+    }
+
+    //--------------Funciones para conexion socket---------------//
     /**
      * Conecta el cliente con el servidor
      */
@@ -568,7 +676,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                     message_received = client.read();
                     if (message_received != "-1") {
                         System.out.println("Recibido: " + message_received);
-
+                        Classify_Action.Action_recv(message_received);
                     } else {
                         break;
                     }
@@ -598,6 +706,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+
     }
 
     @Override
@@ -607,24 +716,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-    /*
-        if(inGame){
-            if (e.getKeyChar() == 'w') {
 
-
-            }
-            if (e.getKeyChar() == 'a') {
-
-
-            }
-            if (e.getKeyChar() == 's') {
-
-
-            }
-            if (e.getKeyChar() == 'd') {
-
-
-            }
-        }*/
     }
 }
