@@ -2,7 +2,6 @@ package Menu;
 
 import Game.Game;
 import Socket.Client;
-import Game.Pacman;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -65,8 +64,8 @@ public class MainMenu extends JFrame implements ActionListener {
 
         Background = new JLabel();
         Background.setBounds(0, 0, 1280, 900);
-        ImageIcon bgurl = new ImageIcon(getClass().getResource("/Resources/bg.jpg"));
-        Background.setIcon(bgurl);
+        //ImageIcon bgurl = new ImageIcon(getClass().getResource("/Resources/game_over.png"));
+        //Background.setIcon(bgurl);
         validate();
         init_panel.add(Background);
 
@@ -86,8 +85,7 @@ public class MainMenu extends JFrame implements ActionListener {
         if (e.getSource() == play_btn) {
 
             Client client = new Client("127.0.0.1", 8888);
-            //Pacman.startGame(client);
-            Pacman.startGame();
+            new Game();
             init_frame.setVisible(false);
 
 
