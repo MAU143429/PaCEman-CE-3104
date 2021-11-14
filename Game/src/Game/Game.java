@@ -2,10 +2,9 @@ package Game;
 
 import javax.swing.JFrame;
 /**
- * Clase principal que general el juego.
+ * Clase principal que genera el juego.
  * Se crea un JFrame, se le asignan ciertos valores y se añade un objeto VistaControlador
- * @author Aitor Alcorta
- * @version 1.0.15052014
+ * @author Mauricio C Yendry B Gabriel Vargas
  */
 public class Game extends JFrame
 {

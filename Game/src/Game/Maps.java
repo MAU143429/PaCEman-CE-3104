@@ -30,10 +30,7 @@ class Maps
     private int dots;
 
 
-    Maps()
-    {
-        dots = 0;
-    }
+    Maps() { dots = 0;}
 
     //Metodo que permite recuperar la matriz
     public Image getImage(int x, int y)
@@ -55,14 +52,14 @@ class Maps
 
         if(location == 2)
         {
-            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/Pill.png"));
+            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/pill.png"));
             image = imageIcon.getImage();
             return image;
         }
 
         if(location == 3)
         {
-            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/vacio.gif"));
+            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/empty.gif"));
             image = imageIcon.getImage();
             return image;
         }

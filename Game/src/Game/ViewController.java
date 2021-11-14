@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class ViewController extends JPanel implements ActionListener {
     private Timer timer;
-    private Characters blinky, pinky, clyde, inky;
+    private Characters blinky, pinky, clyde;//, inky;
     private Pacman pacman;
     private ArrayList <Characters> characters;
     private ArrayList <Intersection> intersections;
@@ -23,7 +23,7 @@ public class ViewController extends JPanel implements ActionListener {
     private int score, panicTimer, houseTimer, dots;
 
     /**
-     * Constructor vacío
+     * Constructor que crea un nuevo juego
      */
     public ViewController(){
         newGame();
@@ -62,9 +62,9 @@ public class ViewController extends JPanel implements ActionListener {
         //Creamos Clyde
         clyde = new Clyde();
         characters.add(clyde);
-        //Creamos Inky
-        inky = new Inky();
-        characters.add(inky);
+        /*//Creamos Inky
+        //inky = new Inky();
+        //characters.add(inky);*/
         //Inicializamos las variables del juego
         panic =false;
         stop =false;
@@ -196,13 +196,13 @@ public class ViewController extends JPanel implements ActionListener {
         System.out.println("Sistema para comer las bolas de laberinto pequeñas");
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 1){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
-            score = score+ 10;
+            score += 10;
             dots--;
         }
         //Sistema para comer las bolas de laberinto grandes
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 2){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
-            score=score +20;
+            score += 20;
             panicTimer = 40;
             panic();
             dots--;
@@ -227,12 +227,13 @@ public class ViewController extends JPanel implements ActionListener {
                         }
                     }
                 }
+
                 //Colisiones entre fantasmas
                 if(character instanceof Ghost){
                     Rectangle blinkyRect = character.createRectangle();
                     Rectangle pinkyRect = character.createRectangle();
                     Rectangle clydeRect = character.createRectangle();
-                    Rectangle inkyRect = character.createRectangle();
+                    //Rectangle inkyRect = character.createRectangle();
                     if(blinkyRect.intersects(pinkyRect)){
                         blinky.back();
                         pinky.back();
@@ -241,13 +242,14 @@ public class ViewController extends JPanel implements ActionListener {
                         blinky.back();
                         clyde.back();
                     }
-                    if(blinkyRect.intersects(inkyRect)){
-                        blinky.back();
-                        inky.back();
-                    }
                     if(clydeRect.intersects(pinkyRect)){
                         pinky.back();
                         clyde.back();
+                    }
+
+                    /*if(blinkyRect.intersects(inkyRect)){
+                        blinky.back();
+                        inky.back();
                     }
                     if(clydeRect.intersects(inkyRect)){
                         inky.back();
@@ -256,31 +258,36 @@ public class ViewController extends JPanel implements ActionListener {
                     if(inkyRect.intersects(pinkyRect)){
                         pinky.back();
                         inky.back();
-                    }
+                    }*/
                 }
+
             }
             //Sistema de colision entre Comecocos y los fantasmas
-            if(character instanceof Ghost){
-                Rectangle ghostRect = character.createRectangle();
-                Rectangle pacmanRect = character.createRectangle();
-                if(ghostRect.intersects(pacmanRect)){
-                    int lives = pacman.pacmanLives();
-                    System.out.println("Vidas actualmente: " + lives);
-                    if(!panic){
-                        pacman.pacmanDeath();
-                        System.out.println("Quitandole vida a pacman");
-                        if(lives == 0) {
-                            System.out.println("Murio pacman");
-                            endGame();
+                if(character instanceof Ghost){
+                    Rectangle ghostRect = character.createRectangle();
+                    Rectangle pacmanRect = pacman.createRectangle();
+                    System.out.println("rectangulo fantasma" + ghostRect.getLocation());
+                    System.out.println("rectangulo pacman" + pacmanRect.getLocation());
+                    if(ghostRect.intersects(pacmanRect)){
+                        int lives = pacman.pacmanLives();
+                        System.out.println("Vidas actualmente: " + lives);
+                        System.out.println("coordenadas de pacman: " + pacman.getBoxX()+ "," + pacman.getBoxY());
+                        System.out.println("coordenadas de fantasma: " + character.getBoxX()+ "," + character.getBoxY());
+                        if(!panic){
+                            pacman.pacmanDeath();
+                            System.out.println("Quitandole vida a pacman");
+                            if(lives == 0) {
+                                System.out.println("Murio pacman");
+                                endGame();
+                            }
+                        }
+                        if(panic){
+                            score = score + 500;
+                            Ghost ghost = (Ghost)character; //Cast al personaje para declararlo de la clase Fantasmas
+                            deathGhost(ghost);
                         }
                     }
-                    if(panic){
-                        score = score + 500;
-                        Ghost ghost = (Ghost)character; //Cast al personaje para declararlo de la clase Fantasmas
-                        deathGhost(ghost);
-                    }
                 }
-            }
         }
     }
 
