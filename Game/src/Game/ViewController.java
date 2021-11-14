@@ -12,10 +12,9 @@ import java.util.ArrayList;
  * Write a description of class VistaControlador here.
  * @author Mauricio C Yendry B Gabriel Vargas
  */
-public class ViewController extends JPanel implements ActionListener
-{
+public class ViewController extends JPanel implements ActionListener {
     private Timer timer;
-    private Characters blinky, pinky, clyde,inky;
+    private Characters blinky, pinky, clyde, inky;
     private Pacman pacman;
     private ArrayList <Characters> characters;
     private ArrayList <Intersection> intersections;
@@ -78,7 +77,7 @@ public class ViewController extends JPanel implements ActionListener
      * Redefinimos el método paint(g)
      * Primero llamamos al método paint de la superclase.
      * Pintamos el laberinto, los personajes y dos imagenes en caso de pausa o muerte.
-     * @param objeto tipo Graphics.
+     * @param g tipo Graphics.
      * @Override Redefine el método paint
      */
     public void paint(Graphics g)
@@ -91,8 +90,8 @@ public class ViewController extends JPanel implements ActionListener
             }
         }
 
-        for(Characters figuras: characters) {
-            g2d.drawImage(figuras.getImage(), figuras.getX(), figuras.getY(), this);
+        for(Characters character: characters) {
+            g2d.drawImage(character.getImage(), character.getX(), character.getY(), this);
         }
 
         if(stop){
@@ -118,8 +117,8 @@ public class ViewController extends JPanel implements ActionListener
         g2d.drawString("Marcador",1020,180);
         g2d.drawString("Puntos: "+ score,1020,240);
         if(panic){
-            int tiempo = panicTimer *(125)/1000;
-            g2d.drawString("Tiempo: "+tiempo,1020,300);
+            int time = panicTimer *(125)/1000;
+            g2d.drawString("Tiempo: "+ time,1020,300);
         }
         //Opciones del método paint()
         Toolkit.getDefaultToolkit().sync();
@@ -148,7 +147,7 @@ public class ViewController extends JPanel implements ActionListener
     /**
      * Contiene la lógica del juego.
      * Llama a los métodos que mueve a los personajes, comprueban las colisiones.
-     * @param objeto tipo ActionEvent.
+     * @param e tipo ActionEvent.
      */
     public void actionPerformed(ActionEvent e){
         if(!stop){
@@ -182,7 +181,7 @@ public class ViewController extends JPanel implements ActionListener
                 endPanic();
             }
             //Llamada al método salirCasa(( cuando el contador llega a 0
-            if(panicTimer == 0){
+            if(houseTimer == 0){
                 leaveHouse();
             }
         }
@@ -237,22 +236,26 @@ public class ViewController extends JPanel implements ActionListener
                     if(blinkyRect.intersects(pinkyRect)){
                         blinky.back();
                         pinky.back();
-                        inky.back();
                     }
                     if(blinkyRect.intersects(clydeRect)){
                         blinky.back();
                         clyde.back();
+                    }
+                    if(blinkyRect.intersects(inkyRect)){
+                        blinky.back();
                         inky.back();
                     }
                     if(clydeRect.intersects(pinkyRect)){
                         pinky.back();
                         clyde.back();
+                    }
+                    if(clydeRect.intersects(inkyRect)){
                         inky.back();
+                        clyde.back();
                     }
                     if(inkyRect.intersects(pinkyRect)){
                         pinky.back();
-                        clyde.back();
-                        blinky.back();
+                        inky.back();
                     }
                 }
             }
@@ -261,10 +264,13 @@ public class ViewController extends JPanel implements ActionListener
                 Rectangle ghostRect = character.createRectangle();
                 Rectangle pacmanRect = character.createRectangle();
                 if(ghostRect.intersects(pacmanRect)){
-                    int lifes = pacman.pacmanLifes();
+                    int lives = pacman.pacmanLives();
+                    System.out.println("Vidas actualmente: " + lives);
                     if(!panic){
                         pacman.pacmanDeath();
-                        if(lifes == 0) {
+                        System.out.println("Quitandole vida a pacman");
+                        if(lives == 0) {
+                            System.out.println("Murio pacman");
                             endGame();
                         }
                     }
@@ -280,7 +286,7 @@ public class ViewController extends JPanel implements ActionListener
 
     /**
      * Metodo que comprueba si un fantasma se encuentra en un cruce
-     * @param objeto tipo Personajes.
+     * @param character tipo Personajes.
      */
     public void verifyIntersection(Characters character)
     {
@@ -296,7 +302,7 @@ public class ViewController extends JPanel implements ActionListener
 
     /**
      * Metodo que comprueba las direcciones libres de los personajes
-     * @param objeto tipo Personajes.
+     * @param character tipo Personajes.
      */
     public void verifyDirections(Characters character)
     {
@@ -335,7 +341,7 @@ public class ViewController extends JPanel implements ActionListener
 
     /**
      * Metodo que gestiona la muerte de los fantasmas
-     * @param objeto tipo Fantasmas
+     * @param ghost tipo Fantasmas
      */
     public void deathGhost(Ghost ghost)
     {

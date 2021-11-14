@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public abstract class Characters
 {
-    // Variables de instancia -
+    // Variables de instancia
     protected int x,y,dx,dy;    //Las variables de las coordenadas x e y. Desplazamiento x e y.
     private Image image;       //La variable imagen donde irá la imagen de la figura
     private ImageIcon imageIcon;
@@ -19,10 +19,7 @@ public abstract class Characters
     /**
      * Constructor vacío
      */
-    public Characters ()
-    {
-
-    }
+    public Characters () {};
 
     /**
      * Constructor de los personajes, al que se le pasa la ruta de la imagen, y las coordenadas.

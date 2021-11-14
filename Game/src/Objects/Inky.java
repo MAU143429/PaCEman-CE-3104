@@ -13,7 +13,7 @@ public class Inky extends Ghost
      */
     public Inky()
     {
-        super("/Resources/inky.gif", 780, 60);
+        super("/Resources/inky.gif", 120, 60);
     }
 
     public void death(){

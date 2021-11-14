@@ -31,7 +31,7 @@ public class Blinky extends Ghost {
             super.artificialIntelligence(pacmanX, pacmanY);
             int movement = random.nextInt(3);
             if(!death && intersection){
-                if(pacmanY - getY() < 0){ //Si Comecocos se encuentra arriba de Blinky
+                if(pacmanY - getY() < 0){ //Si esta arriba de Blinky
                     if(!up || panic){ //Si la casilla de arriba de Blinky es un muro
                         switch (movement){
                             case 0:

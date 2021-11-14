@@ -2,26 +2,21 @@ package Objects;
 
 import java.awt.*;
 /**
- * Write a description of class Box here.
+ *  Clase que contiene la informacion de cada casilla de la matriz.
  *
  * @author Mauricio C Yendry B Gabriel Vargas
  */
 public class Box
 
 {
-    // instance variables - replace the example below with your own
     private int x,y;
     private boolean crossing;
     /**
-     * Constructor for objects of class Casilla
+     * Constructor de la clase Box
      */
-    public Box()
-    {
-        // initialise instance variables
-    }
+    public Box() {};
 
-    public Box(int x, int y)
-    {
+    public Box(int x, int y) {
         this.x=x;
         this.y=y;
         crossing = true;
@@ -38,14 +33,11 @@ public class Box
     }
 
 
-    public boolean verifyRoute()
-    {
-        // put your code here
+    public boolean verifyRoute(){
         return crossing;
     }
 
-    public Rectangle createRectangle()
-    {
+    public Rectangle createRectangle() {
         return new Rectangle(getX()*60,getY()*60,60,60);
     }
 }

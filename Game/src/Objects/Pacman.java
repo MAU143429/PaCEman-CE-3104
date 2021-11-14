@@ -10,7 +10,7 @@ package Objects;
 public class Pacman extends Characters
 {
     int pendingDirection;
-    private int lifes;
+    private int lives;
     /**
      * Constructor for objects of class Pacman
      */
@@ -18,7 +18,7 @@ public class Pacman extends Characters
     {
         super("/Resources/right.gif", 420,660);
         pendingDirection = 0;
-        lifes = 3;
+        lives = 3;
     }
 
     /**
@@ -93,14 +93,14 @@ public class Pacman extends Characters
 
     public void pacmanDeath()
     {
-        lifes--;
+        lives--;
         x=420;
         y=660;
     }
 
-    public int pacmanLifes()
+    public int pacmanLives()
     {
-        return lifes;
+        return lives;
     }
 
 }
