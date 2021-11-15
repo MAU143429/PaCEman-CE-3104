@@ -184,14 +184,15 @@ public class ViewController extends JPanel implements ActionListener {
             Image imageSuccess = imageIcon.getImage();
             g2d.drawImage(imageSuccess,0,0, this);
         }
-        //Pintamos el marcador con la puntuación
-        g2d.setFont(new Font("Arial", Font.PLAIN, 54));
-        g2d.setColor(Color.WHITE);
-        g2d.drawString("Marcador",1000,180);
-        g2d.drawString("Puntos: "+ score,1000,240);
+        // Dibuja el puntaje del jugador
+        g2d.setFont(new Font("SansSerif", Font.BOLD, 35));
+        g2d.setColor(Color.green);
+        //g2d.drawString("Marcador",1000,180);
+        g2d.drawString("Score: "+ score,300,820);
         if(panic){
+            // Dibuja el contador del momento en que pacman puede comer fantasmas
             int time = panicTimer *(125)/1000;
-            g2d.drawString("Tiempo: "+ time,1000,300);
+            g2d.drawString("Time: "+ time,600,820);
         }
 
         // Dibuja los corazones que representan la vida de pacman
