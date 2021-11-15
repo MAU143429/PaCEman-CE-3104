@@ -10,42 +10,43 @@ int select_player() {
     printf("Seleccione jugador:\n");
     scanf_s("%d", &player);
     if ((int) player < 1 | (int) player > 2) {
-        printf("Solo puede escoger entre los numeros 1 y 2\n");
+        printf("Solo puede escoger entre los numeros 1 column 2\n");
         select_player();
+    } else {
+        return player;
     }
-    return player;
+    return 0;
 }
 
 struct position {
-    int x;
-    int y;
+    int row;
+    int column;
 };
+
+struct position set_position() {
+    struct position pos;
+    printf("Ingrese la fila column la columna donde se encontrara el fantasma\n");
+    printf("Fila:\n");
+    scanf_s("%d", &pos.row);
+    printf("Columna:\n");
+    scanf_s("%d", &pos.column);
+    if (pos.row < 0 | pos.row >= 13) {
+        printf("Son 13 filas, favor introducir un valor del 0 al 12\n");
+        set_position();
+    } else if (pos.column < 0 | pos.column >= 15) {
+        printf("Son 15 columnas, favor introducir un valor del 0 al 14\n");
+        set_position();
+    } else {
+        return pos;
+    }
+    return pos;
+}
 
 struct fruit {
     struct position pos;
     int fruit_type;
     int points;
 };
-
-struct position add_ghost() {
-    struct position pos;
-    printf("Ingrese la fila y la columna donde se encontrara el fantasma\n");
-    printf("Fila:\n");
-    scanf_s("%d", &pos.x);
-    printf("Columna:\n");
-    scanf_s("%d", &pos.y);
-    return pos;
-}
-
-struct position add_pill() {
-    struct position pos;
-    printf("Ingrese la fila y la columna donde se encontrara la pastilla\n");
-    printf("Fila:\n");
-    scanf_s("%d", &pos.x);
-    printf("Columna:\n");
-    scanf_s("%d", &pos.y);
-    return pos;
-}
 
 struct fruit add_fruit() {
     struct fruit fruit_result;
@@ -62,6 +63,7 @@ struct fruit add_fruit() {
     }
     printf("Ingrese el puntaje de la fruta:\n");
     scanf_s("%d", &fruit_result.points);
+    fruit_result.pos = set_position();
 
     return fruit_result;
 }
@@ -95,10 +97,10 @@ int select_menu() {
     } else {
         switch (select) {
             case 1:
-                add_ghost();
+                set_position();
                 break;
             case 2:
-                add_pill();
+                set_position();
                 break;
             case 3:
                 add_fruit();
@@ -117,10 +119,14 @@ int select_menu() {
     return select;
 }
 
-int main() {
+void console() {
     select_player();
     select_menu();
-    printf("Gracias.");
+    console();
+}
+
+int main() {
+    console();
 
     return 0;
 };
