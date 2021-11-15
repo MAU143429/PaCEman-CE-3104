@@ -18,7 +18,7 @@ import Socket.Client;
  */
 public class ViewController extends JPanel implements ActionListener {
     private Timer timer;
-    private Characters blinky, pinky, clyde;//, inky;
+    private Characters blinky, pinky, clyde ,inky;
     private Pacman pacman;
     private ArrayList <Characters> characters;
     private ArrayList <Intersection> intersections;
@@ -26,6 +26,7 @@ public class ViewController extends JPanel implements ActionListener {
     private Maps maps;
     private int score, panicTimer, dots;
     private java.lang.Integer houseTimer = 0;
+    private java.lang.Integer totalGhost = 0;
     private java.lang.Integer apple_score, orange_score, melon_score,strawberry_score,cherry_score;
     private static ViewController instance = null;
 
@@ -96,6 +97,14 @@ public class ViewController extends JPanel implements ActionListener {
         this.dots += dots;
     }
 
+    public Integer getTotalGhost() {
+        return totalGhost;
+    }
+
+    public void setTotalGhost(Integer totalGhost) {
+        this.totalGhost += totalGhost;
+    }
+
     /**
      * Método al que llama el constructor
      */
@@ -121,18 +130,6 @@ public class ViewController extends JPanel implements ActionListener {
         //Creamos Pacman
         pacman = new Pacman();
         characters.add(pacman);
-        //Creamos Blinky
-        blinky = new Blinky();
-        characters.add(blinky);
-        //Creamos Pinky
-        pinky = new Pinky();
-        characters.add(pinky);
-        //Creamos Clyde
-        clyde = new Clyde();
-        characters.add(clyde);
-        /*//Creamos Inky
-        //inky = new Inky();
-        //characters.add(inky);*/
         //Inicializamos las variables del juego
         panic =false;
         stop =false;
@@ -338,17 +335,43 @@ public class ViewController extends JPanel implements ActionListener {
                     Rectangle pinkyRect = character.createRectangle();
                     Rectangle clydeRect = character.createRectangle();
                     //Rectangle inkyRect = character.createRectangle();
-                    if(blinkyRect.intersects(pinkyRect)){
-                        blinky.back();
-                        pinky.back();
-                    }
-                    if(blinkyRect.intersects(clydeRect)){
-                        blinky.back();
-                        clyde.back();
-                    }
-                    if(clydeRect.intersects(pinkyRect)){
-                        pinky.back();
-                        clyde.back();
+
+                    if (getTotalGhost() >= 2) {
+                        if (blinkyRect.intersects(pinkyRect)) {
+                            blinky.back();
+                            pinky.back();
+                        }
+                        if (getTotalGhost() >= 3) {
+                            if (blinkyRect.intersects(clydeRect)) {
+                                blinky.back();
+                                clyde.back();
+                            }
+
+                            if (clydeRect.intersects(pinkyRect)) {
+                                pinky.back();
+                                clyde.back();
+                            }
+
+                            if (getTotalGhost() >= 4) {
+
+                                /**
+                                if (blinkyRect.intersects(clydeRect)) {
+                                    blinky.back();
+                                    inky.back();
+                                }
+
+                                if (clydeRect.intersects(pinkyRect)) {
+                                    pinky.back();
+                                    inky.back();
+                                }
+                                if (clydeRect.intersects(pinkyRect)) {
+                                    clyde.back();
+                                    inky.back();
+                                }*/
+
+                            }
+
+                        }
                     }
 
                     /*if(blinkyRect.intersects(inkyRect)){
@@ -536,6 +559,40 @@ public class ViewController extends JPanel implements ActionListener {
     public void addGhost(java.lang.Integer row, java.lang.Integer col){
 
         if(maps.verifyBox(row,col)){
+            if (getTotalGhost() == 0){
+                //Creamos Blinky
+                blinky = new Blinky();
+                blinky.setX(blinky.calcX(col));
+                blinky.setY(blinky.calcY(row));
+                characters.add(blinky);
+                setTotalGhost(1);
+
+            }else if(getTotalGhost() == 1){
+                //Creamos Pinky
+                pinky = new Pinky();
+                pinky.setX(pinky.calcX(col));
+                pinky.setY(pinky.calcY(row));
+                characters.add(pinky);
+                setTotalGhost(1);
+
+            }else if(getTotalGhost() == 2) {
+
+                //Creamos Clyde
+                clyde = new Clyde();
+                clyde.setX(clyde.calcX(col));
+                clyde.setY(clyde.calcY(row));
+                characters.add(clyde);
+                setTotalGhost(1);
+
+            }else if(getTotalGhost() == 3){
+                /*//Creamos Inky
+                //inky = new Inky();
+                //inky.setX(inky.calcX(col));
+                //inky.setY(inky.calcY(row));
+                //characters.add(inky);*/
+                setTotalGhost(1);
+            }
+
             
 
         }else{
@@ -625,7 +682,8 @@ public class ViewController extends JPanel implements ActionListener {
                 stop();
                 break;
             case 78:
-                Classify_Action.Action_recv("FM1000,3,5"); // EJEMPLO DE FRUTA
+                Classify_Action.Action_recv("FM1000,3,7"); // EJEMPLO DE FRUTA
+                Classify_Action.Action_recv("G,3,5"); // EJEMPLO DE FANTASMA
                 //nextGame();
                 break;
         }

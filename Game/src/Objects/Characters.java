@@ -51,6 +51,15 @@ public abstract class Characters
         return y;
     }
 
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     /**
      * Método que devuelve un objeto Image, con la imagen del personaje.
      * Este método se ejecuta por el método paint redefinido en la clase VistaControlador.
@@ -156,6 +165,24 @@ public abstract class Characters
     {
         int y=this.y/60;
         return y;
+    }
+
+    /**
+     * Método para consultar la posicion del eje X donde se encuentra el personaje
+     * @return int
+     */
+    public int calcX(int x)
+    {
+        return x*60 ;
+    }
+
+    /**
+     * Método para consultar la posicion del eje Y donde se encuentra el personaje
+     * @return int
+     */
+    public int calcY(int y)
+    {
+        return y*60;
     }
 
     /**
