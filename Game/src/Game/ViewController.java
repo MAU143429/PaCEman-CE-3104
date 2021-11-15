@@ -105,6 +105,14 @@ public class ViewController extends JPanel implements ActionListener {
         this.totalGhost += totalGhost;
     }
 
+    public ArrayList<Characters> getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(ArrayList<Characters> characters) {
+        this.characters = characters;
+    }
+
     /**
      * Método al que llama el constructor
      */
@@ -216,10 +224,12 @@ public class ViewController extends JPanel implements ActionListener {
      */
     public void actionPerformed(ActionEvent e){
         if(!stop){
+            System.out.println(getCharacters().size());
             for(Characters character: characters){
                 verifyDirections(character);
                 verifyIntersection(character);
                 if(character instanceof Ghost){
+                    System.out.println("HAY UN FANTASMA ENTRE NOSOTROS");
                     Ghost ghost = (Ghost) character;
                     ghost.artificialIntelligence(pacman.getX(),pacman.getY());
                 }
@@ -354,18 +364,16 @@ public class ViewController extends JPanel implements ActionListener {
 
                             if (getTotalGhost() >= 4) {
 
-                                /**
-                                if (blinkyRect.intersects(clydeRect)) {
+                                /**if(blinkyRect.intersects(inkyRect)){
                                     blinky.back();
                                     inky.back();
                                 }
-
-                                if (clydeRect.intersects(pinkyRect)) {
-                                    pinky.back();
+                                if(clydeRect.intersects(inkyRect)){
                                     inky.back();
-                                }
-                                if (clydeRect.intersects(pinkyRect)) {
                                     clyde.back();
+                                }
+                                if(inkyRect.intersects(pinkyRect)){
+                                    pinky.back();
                                     inky.back();
                                 }*/
 
@@ -374,18 +382,6 @@ public class ViewController extends JPanel implements ActionListener {
                         }
                     }
 
-                    /*if(blinkyRect.intersects(inkyRect)){
-                        blinky.back();
-                        inky.back();
-                    }
-                    if(clydeRect.intersects(inkyRect)){
-                        inky.back();
-                        clyde.back();
-                    }
-                    if(inkyRect.intersects(pinkyRect)){
-                        pinky.back();
-                        inky.back();
-                    }*/
                 }
 
             }
@@ -520,6 +516,24 @@ public class ViewController extends JPanel implements ActionListener {
         timer.stop();
     }
 
+    /**
+     * Método para consultar la posicion del eje X donde se encuentra el personaje
+     * @return int
+     */
+    public int calcX(int x)
+    {
+        return x*60 ;
+    }
+
+    /**
+     * Método para consultar la posicion del eje Y donde se encuentra el personaje
+     * @return int
+     */
+    public int calcY(int y)
+    {
+        return y*60;
+    }
+
     public void addPill(java.lang.Integer row, java.lang.Integer col){
         maps.addPill(row,col);
     }
@@ -561,35 +575,27 @@ public class ViewController extends JPanel implements ActionListener {
         if(maps.verifyBox(row,col)){
             if (getTotalGhost() == 0){
                 //Creamos Blinky
-                blinky = new Blinky();
-                blinky.setX(blinky.calcX(col));
-                blinky.setY(blinky.calcY(row));
-                characters.add(blinky);
+                blinky = new Blinky(calcX(row),calcY(col));
+                getCharacters().add(blinky);
                 setTotalGhost(1);
 
             }else if(getTotalGhost() == 1){
                 //Creamos Pinky
-                pinky = new Pinky();
-                pinky.setX(pinky.calcX(col));
-                pinky.setY(pinky.calcY(row));
-                characters.add(pinky);
+                pinky = new Pinky(calcX(row),calcY(col));
+                getCharacters().add(pinky);
                 setTotalGhost(1);
 
             }else if(getTotalGhost() == 2) {
 
                 //Creamos Clyde
-                clyde = new Clyde();
-                clyde.setX(clyde.calcX(col));
-                clyde.setY(clyde.calcY(row));
-                characters.add(clyde);
+                clyde = new Clyde(calcX(row),calcY(col));
+                getCharacters().add(clyde);
                 setTotalGhost(1);
 
             }else if(getTotalGhost() == 3){
-                /*//Creamos Inky
-                //inky = new Inky();
-                //inky.setX(inky.calcX(col));
-                //inky.setY(inky.calcY(row));
-                //characters.add(inky);*/
+                /**Creamos Inky
+                //inky = new Inky(calcX(col),calcY(row));
+                //getCharacters().add(inky);*/
                 setTotalGhost(1);
             }
 
@@ -683,7 +689,7 @@ public class ViewController extends JPanel implements ActionListener {
                 break;
             case 78:
                 Classify_Action.Action_recv("FM1000,3,7"); // EJEMPLO DE FRUTA
-                Classify_Action.Action_recv("G,3,5"); // EJEMPLO DE FANTASMA
+                Classify_Action.Action_recv("G,3,7"); // EJEMPLO DE FANTASMA
                 //nextGame();
                 break;
         }
