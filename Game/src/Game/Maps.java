@@ -10,7 +10,7 @@ class Maps
 {
     private int [][] level =
                     {{0,0,0,0,0,0,0,0,0,0,0,0,0},
-                    {0,2,1,1,1,1,1,1,1,1,1,2,0},
+                    {0,1,1,1,1,1,1,1,1,1,1,1,0},
                     {0,1,0,0,1,0,0,0,0,1,0,1,0},
                     {0,1,0,1,1,1,1,1,1,1,1,1,0},
                     {0,1,1,1,0,0,0,1,0,1,0,1,0},
@@ -22,7 +22,7 @@ class Maps
                     {0,1,1,1,0,0,0,1,0,1,0,1,0},
                     {0,1,0,1,1,1,1,1,1,1,1,1,0},
                     {0,1,0,0,1,0,0,0,0,1,0,1,0},
-                    {0,2,1,1,1,1,1,1,1,1,1,2,0},
+                    {0,1,1,1,1,1,1,1,1,1,1,1,0},
                     {0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
     private Image image;       //La variable imagen donde irá la imagen de la figura, ya sea muro, punto pequeño, punto grando o punto vacío.
@@ -36,30 +36,65 @@ class Maps
     public Image getImage(int x, int y)
     {
         int location = level[x][y];
-        if(location == 0)
+        if(location == 0)// WALL
         {
             imageIcon = new ImageIcon(this.getClass().getResource("/Resources/wall.gif"));
             image = imageIcon.getImage();
             return image;
         }
 
-        if(location == 1)
+        if(location == 1)//DOT
         {
             imageIcon = new ImageIcon(this.getClass().getResource("/Resources/Pac-Dot.png"));
             image = imageIcon.getImage();
             return image;
         }
 
-        if(location == 2)
+        if(location == 2)//PILDORA
         {
             imageIcon = new ImageIcon(this.getClass().getResource("/Resources/pill.png"));
             image = imageIcon.getImage();
             return image;
         }
 
-        if(location == 3)
+        if(location == 3)//VACIO
         {
             imageIcon = new ImageIcon(this.getClass().getResource("/Resources/empty.gif"));
+            image = imageIcon.getImage();
+            return image;
+        }
+
+        if(location == 4) //CEREZA
+        {
+            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/cherry.png"));
+            image = imageIcon.getImage();
+            return image;
+        }
+
+        if(location == 5)//MELON
+        {
+            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/melon.png"));
+            image = imageIcon.getImage();
+            return image;
+        }
+
+        if(location == 6)//MANZANA
+        {
+            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/apple.png"));
+            image = imageIcon.getImage();
+            return image;
+        }
+
+        if(location == 7)//NARANJA
+        {
+            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/orange.png"));
+            image = imageIcon.getImage();
+            return image;
+        }
+
+        if(location == 8)//FRESA
+        {
+            imageIcon = new ImageIcon(this.getClass().getResource("/Resources/strawberry.png"));
             image = imageIcon.getImage();
             return image;
         }
@@ -88,6 +123,38 @@ class Maps
     public int sizeMapY()
     {
         return level[0].length;
+    }
+
+    public boolean verifyBox(java.lang.Integer x,java.lang.Integer y){
+        if (level[x][y] == 0){
+            System.out.println("NO SE PUEDE AGREGAR UN FANTASMA EN EL LUGAR SOLICITADO YA QUE ES UN MUERO, INTENTA CON OTRO");
+            return false;
+        }
+        return true;
+
+    }
+
+    public void addPill(java.lang.Integer x,java.lang.Integer y){
+        if (level[x][y] == 3){
+            level[x][y] = 2;
+            ViewController.getInstance().setDots(1);
+        }else if (level[x][y] == 0){
+            System.out.println("NO SE PUEDE AGREGAR LA PILDORA EN EL LUGAR SOLICITADO YA QUE ES UN MUERO, INTENTA CON OTRO");
+        }else{
+            level[x][y] = 2;
+        }
+    }
+
+    public void addFruit(java.lang.Integer x,java.lang.Integer y, java.lang.Integer fruit){
+        if (level[x][y] == 3){
+            level[x][y] = fruit;
+            ViewController.getInstance().setDots(1);
+        }else if (level[x][y] == 0){
+            System.out.println("NO SE PUEDE AGREGAR LA FRUTA EN EL LUGAR SOLICITADO YA QUE ES UN MUERO, INTENTA CON OTRO");
+        }else{
+            level[x][y] = fruit;
+        }
+
     }
 
     public int totalDots(){

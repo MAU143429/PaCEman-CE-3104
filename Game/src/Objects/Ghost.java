@@ -11,6 +11,7 @@ public abstract class Ghost extends Characters
 {
     protected boolean panic, death;
     protected Random random;
+
     public Ghost (String path, int x, int y)
     {
         super(path,x,y);
