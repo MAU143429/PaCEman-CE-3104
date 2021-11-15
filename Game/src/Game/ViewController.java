@@ -109,6 +109,15 @@ public class ViewController extends JPanel implements ActionListener {
         return characters;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score -= score;
+    }
+
+
     public void setCharacters(ArrayList<Characters> characters) {
         this.characters = characters;
     }
@@ -224,7 +233,14 @@ public class ViewController extends JPanel implements ActionListener {
      */
     public void actionPerformed(ActionEvent e){
         if(!stop){
-            System.out.println(getCharacters().size());
+
+            if(getScore() >= 1000){
+                if (pacman.pacmanLives() < 3){
+                    setScore(1000);
+                    pacman.Lives();
+                }
+            }
+
             for(Characters character: characters){
                 verifyDirections(character);
                 verifyIntersection(character);
