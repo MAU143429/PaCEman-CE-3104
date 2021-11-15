@@ -24,7 +24,9 @@ public class ViewController extends JPanel implements ActionListener {
     private ArrayList <Intersection> intersections;
     private boolean life, stop, panic, success;
     private Maps maps;
-    private int score, panicTimer, houseTimer, dots;
+    private int score, panicTimer, dots;
+    private java.lang.Integer houseTimer = 0;
+    private java.lang.Integer apple_score, orange_score, melon_score,strawberry_score,cherry_score;
     private static ViewController instance = null;
 
     // Conexion Socket
@@ -36,11 +38,10 @@ public class ViewController extends JPanel implements ActionListener {
      */
     public ViewController(){
         // Connection
-        Client client = new Client("127.0.0.1", 8888);
-        this.client = client; // instantiate a client
-        connect(); // client connect
-        send("HOLA SOY UN NUEVO CLIENTE");
-
+        //Client client = new Client("127.0.0.1", 8888);
+        //this.client = client; // instantiate a client
+        //connect(); // client connect
+        //send("HOLA SOY UN NUEVO CLIENTE");
 
         Thread thread1 = new Thread(new Runnable() {
             @Override
@@ -49,6 +50,50 @@ public class ViewController extends JPanel implements ActionListener {
             }
         });
         thread1.start();
+    }
+
+    public Integer getApple_score() {
+        return apple_score;
+    }
+
+    public void setApple_score(Integer apple_score) {
+        this.apple_score = apple_score;
+    }
+
+    public Integer getOrange_score() {
+        return orange_score;
+    }
+
+    public void setOrange_score(Integer orange_score) {
+        this.orange_score = orange_score;
+    }
+
+    public Integer getMelon_score() {
+        return melon_score;
+    }
+
+    public void setMelon_score(Integer melon_score) {
+        this.melon_score = melon_score;
+    }
+
+    public Integer getStrawberry_score() {
+        return strawberry_score;
+    }
+
+    public void setStrawberry_score(Integer strawberry_score) {
+        this.strawberry_score = strawberry_score;
+    }
+
+    public Integer getCherry_score() {
+        return cherry_score;
+    }
+
+    public void setCherry_score(Integer cherry_score) {
+        this.cherry_score = cherry_score;
+    }
+
+    public void setDots(Integer dots) {
+        this.dots += dots;
     }
 
     /**
@@ -216,7 +261,6 @@ public class ViewController extends JPanel implements ActionListener {
      */
     public void eatDots(){
         //Sistema para comer las bolas de laberinto pequeñas
-        System.out.println("Sistema para comer las bolas de laberinto pequeñas");
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 1){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             score += 10;
@@ -230,6 +274,43 @@ public class ViewController extends JPanel implements ActionListener {
             panic();
             dots--;
         }
+        //Sistema para comer frutas
+
+        //Cereza
+        if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 4){
+            maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            score += getCherry_score();
+            dots--;
+        }
+
+        //Melon
+        if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 5){
+            maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            score += getMelon_score();
+            dots--;
+        }
+
+        //Manzana
+        if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 6){
+            maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            score += getApple_score();
+            dots--;
+        }
+
+        //Naranja
+        if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 7){
+            maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            score += getOrange_score();
+            dots--;
+        }
+
+        //Fresa
+        if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 8){
+            maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            score += getStrawberry_score();
+            dots--;
+        }
+
     }
 
     /**
@@ -289,18 +370,11 @@ public class ViewController extends JPanel implements ActionListener {
                 if(character instanceof Ghost){
                     Rectangle ghostRect = character.createRectangle();
                     Rectangle pacmanRect = pacman.createRectangle();
-                    System.out.println("rectangulo fantasma" + ghostRect.getLocation());
-                    System.out.println("rectangulo pacman" + pacmanRect.getLocation());
                     if(ghostRect.intersects(pacmanRect)){
                         int lives = pacman.pacmanLives();
-                        System.out.println("Vidas actualmente: " + lives);
-                        System.out.println("coordenadas de pacman: " + pacman.getBoxX()+ "," + pacman.getBoxY());
-                        System.out.println("coordenadas de fantasma: " + character.getBoxX()+ "," + character.getBoxY());
                         if(!panic){
                             pacman.pacmanDeath();
-                            System.out.println("Quitandole vida a pacman");
                             if(lives == 0) {
-                                System.out.println("Murio pacman");
                                 endGame();
                             }
                         }
@@ -423,6 +497,53 @@ public class ViewController extends JPanel implements ActionListener {
         timer.stop();
     }
 
+    public void addPill(java.lang.Integer row, java.lang.Integer col){
+        maps.addPill(row,col);
+    }
+
+    public void addFruit(Character fruit, Integer row, Integer col, Integer value){
+
+
+        //fresa
+        if(fruit == 'F'){
+            maps.addFruit(row,col,8);
+            setStrawberry_score(value);
+        }
+        //naranja
+        if(fruit == 'N'){
+            maps.addFruit(row,col,7);
+            setOrange_score(value);
+        }
+        //manzana
+        if(fruit == 'M'){
+            maps.addFruit(row,col,6);
+            setApple_score(value);
+        }
+        //melon
+        if(fruit == 'W'){
+            maps.addFruit(row,col,5);
+            setMelon_score(value);
+        }
+
+        //cereza
+        if(fruit == 'C'){
+            maps.addFruit(row,col,4);
+            setCherry_score(value);
+        }
+    }
+
+
+    public void addGhost(java.lang.Integer row, java.lang.Integer col){
+
+        if(maps.verifyBox(row,col)){
+            
+
+        }else{
+            System.out.println("NO SE PUEDE AGREGAR EL FANTASMA EN EL LUGAR SOLICITADO YA QUE ES UN MUERO, INTENTA CON OTRO");
+        }
+
+    }
+
     /**
      * getInstance
      * @return instance
@@ -504,7 +625,8 @@ public class ViewController extends JPanel implements ActionListener {
                 stop();
                 break;
             case 78:
-                nextGame();
+                Classify_Action.Action_recv("FM1000,3,5"); // EJEMPLO DE FRUTA
+                //nextGame();
                 break;
         }
     }

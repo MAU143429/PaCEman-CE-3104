@@ -12,7 +12,7 @@ public class Main {
         MainMenu.getInstance();
         //Classify_Action.Action_recv("FC1000,10,10"); // EJEMPLO DE FRUTA
         //Classify_Action.Action_recv("G,4,10"); // EJEMPLO DE FANTASMA
-        //Classify_Action.Action_recv("M,15,5"); // EJEMPLO DE PASTILLA
+        //Classify_Action.Action_recv("M,5,7"); // EJEMPLO DE PASTILLA
         //Classify_Action.Action_recv("V,1"); // EJEMPLO DE VELOCIDAD
 
     }

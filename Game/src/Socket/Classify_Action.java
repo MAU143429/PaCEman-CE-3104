@@ -1,5 +1,6 @@
 package Socket;
 import Game.Fruit;
+import Game.ViewController;
 
 public class Classify_Action {
 
@@ -20,10 +21,11 @@ public class Classify_Action {
             if (action == 'F'){
                 fruit = new_sms.charAt(1);
                 value = Integer.parseInt(new_sms.substring(2 , new_sms.indexOf(',')));
-                Fruit newFruit = new Fruit(fruit,ROW,COL,value);
+                ViewController.getInstance().addFruit(fruit,ROW,COL,value);
+
                 //Game.getInstance().getFruits().add(newFruit);
             }else if (action == 'M'){
-                //Game.getInstance().addPill(ROW,COL);
+                ViewController.getInstance().addPill(ROW,COL);
             }else if (action == 'G') {
                 //Game.getInstance().addGhost(ROW, COL);
             }
