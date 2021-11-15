@@ -196,12 +196,20 @@ public class ViewController extends JPanel implements ActionListener {
         //Pintamos el marcador con la puntuación
         g2d.setFont(new Font("Arial", Font.PLAIN, 54));
         g2d.setColor(Color.WHITE);
-        g2d.drawString("Marcador",1020,180);
-        g2d.drawString("Puntos: "+ score,1020,240);
+        g2d.drawString("Marcador",1000,180);
+        g2d.drawString("Puntos: "+ score,1000,240);
         if(panic){
             int time = panicTimer *(125)/1000;
-            g2d.drawString("Tiempo: "+ time,1020,300);
+            g2d.drawString("Tiempo: "+ time,1000,300);
         }
+
+        // Dibuja los corazones que representan la vida de pacman
+        for (int i = 0; i < pacman.pacmanLives(); i++) { // cuantas vidas tiene pacman
+            ImageIcon imageIcon = new ImageIcon(this.getClass().getResource("/Resources/heart.png"));
+            Image imageHeart = imageIcon.getImage();
+            g2d.drawImage(imageHeart,i*60+10,maps.sizeMapX()+770, this);
+        }
+
         //Opciones del método paint()
         Toolkit.getDefaultToolkit().sync();
         setDoubleBuffered(true);
@@ -245,7 +253,6 @@ public class ViewController extends JPanel implements ActionListener {
                 verifyDirections(character);
                 verifyIntersection(character);
                 if(character instanceof Ghost){
-                    System.out.println("HAY UN FANTASMA ENTRE NOSOTROS");
                     Ghost ghost = (Ghost) character;
                     ghost.artificialIntelligence(pacman.getX(),pacman.getY());
                 }
@@ -401,7 +408,7 @@ public class ViewController extends JPanel implements ActionListener {
                 }
 
             }
-            //Sistema de colision entre Comecocos y los fantasmas
+            //Sistema de colision entre pacman y los fantasmas
                 if(character instanceof Ghost){
                     Rectangle ghostRect = character.createRectangle();
                     Rectangle pacmanRect = pacman.createRectangle();
@@ -615,7 +622,7 @@ public class ViewController extends JPanel implements ActionListener {
                 setTotalGhost(1);
             }
 
-            
+
 
         }else{
             System.out.println("NO SE PUEDE AGREGAR EL FANTASMA EN EL LUGAR SOLICITADO YA QUE ES UN MUERO, INTENTA CON OTRO");
