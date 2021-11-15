@@ -84,7 +84,6 @@ public class MainMenu extends JFrame implements ActionListener {
 
         if (e.getSource() == play_btn) {
 
-            Client client = new Client("127.0.0.1", 8888);
             new Game();
             init_frame.setVisible(false);
 
@@ -98,7 +97,7 @@ public class MainMenu extends JFrame implements ActionListener {
     }
     /**
      * Metodo del singleton
-     * Crea el singleton en el main
+     * Crea el singleton en el MainMenu
      *
      * @author Mauricio C. Yendry B. Gabriel V.
      */

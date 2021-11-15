@@ -5,8 +5,12 @@ import Objects.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.text.View;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+
+import Socket.Classify_Action;
+import Socket.Client;
 
 /**
  * Write a description of class VistaControlador here.
@@ -21,18 +25,37 @@ public class ViewController extends JPanel implements ActionListener {
     private boolean life, stop, panic, success;
     private Maps maps;
     private int score, panicTimer, houseTimer, dots;
+    private static ViewController instance = null;
+
+    // Conexion Socket
+    private String message_received;
+    private Client client;
 
     /**
      * Constructor que crea un nuevo juego
      */
     public ViewController(){
-        newGame();
+        // Connection
+        Client client = new Client("127.0.0.1", 8888);
+        this.client = client; // instantiate a client
+        connect(); // client connect
+        send("HOLA SOY UN NUEVO CLIENTE");
+
+
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                newGame();
+            }
+        });
+        thread1.start();
     }
 
     /**
      * Método al que llama el constructor
      */
     public void newGame(){
+
         //Opciones del JPanel
         setFocusable(true);
         setDoubleBuffered(true);
@@ -385,7 +408,8 @@ public class ViewController extends JPanel implements ActionListener {
     public void nextGame()
     {
         if((success) || (!life)){
-            newGame();
+            //newGame(client);
+            System.out.println("SE DEBERIA INICIAR UN NUEVO JUEGO");
         }
     }
 
@@ -397,6 +421,66 @@ public class ViewController extends JPanel implements ActionListener {
         life = false;
         removeAll();
         timer.stop();
+    }
+
+    /**
+     * getInstance
+     * @return instance
+     * Método singleton del Game
+     * @author Mauricio C Yendry B Gabriel Vargas
+     *
+     */
+    public static ViewController getInstance(){
+        if(instance == null){
+            instance = new ViewController();
+        }
+        return instance;
+    }
+
+
+    //--------------Funciones para conexion socket---------------//
+    /**
+     * Conecta el cliente con el servidor
+     */
+    public void connect() {
+        if (client.connect()) {
+            System.out.println("Conexion exitosa!");
+            startReading();
+        } else {
+            System.out.println("No se pudo establecer conexion con el servidor.");
+        }
+    }
+
+    /**
+     * Inicia un nuevo hilo para recibir los mensajes del servidor
+     */
+    public void startReading() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    message_received = client.read();
+                    if (message_received != "-1") {
+                        System.out.println("Recibido: " + message_received);
+                        Classify_Action.Action_recv(message_received);
+                    } else {
+                        break;
+                    }
+                }
+                System.out.println("Cliente desconectado.");
+                client.disconnect();
+            }
+        });
+        thread.start();
+    }
+
+    /**
+     * Envia mensajes hacia el servidor
+     * @param msg
+     */
+    public void send(String msg) {
+        System.out.println("Enviando: " + msg);
+        client.send(msg);
     }
 
     public void keypress(KeyEvent e)
