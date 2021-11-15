@@ -29,6 +29,7 @@ public abstract class Characters
     {
         this.x = x;
         this.y = y;
+        System.out.println("SET DE X Y Y" + this.x + this.y);
         imageIcon = new ImageIcon(this.getClass().getResource(path));
         image = imageIcon.getImage();
     }
@@ -167,23 +168,6 @@ public abstract class Characters
         return y;
     }
 
-    /**
-     * Método para consultar la posicion del eje X donde se encuentra el personaje
-     * @return int
-     */
-    public int calcX(int x)
-    {
-        return x*60 ;
-    }
-
-    /**
-     * Método para consultar la posicion del eje Y donde se encuentra el personaje
-     * @return int
-     */
-    public int calcY(int y)
-    {
-        return y*60;
-    }
 
     /**
      * Crea un rectangulo en la posición que ocupa el personaje, usado para la lógica de detectar colisiones.

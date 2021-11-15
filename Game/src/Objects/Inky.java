@@ -11,9 +11,9 @@ public class Inky extends Ghost
     /**
      * Constructor for objects of class Ghost Inky
      */
-    public Inky()
+    public Inky(int x, int y)
     {
-        super("/Resources/inky.gif", 120, 60);
+        super("/Resources/inky.gif", x, y);
     }
 
     public void death(){

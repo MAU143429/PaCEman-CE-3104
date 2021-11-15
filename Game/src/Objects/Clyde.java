@@ -10,9 +10,9 @@ public class Clyde extends Ghost
     /**
      * Constructor for objects of class Clyde
      */
-    public Clyde()
+    public Clyde(int x, int y)
     {
-        super("/Resources/clyde.gif", 480, 180);
+        super("/Resources/clyde.gif", x, y);
     }
 
     public void finalPanic()
