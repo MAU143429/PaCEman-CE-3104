@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include "variables.h"
+#include "test.h"
 
 int select_player() {
     int player;
@@ -17,11 +18,6 @@ int select_player() {
     }
     return 0;
 }
-
-struct position {
-    int row;
-    int column;
-};
 
 struct position set_position() {
     struct position pos;
