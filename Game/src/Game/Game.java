@@ -1,5 +1,9 @@
 package Game;
 
+
+
+import Socket.Client;
+
 import javax.swing.JFrame;
 /**
  * Clase principal que genera el juego.
@@ -10,17 +14,23 @@ public class Game extends JFrame
 {
     private int high, breadth; //Variables para las dimensiones del JFrame
     private ViewController game;
+
     public Game()
     {
-        high = 1200;
+        high = 900;
         breadth = 1440;
         setSize(breadth, high);
         setResizable(true);
         setFocusable(false);
-        game = new ViewController();
+        game = ViewController.getInstance();
         add(game);
-        //add(new VistaControlador());//Añadimos la clase VistaControlador, que extiende JPanel, al JFrame.
+
+
         setVisible(true);//Hacemos visible el JFrame.
     }
+
+
+
+
 
 }

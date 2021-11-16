@@ -29,6 +29,7 @@ public abstract class Characters
     {
         this.x = x;
         this.y = y;
+        System.out.println("SET DE X Y Y" + this.x + this.y);
         imageIcon = new ImageIcon(this.getClass().getResource(path));
         image = imageIcon.getImage();
     }
@@ -49,6 +50,15 @@ public abstract class Characters
     public int getY()
     {
         return y;
+    }
+
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     /**
@@ -157,6 +167,7 @@ public abstract class Characters
         int y=this.y/60;
         return y;
     }
+
 
     /**
      * Crea un rectangulo en la posición que ocupa el personaje, usado para la lógica de detectar colisiones.
