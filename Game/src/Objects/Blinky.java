@@ -9,9 +9,9 @@ public class Blinky extends Ghost {
         /**
          * Constructor for objects of class Ghost Blinky
          */
-        public Blinky()
+        public Blinky(int x,int y)
         {
-            super("/Resources/blinky.gif", 240, 180);
+            super("/Resources/blinky.gif", x, y);
         }
 
         public void finalPanic()

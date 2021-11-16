@@ -27,7 +27,7 @@ public class Classify_Action {
             }else if (action == 'M'){
                 ViewController.getInstance().addPill(ROW,COL);
             }else if (action == 'G') {
-                //Game.getInstance().addGhost(ROW, COL);
+                ViewController.getInstance().addGhost(ROW,COL);
             }
         }else{
             System.out.println(new_sms);

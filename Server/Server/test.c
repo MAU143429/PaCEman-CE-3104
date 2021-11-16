@@ -121,9 +121,3 @@ void console() {
     console();
 }
 
-int main() {
-    console();
-
-    return 0;
-};
-

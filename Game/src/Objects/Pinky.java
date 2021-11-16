@@ -10,9 +10,9 @@ public class Pinky extends Ghost
     /**
      * Constructor for objects of class Ghost Pinky
      */
-    public Pinky()
+    public Pinky(int x, int y)
     {
-        super("/Resources/pinky.gif", 780, 60);
+        super("/Resources/pinky.gif", x, y);
     }
 
     public void death(){

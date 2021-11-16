@@ -17,7 +17,7 @@ public class Game extends JFrame
 
     public Game()
     {
-        high = 1200;
+        high = 900;
         breadth = 1440;
         setSize(breadth, high);
         setResizable(true);
