@@ -11,6 +11,9 @@ public class Classify_Action {
 
     public static void Action_recv(String new_sms){
         action = new_sms.charAt(0);
+        if (action == 'C'){
+            ViewController.getInstance().setClientType(new_sms.charAt(1));
+        }
         if (action == 'V'){
             speed = Integer.parseInt(new_sms.substring(new_sms.indexOf(',')+1));
             System.out.println(speed);
@@ -22,8 +25,6 @@ public class Classify_Action {
                 fruit = new_sms.charAt(1);
                 value = Integer.parseInt(new_sms.substring(2 , new_sms.indexOf(',')));
                 ViewController.getInstance().addFruit(fruit,ROW,COL,value);
-
-                //Game.getInstance().getFruits().add(newFruit);
             }else if (action == 'M'){
                 ViewController.getInstance().addPill(ROW,COL);
             }else if (action == 'G') {

@@ -18,6 +18,7 @@ import Socket.Client;
  */
 public class ViewController extends JPanel implements ActionListener {
     private Timer timer;
+    private int clientType;
     private Characters blinky, pinky, clyde ,inky;
     private Pacman pacman;
     private ArrayList <Characters> characters;
@@ -39,10 +40,10 @@ public class ViewController extends JPanel implements ActionListener {
      */
     public ViewController(){
         // Connection
-        //Client client = new Client("127.0.0.1", 8888);
-        //this.client = client; // instantiate a client
-        //connect(); // client connect
-        //send("HOLA SOY UN NUEVO CLIENTE");
+        Client client = new Client("127.0.0.1", 8888);
+        this.client = client; // instantiate a client
+        connect(); // client connect
+        // send("P/"); ENVIO INFO
 
         Thread thread1 = new Thread(new Runnable() {
             @Override
@@ -117,9 +118,16 @@ public class ViewController extends JPanel implements ActionListener {
         this.score -= score;
     }
 
-
     public void setCharacters(ArrayList<Characters> characters) {
         this.characters = characters;
+    }
+
+    public int getClientType() {
+        return clientType;
+    }
+
+    public void setClientType(int clientType) {
+        this.clientType = clientType;
     }
 
     /**
@@ -246,8 +254,11 @@ public class ViewController extends JPanel implements ActionListener {
                 if (pacman.pacmanLives() < 3){
                     setScore(1000);
                     pacman.Lives();
+                    //send("L" + getClientType() + "+/");  ENVIO DE INFO
                 }
             }
+
+            //send("U"+ getClientType() + "," + pacman.getBoxX()+","+pacman.getBoxY()); ENVIO DE INFO
 
             for(Characters character: characters){
                 verifyDirections(character);
@@ -293,12 +304,14 @@ public class ViewController extends JPanel implements ActionListener {
         //Sistema para comer las bolas de laberinto pequeñas
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 1){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("C" + getClientType() + "/"); ENVIO INFO
             score += 10;
             dots--;
         }
         //Sistema para comer las bolas de laberinto grandes
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 2){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("M" + getClientType() + "/"); ENVIO INFO
             score += 20;
             panicTimer = 40;
             panic();
@@ -309,6 +322,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Cereza
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 4){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "C" + getCherry_score() + "/"); ENVIO INFO
             score += getCherry_score();
             dots--;
         }
@@ -316,6 +330,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Melon
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 5){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "W" + getMelon_score() + "/"); ENVIO INFO
             score += getMelon_score();
             dots--;
         }
@@ -323,6 +338,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Manzana
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 6){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "M" + getApple_score() + "/"); ENVIO INFO
             score += getApple_score();
             dots--;
         }
@@ -330,6 +346,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Naranja
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 7){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "N" + getOrange_score() + "/"); ENVIO INFO
             score += getOrange_score();
             dots--;
         }
@@ -337,6 +354,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Fresa
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 8){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "F" + getStrawberry_score() + "/"); ENVIO INFO
             score += getStrawberry_score();
             dots--;
         }
@@ -416,12 +434,14 @@ public class ViewController extends JPanel implements ActionListener {
                         int lives = pacman.pacmanLives();
                         if(!panic){
                             pacman.pacmanDeath();
+                            //send("L" + getClientType() + "-/"); ENVIO DE INFO
                             if(lives == 0) {
                                 endGame();
                             }
                         }
                         if(panic){
                             score = score + 500;
+                            // send("G"+getClientType()+"/"); ENVIO INFO
                             Ghost ghost = (Ghost)character; //Cast al personaje para declararlo de la clase Fantasmas
                             deathGhost(ghost);
                         }
@@ -713,6 +733,7 @@ public class ViewController extends JPanel implements ActionListener {
             case 78:
                 Classify_Action.Action_recv("FM1000,3,7"); // EJEMPLO DE FRUTA
                 Classify_Action.Action_recv("G,3,7"); // EJEMPLO DE FANTASMA
+                Classify_Action.Action_recv("M,3,8"); // EJEMPLO DE PILDORA
                 //nextGame();
                 break;
         }
