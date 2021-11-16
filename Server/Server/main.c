@@ -1,4 +1,5 @@
 #include "server.h"
+#include "test.h"
 
 // Funcion que corre en un hilo aparte para ejecutar el servidor
 static DWORD WINAPI serverThread(void *threadParams)
@@ -6,9 +7,10 @@ static DWORD WINAPI serverThread(void *threadParams)
     start_server();
     return 0;
 }
-/**
+
 int main()
 {
+    console();
     message[0] = '\0'; // Inicializa el mensaje que se envia a todos los clientes
     char input[BUFLEN];
     DWORD threadDescriptor;
@@ -32,4 +34,3 @@ int main()
 
     return 0;
 }
- */
