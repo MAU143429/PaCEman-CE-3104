@@ -1,5 +1,7 @@
 package Objects;
 
+import Game.ViewController;
+
 import javax.swing.ImageIcon;
 import java.awt.*;
 /**
@@ -107,7 +109,7 @@ public abstract class Characters
      */
     public void up()
     {
-        dy=-20;
+        dy=-ViewController.getInstance().getGameSpeed();
         dx=0;
     }
 
@@ -116,7 +118,7 @@ public abstract class Characters
      */
     public void down()
     {
-        dy=20;
+        dy=ViewController.getInstance().getGameSpeed();
         dx=0;
     }
 
@@ -125,7 +127,7 @@ public abstract class Characters
      */
     public void right()
     {
-        dx=20;
+        dx=ViewController.getInstance().getGameSpeed();
         dy=0;
     }
 
@@ -134,7 +136,7 @@ public abstract class Characters
      */
     public void left()
     {
-        dx=-20;
+        dx=-ViewController.getInstance().getGameSpeed();
         dy=0;
     }
 

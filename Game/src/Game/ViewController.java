@@ -26,6 +26,7 @@ public class ViewController extends JPanel implements ActionListener {
     private boolean life, stop, panic, success;
     private Maps maps;
     private int score, panicTimer, dots;
+    private java.lang.Integer gameSpeed = 30;
     private java.lang.Integer houseTimer = 0;
     private java.lang.Integer totalGhost = 0;
     private java.lang.Integer apple_score, orange_score, melon_score,strawberry_score,cherry_score;
@@ -128,6 +129,14 @@ public class ViewController extends JPanel implements ActionListener {
 
     public void setClientType(int clientType) {
         this.clientType = clientType;
+    }
+
+    public Integer getGameSpeed() {
+        return gameSpeed;
+    }
+
+    public void setGameSpeed(Integer gameSpeed) {
+        this.gameSpeed = gameSpeed;
     }
 
     /**
@@ -582,6 +591,17 @@ public class ViewController extends JPanel implements ActionListener {
         maps.addPill(row,col);
     }
 
+    public void changeSpeed(java.lang.Integer newSpeed){
+
+        if(newSpeed == 1){
+            setGameSpeed(20);
+        }else if(newSpeed == 2){
+            setGameSpeed(30);
+        }else if(newSpeed == 3){
+            setGameSpeed(60);
+        }
+    }
+
     public void addFruit(Character fruit, Integer row, Integer col, Integer value){
 
 
@@ -735,6 +755,7 @@ public class ViewController extends JPanel implements ActionListener {
                 Classify_Action.Action_recv("FM1000,3,7"); // EJEMPLO DE FRUTA
                 Classify_Action.Action_recv("G,3,7"); // EJEMPLO DE FANTASMA
                 Classify_Action.Action_recv("M,3,8"); // EJEMPLO DE PILDORA
+                Classify_Action.Action_recv("V,3"); // EJEMPLO DE VELOCIDAD
                 //nextGame();
                 break;
         }

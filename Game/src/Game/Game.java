@@ -18,10 +18,12 @@ public class Game extends JFrame
     public Game()
     {
         high = 900;
-        breadth = 1440;
+        breadth = 915;
         setSize(breadth, high);
+        setTitle("PaCEman");
         setResizable(true);
         setFocusable(false);
+        setLocationRelativeTo(null);
         game = ViewController.getInstance();
         add(game);
 
