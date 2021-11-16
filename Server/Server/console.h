@@ -1,9 +1,10 @@
 //
-// Created by yendr on 15/11/2021.
+// Created by gvl19 on 14/11/2021.
 //
 
-#ifndef SERVER_TEST_H
-#define SERVER_TEST_H
+#ifndef SERVER_CONSOLE_H
+#define SERVER_CONSOLE_H
+
 int select_player();
 
 struct position {
@@ -21,8 +22,6 @@ int change_speed();
 
 int select_menu();
 
-void console();
+void init_console();
 
-
-
-#endif //SERVER_TEST_H
+#endif //SERVER_CONSOLE_H

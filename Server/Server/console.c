@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include "variables.h"
-#include "test.h"
+#include "console.h"
 
 int select_player() {
     int player;
@@ -115,9 +115,8 @@ int select_menu() {
     return select;
 }
 
-void console() {
+void init_console() {
     select_player();
     select_menu();
-    console();
+    init_console();
 }
-
