@@ -1,42 +1,50 @@
 package Objects;
 
+import Game.ViewController;
+
 import javax.swing.ImageIcon;
 import java.awt.*;
 /**
  * Abstract class Personajes - Clase con las variables y métodos comunes a los cuatro personajes
  * Clase abstracta Personajes, de ella heredan los personajes que actuan en el juego
- * Pacman y los tres fantasmas, Blinky, Pinky y Clyde.
+ * Pacman y los cuatro fantasmas, Blinky, Pinky, Inky y Clyde.
  * @author Mauricio C Yendry B Gabriel Vargas
  *
  */
 public abstract class Characters
 {
-    // Variables de instancia
     protected int x,y,dx,dy;    //Las variables de las coordenadas x e y. Desplazamiento x e y.
     private Image image;       //La variable imagen donde irá la imagen de la figura
     private ImageIcon imageIcon;
     protected boolean up, down, right, left, intersection; //Las variables que nos indican donde tenemos camino libre, sin muro.
+
     /**
-     * Constructor vacío
+     * Constructor de la clase
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public Characters () {};
 
     /**
-     * Constructor de los personajes, al que se le pasa la ruta de la imagen, y las coordenadas.
-     * @param
+     * Contructor de los caracteres
+     * Este metodo permite crear un nuevo caracter con la imagen y su posicion
+     * @param x el valor en x en pixeles de la ubicacion
+     * @param y el valor en y en pixeles de la ubicacion
+     * @param path ruta de la imagen
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public Characters (String path, int x, int y)
     {
         this.x = x;
         this.y = y;
-        System.out.println("SET DE X Y Y" + this.x + this.y);
         imageIcon = new ImageIcon(this.getClass().getResource(path));
         image = imageIcon.getImage();
     }
 
     /**
-     * Método que devuelve la posición X del personaje.
-     * @return Coordenada "x"
+     * Metodo getX
+     * Este metodo devuelve el valor en X del personaje
+     * @return el valor X del personaje
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public int getX()
     {
@@ -44,28 +52,41 @@ public abstract class Characters
     }
 
     /**
-     * Método que devuelve la posición Y del personaje.
-     * @return Coordenada "y"
+     * Metodo getY
+     * Este metodo devuelve el valor en Y del personaje
+     * @return el valor en Y del personaje
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public int getY()
     {
         return y;
     }
 
-
+    /**
+     * Metodo setX
+     * Este metodo permite cambiar el valor de x de un personaje
+     * @param x el valor en x del personaje en pixeles
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void setX(int x) {
         this.x = x;
     }
 
+    /**
+     * Metodo setY
+     * Este metodo permite cambiar el valor de y de un personaje
+     * @param y el valor en y del personaje en pixeles
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void setY(int y) {
         this.y = y;
     }
 
     /**
-     * Método que devuelve un objeto Image, con la imagen del personaje.
-     * Este método se ejecuta por el método paint redefinido en la clase VistaControlador.
-     * Se pinta en el frame la imagen del personaje.
-     * @return imagen del personaje
+     * Metodo getImage
+     * Este metodo devuelve un objeto imagen con la imagen del objeto
+     * @return objeto imagen
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public Image getImage()
     {
@@ -73,8 +94,9 @@ public abstract class Characters
     }
 
     /**
-     * Método move, para mover los personajes por el JFrame
-     *
+     * Metodo move
+     * Este metodo permite mover a los personajes por el JFrame
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void move()
     {
@@ -84,7 +106,9 @@ public abstract class Characters
     }
 
     /**
-     * Método para parar los personajes cuando hay una colisión.
+     * Metodo stop
+     * Este metodo permite detener a los personajes en caso de que se crucen
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void stop()
     {
@@ -93,7 +117,9 @@ public abstract class Characters
     }
 
     /**
-     * Método que cambia de dirección al personaje.
+     * Metodo back
+     * Este metodo permite cambiar la dirrecion del persona hacia atras
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void back()
     {
@@ -103,44 +129,53 @@ public abstract class Characters
     }
 
     /**
-     * Método para mover al personaje hacia arriba, indicando la velocidad en el eje Y.
+     * Metodo up
+     * Este metodo permite mover al caracter hacia arriba
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void up()
     {
-        dy=-30;
+        dy=-ViewController.getInstance().getGameSpeed();
         dx=0;
     }
 
     /**
-     * Método para mover al personaje hacia abajo, indicando la velocidad en el eje Y.
+     * Metodo down
+     * Este metodo permite mover al caracter hacia abajo
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void down()
     {
-        dy=30;
+        dy=ViewController.getInstance().getGameSpeed();
         dx=0;
     }
 
     /**
-     * Método para mover al personaje hacia la derecha, indicando la velocidad en el eje X.
+     * Metodo right
+     * Este metodo permite mover al caracter hacia la derecha
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void right()
     {
-        dx=30;
+        dx=ViewController.getInstance().getGameSpeed();
         dy=0;
     }
 
     /**
-     * Método para mover al personaje hacia la izquierda, indicando la velocidad en el eje X.
+     * Metodo left
+     * Este metodo permite mover al caracter hacia la izquierda
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void left()
     {
-        dx=-30;
+        dx=-ViewController.getInstance().getGameSpeed();
         dy=0;
     }
 
     /**
-     * Método para actualizar la imagen del personaje cuando hay algún evento.
-     * Este método recibe un String con la dirección de la nueva imagen.
+     * Metodo updateImage
+     * Este metodo permite actualizar la imagen del jugador durante o despues de un evento.
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void updateImage(String path)
     {
@@ -149,8 +184,10 @@ public abstract class Characters
     }
 
     /**
-     * Método para consultar la casilla del eje X donde se encuentra el personaje
-     * @return int
+     * Metodo getBoxX
+     * Este metodo permite obtener el valor de la x de la matriz de un personaje
+     * @return el valor x de la posicion de la matriz
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public int getBoxX()
     {
@@ -159,8 +196,10 @@ public abstract class Characters
     }
 
     /**
-     * Método para consultar la casilla del eje Y donde se encuentra el personaje
-     * @return int
+     * Metodo getBoxY
+     * Este metodo permite obtener el valor de la y de la matriz de un personaje
+     * @return el valor y de la posicion de la matriz
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public int getBoxY()
     {
@@ -170,18 +209,37 @@ public abstract class Characters
 
 
     /**
-     * Crea un rectangulo en la posición que ocupa el personaje, usado para la lógica de detectar colisiones.
-     * El método devuevle un objeto rectángulo.
+     * Metodo createRectangle
+     * Este metodo permite crear un rectangulo en la posicion del personaje
+     * esto sirve para detectar las colisiones
+     * @return el rectangulo creado
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public Rectangle createRectangle()
     {
         return new Rectangle(this.x,this.y,60,60);
     }
 
+    /**
+     * Metodo intersection
+     * Este metodo cambia el estado de interseccion a verdadero, esto para
+     * saber que el personaje se encuentra en una interseccion
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void intersection(){
         intersection = true;
     }
 
+    /**
+     * Metodo availableDirections
+     * Este metodo permite hacer update de los booleanos que nos determinan la disponibilidad de
+     * movimiento en un sentido en concreto
+     * @param new_up boolean de disponibilidad hacia arriba
+     * @param new_down boolean de disponibilidad hacia abajo
+     * @param new_left boolean de disponibilidad hacia la izquierda
+     * @param new_right boolean de disponibilidad hacia la derecha
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void availableDirections(boolean new_up, boolean new_down, boolean new_right, boolean new_left)
     {
         this.up = new_up;
@@ -189,4 +247,5 @@ public abstract class Characters
         this.right = new_right;
         this.left = new_left;
     }
+
 }
