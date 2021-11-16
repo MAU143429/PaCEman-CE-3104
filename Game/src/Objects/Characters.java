@@ -107,7 +107,7 @@ public abstract class Characters
      */
     public void up()
     {
-        dy=-30;
+        dy=-20;
         dx=0;
     }
 
@@ -116,7 +116,7 @@ public abstract class Characters
      */
     public void down()
     {
-        dy=30;
+        dy=20;
         dx=0;
     }
 
@@ -125,7 +125,7 @@ public abstract class Characters
      */
     public void right()
     {
-        dx=30;
+        dx=20;
         dy=0;
     }
 
@@ -134,7 +134,7 @@ public abstract class Characters
      */
     public void left()
     {
-        dx=-30;
+        dx=-20;
         dy=0;
     }
 

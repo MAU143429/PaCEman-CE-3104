@@ -239,6 +239,7 @@ int start_server()
                     recvbuf[res] = '\0';
                     printf("Recibido (%d): %s\n", res, recvbuf);
 
+
                     // Revisa si el mensaje es para cerrar el servidor
                     if (!memcmp(recvbuf, "/quit", 5 * sizeof(char)))
                     {

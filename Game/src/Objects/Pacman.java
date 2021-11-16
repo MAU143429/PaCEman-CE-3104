@@ -98,6 +98,11 @@ public class Pacman extends Characters
         y=660;
     }
 
+    public void Lives()
+    {
+        lives++;
+    }
+
     public int pacmanLives()
     {
         return lives;
