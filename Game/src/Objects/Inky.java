@@ -2,20 +2,28 @@ package Objects;
 
 
 /**
- * Write a description of class Ghost Inky here.
- *
- * @author Mauricio C Yendry B Gabriel Vargas
+ * Inky class
+ * Esta clase hereda de Ghost y crea las caracteristicas del fantasma Inky
+ * @author Mauricio C.Yendry B. Gabriel V.
  */
 public class Inky extends Ghost
 {
     /**
-     * Constructor for objects of class Ghost Inky
+     * Constructor de Inky
+     * @param x el valor en x en pixeles de la ubicacion de Inky
+     * @param y el valor en y en pixeles de la ubicacion de Inky
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public Inky(int x, int y)
     {
         super("/Resources/inky.gif", x, y);
     }
 
+    /**
+     * Metodo death
+     * Este metodo mata al fantasma
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void death(){
         super.death();
         x = 420;
@@ -23,12 +31,27 @@ public class Inky extends Ghost
         dx=dy=0;
     }
 
+
+    /**
+     * Metodo finalPanic
+     * Este metodo permite terminar el estado de panico y refresca la imagen de Inky
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void finalPanic()
     {
         super.finalPanic();
         updateImage("/Resources/inky.gif");
     }
 
+
+
+    /**
+     * Metodo artificialintelligence
+     * Este metodo se sobreescribe para darle a Inky las caracterisiticas de su movimiento.
+     * @param pacmanX el valor en x de pacman
+     * @param pacmanY el valor en y de pacman
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void artificialIntelligence(int pacmanX, int pacmanY){
         super.artificialIntelligence(pacmanX, pacmanY);
         int movement = random.nextInt(3);

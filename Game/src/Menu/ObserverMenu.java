@@ -4,9 +4,17 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
+/**
+ * Observer Menu class
+ *Esta clase es la que ejecuta la ventana de los observadores
+ *@author Mauricio C.Yendry B. Gabriel V.
+ */
 public class ObserverMenu extends JFrame implements ActionListener {
 
+    /**
+     * Botones y etiquetas utilizados en la interfaz
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public JFrame mFrame;
     public JPanel mPanel;
     private JLabel O_Background;
@@ -14,18 +22,16 @@ public class ObserverMenu extends JFrame implements ActionListener {
 
 
     /**
-     * Sinleton para MainMenu
+     * Variable para el singleton de ObserverMenu
+     *@author Mauricio C.Yendry B. Gabriel V.
      */
-
     private static ObserverMenu instance = null;
 
     /**
-     * MainMenu
+     * Observer Menu
      * Este constructor crea un frame, un panel y aloja objetos en ellos
-     *
      * @authors Mauricio C. Yendry B. Gabriel V.
      */
-
     public ObserverMenu() {
 
 
@@ -86,7 +92,7 @@ public class ObserverMenu extends JFrame implements ActionListener {
     /**
      * getInstance
      * @return instance
-     * Método singleton del Jmain
+     * Método singleton del Observer Menu
      * @author Mauricio C.Yendry B. Gabriel V.
      *
      */
@@ -96,6 +102,7 @@ public class ObserverMenu extends JFrame implements ActionListener {
         }
         return instance;
     }
+    
     /**
      * actionPerformed
      *Este metodo abstracto del actionlistener permite darle las funcionalidades a los botones

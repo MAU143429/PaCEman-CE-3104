@@ -1,25 +1,38 @@
 package Objects;
 
 /**
- * Write a description of class Ghost Blinky here.
- * @author Mauricio C Yendry B Gabriel Vargas
- *
+ * Blinky class
+ * Esta clase hereda de Ghost y crea las caracteristicas del fantasma Blinky
+ * @author Mauricio C.Yendry B. Gabriel V.
  */
 public class Blinky extends Ghost {
         /**
-         * Constructor for objects of class Ghost Blinky
+         * Constructor de Blinky
+         * @param x el valor en x en pixeles de la ubicacion de blinky
+         * @param y el valor en y en pixeles de la ubicacion de blinky
+         * @author Mauricio C.Yendry B. Gabriel V.
          */
         public Blinky(int x,int y)
         {
             super("/Resources/blinky.gif", x, y);
         }
 
+        /**
+         * Metodo finalPanic
+         * Este metodo permite terminar el estado de panico y refresca la imagen de blinky
+         * @author Mauricio C.Yendry B. Gabriel V.
+         */
         public void finalPanic()
         {
             super.finalPanic();
             updateImage("/Resources/blinky.gif");
         }
 
+        /**
+         * Metodo death
+         * Este metodo mata al fantasma
+         * @author Mauricio C.Yendry B. Gabriel V.
+         */
         public void death(){
             super.death();
             x = 300;
@@ -27,6 +40,13 @@ public class Blinky extends Ghost {
             dx=dy=0;
         }
 
+        /**
+         * Metodo artificialintelligence
+         * Este metodo se sobreescribe para darle a Blinky las caracterisiticas de su movimiento.
+         * @param pacmanX el valor en x de pacman
+         * @param pacmanY el valor en y de pacman
+         * @author Mauricio C.Yendry B. Gabriel V.
+         */
         public void artificialIntelligence(int pacmanX, int pacmanY){
             super.artificialIntelligence(pacmanX, pacmanY);
             int movement = random.nextInt(3);

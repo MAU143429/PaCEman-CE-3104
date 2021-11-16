@@ -7,31 +7,40 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
-
 /**
- * Main
+ * Main Menu class
  *Esta clase es la que ejecuta la ventana principal
  *@author Mauricio C.Yendry B. Gabriel V.
  */
-
 public class MainMenu extends JFrame implements ActionListener {
 
+    /**
+     * Botones y etiquetas utilizados en la interfaz
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     private JButton play_btn, observer_btn;
     private JFrame init_frame;
     private JPanel init_panel;
     private JLabel Background;
 
+
+    /**
+     * Instancia empleada en el Singleton del MainMenu
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
+
     private static MainMenu instance = null;
 
     /**
-     * Main
+     * Metodo MainMenu
      * Este constructor crea un frame, un panel y aloja objetos en ellos
-     *
      * @author Mauricio C.Yendry B. Gabriel V.
      */
 
     public MainMenu() {
+
+        ////////////////////////////Creación del Frame y el Panel///////////////////////
+
         init_frame = new JFrame("PaCEman");
         init_frame.setBounds(0, 0, 920, 900);
         init_frame.setTitle("PaCEman");
@@ -42,6 +51,8 @@ public class MainMenu extends JFrame implements ActionListener {
         init_panel.setLayout(null);
         init_panel.setSize(920, 900);
         init_frame.add(init_panel);
+
+        ///////////////////////////Creación de los botones///////////////////////////////
 
         play_btn = new JButton();
         observer_btn = new JButton();
@@ -58,6 +69,8 @@ public class MainMenu extends JFrame implements ActionListener {
         observer_btn.addActionListener(this);
         init_panel.add(observer_btn);
 
+        ///////////////////////////Creación del Background///////////////////////////////
+
         Background = new JLabel();
         Background.setBounds(0, 0, 1280, 900);
         ImageIcon bgurl = new ImageIcon(getClass().getResource("/Resources/init.png"));
@@ -72,7 +85,7 @@ public class MainMenu extends JFrame implements ActionListener {
     /**
      * actionPerformed
      * Este metodo abstracto del actionlistener permite darle las funcionalidades a los botones
-     *
+     * @param e el evento ocurrido
      * @author Mauricio C. Yendry B. Gabriel V.
      */
     @Override
@@ -82,8 +95,6 @@ public class MainMenu extends JFrame implements ActionListener {
 
             new Game();
             init_frame.setVisible(false);
-
-
 
         }
         if (e.getSource() == observer_btn) {
@@ -96,7 +107,7 @@ public class MainMenu extends JFrame implements ActionListener {
     /**
      * Metodo del singleton
      * Crea el singleton en el MainMenu
-     *
+     * @return la instancia del MainMenu
      * @author Mauricio C. Yendry B. Gabriel V.
      */
     public static MainMenu getInstance() {
