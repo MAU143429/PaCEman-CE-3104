@@ -1,23 +1,22 @@
 package Game;
-
 import Objects.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.text.View;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-
 import Socket.Classify_Action;
 import Socket.Client;
 
 /**
- * Write a description of class VistaControlador here.
- * @author Mauricio C Yendry B Gabriel Vargas
+ * ViewController Class
+ * Esta clase es la principal, en ella se corre el juego y hereda de JPanel
+ * y se implementa el ActionListener para detectar los movimiento del teclado.
+ * @author Mauricio C.Yendry B. Gabriel V.
  */
 public class ViewController extends JPanel implements ActionListener {
     private Timer timer;
+    private int clientType;
     private Characters blinky, pinky, clyde ,inky;
     private Pacman pacman;
     private ArrayList <Characters> characters;
@@ -25,6 +24,7 @@ public class ViewController extends JPanel implements ActionListener {
     private boolean life, stop, panic, success;
     private Maps maps;
     private int score, panicTimer, dots;
+    private java.lang.Integer gameSpeed = 30;
     private java.lang.Integer houseTimer = 0;
     private java.lang.Integer totalGhost = 0;
     private java.lang.Integer apple_score, orange_score, melon_score,strawberry_score,cherry_score;
@@ -35,14 +35,16 @@ public class ViewController extends JPanel implements ActionListener {
     private Client client;
 
     /**
-     * Constructor que crea un nuevo juego
+     * Contructor de la clase
+     * En el se crea el cliente para la conexion y se crea un hilo para la ejecucion del juego
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public ViewController(){
         // Connection
-        //Client client = new Client("127.0.0.1", 8888);
-        //this.client = client; // instantiate a client
-        //connect(); // client connect
-        //send("HOLA SOY UN NUEVO CLIENTE");
+        Client client = new Client("127.0.0.1", 8888);
+        this.client = client; // instantiate a client
+        connect(); // client connect
+        // send("P/"); ENVIO INFO
 
         Thread thread1 = new Thread(new Runnable() {
             @Override
@@ -52,6 +54,8 @@ public class ViewController extends JPanel implements ActionListener {
         });
         thread1.start();
     }
+
+    //////////////////////////////////////////////////// Getter and Setter Section ////////////////////////////////////////////////////////////
 
     public Integer getApple_score() {
         return apple_score;
@@ -109,13 +113,37 @@ public class ViewController extends JPanel implements ActionListener {
         return characters;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score -= score;
+    }
+
     public void setCharacters(ArrayList<Characters> characters) {
         this.characters = characters;
     }
 
+    public int getClientType() {
+        return clientType;
+    }
+
+    public void setClientType(int clientType) {
+        this.clientType = clientType;
+    }
+
+    public Integer getGameSpeed() {return gameSpeed;}
+
+    public void setGameSpeed(Integer gameSpeed) {this.gameSpeed = gameSpeed;}
+
+
     /**
-     * Método al que llama el constructor
+     * Metodo newGame
+     * Este metodo es llamado por le contructor ya que en el se inicializan los valores de juego
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
+
     public void newGame(){
 
         //Opciones del JPanel
@@ -147,9 +175,9 @@ public class ViewController extends JPanel implements ActionListener {
     }
 
     /**
-     * Redefinimos el método paint(g)
-     * Primero llamamos al método paint de la superclase.
-     * Pintamos el laberinto, los personajes y dos imagenes en caso de pausa o muerte.
+     * Metodo paint
+     * Este metodo es una sobreescritura de paint de Java
+     * Y nos permite dibujar en el Jpanel
      * @param g tipo Graphics.
      * @Override Redefine el método paint
      */
@@ -162,17 +190,14 @@ public class ViewController extends JPanel implements ActionListener {
                 g2d.drawImage(maps.getImage(x,y), x*60, y*60, this);
             }
         }
-
         for(Characters character: characters) {
             g2d.drawImage(character.getImage(), character.getX(), character.getY(), this);
         }
-
         if(stop){
             ImageIcon imageIcon = new ImageIcon(this.getClass().getResource("/Resources/pause.png"));
             Image imageStop = imageIcon.getImage();
             g2d.drawImage(imageStop,0,0, this);
         }
-
         if(!life){
             ImageIcon imageIcon = new ImageIcon(this.getClass().getResource("/Resources/game_over.png"));
             Image imageDeath = imageIcon.getImage();
@@ -184,10 +209,9 @@ public class ViewController extends JPanel implements ActionListener {
             Image imageSuccess = imageIcon.getImage();
             g2d.drawImage(imageSuccess,0,0, this);
         }
-        // Dibuja el puntaje del jugador
+
         g2d.setFont(new Font("SansSerif", Font.BOLD, 35));
         g2d.setColor(Color.green);
-        //g2d.drawString("Marcador",1000,180);
         g2d.drawString("Score: "+ score,300,820);
         if(panic){
             // Dibuja el contador del momento en que pacman puede comer fantasmas
@@ -210,8 +234,10 @@ public class ViewController extends JPanel implements ActionListener {
     }
 
     /**
-     * Metodo que comprueba los cruces y codos de un laberinto y los guarda en un array
-     *
+     * Metodo createIntersections
+     * Este metodo recorre la totalidad del mapa en busca de intersecciones las cuales son agregadas
+     * a la lista de intersecciones.
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void createIntersections(){
         for(int x = 0; x< maps.sizeMapX(); x++){
@@ -227,12 +253,24 @@ public class ViewController extends JPanel implements ActionListener {
     }
 
     /**
+     * Metodo actionPerformed
      * Contiene la lógica del juego.
      * Llama a los métodos que mueve a los personajes, comprueban las colisiones.
      * @param e tipo ActionEvent.
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void actionPerformed(ActionEvent e){
         if(!stop){
+            if(getScore() >= 1000){
+                if (pacman.pacmanLives() < 3){
+                    setScore(1000);
+                    pacman.Lives();
+                    //send("L" + getClientType() + "+/");  ENVIO DE INFO
+                }
+            }
+
+            //send("U"+ getClientType() + "," + pacman.getBoxX()+","+pacman.getBoxY()); ENVIO DE INFO
+
             for(Characters character: characters){
                 verifyDirections(character);
                 verifyIntersection(character);
@@ -269,20 +307,25 @@ public class ViewController extends JPanel implements ActionListener {
         }
     }
 
+
     /**
-     * Comecocos come las píldoras del juego
-     *
+     * Metodo eatDots
+     * Este metodo permite registrar cuando Pacman se come un objeto
+     * registra pac-dots pildoras y frutas
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void eatDots(){
         //Sistema para comer las bolas de laberinto pequeñas
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 1){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("C" + getClientType() + "/"); ENVIO INFO
             score += 10;
             dots--;
         }
         //Sistema para comer las bolas de laberinto grandes
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 2){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("M" + getClientType() + "/"); ENVIO INFO
             score += 20;
             panicTimer = 40;
             panic();
@@ -293,6 +336,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Cereza
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 4){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "C" + getCherry_score() + "/"); ENVIO INFO
             score += getCherry_score();
             dots--;
         }
@@ -300,6 +344,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Melon
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 5){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "W" + getMelon_score() + "/"); ENVIO INFO
             score += getMelon_score();
             dots--;
         }
@@ -307,6 +352,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Manzana
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 6){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "M" + getApple_score() + "/"); ENVIO INFO
             score += getApple_score();
             dots--;
         }
@@ -314,6 +360,7 @@ public class ViewController extends JPanel implements ActionListener {
         //Naranja
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 7){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "N" + getOrange_score() + "/"); ENVIO INFO
             score += getOrange_score();
             dots--;
         }
@@ -321,15 +368,19 @@ public class ViewController extends JPanel implements ActionListener {
         //Fresa
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 8){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
+            // send("F" + getClientType() + "F" + getStrawberry_score() + "/"); ENVIO INFO
             score += getStrawberry_score();
             dots--;
         }
 
     }
 
+
     /**
-     * Metodo que comprueba las diferentes colisiones de los personajes
-     *
+     * Metodo verifyCollider
+     * Este metodo permite verificar las colisiones entre pacman y un fantasma
+     * al igual que las colisiones entre fantasmas
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void verifyCollider()
     {
@@ -400,12 +451,14 @@ public class ViewController extends JPanel implements ActionListener {
                         int lives = pacman.pacmanLives();
                         if(!panic){
                             pacman.pacmanDeath();
+                            //send("L" + getClientType() + "-/"); ENVIO DE INFO
                             if(lives == 0) {
                                 endGame();
                             }
                         }
                         if(panic){
                             score = score + 500;
+                            // send("G"+getClientType()+"/"); ENVIO INFO
                             Ghost ghost = (Ghost)character; //Cast al personaje para declararlo de la clase Fantasmas
                             deathGhost(ghost);
                         }
@@ -414,9 +467,12 @@ public class ViewController extends JPanel implements ActionListener {
         }
     }
 
+
     /**
-     * Metodo que comprueba si un fantasma se encuentra en un cruce
-     * @param character tipo Personajes.
+     * Metodo verifyIntersection
+     * Este metodo permite verificar las intersecciones que tiene un character
+     * @param character a quien verificaran la interseccion
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void verifyIntersection(Characters character)
     {
@@ -430,9 +486,12 @@ public class ViewController extends JPanel implements ActionListener {
 
     }
 
+
     /**
-     * Metodo que comprueba las direcciones libres de los personajes
-     * @param character tipo Personajes.
+     * Metodo verifyDirections
+     * Este metodo comprueba las direcciones libres de un personaje
+     * @param character el personaje
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void verifyDirections(Characters character)
     {
@@ -441,8 +500,11 @@ public class ViewController extends JPanel implements ActionListener {
         character.availableDirections(maps.up(x,y), maps.down(x,y), maps.right(x,y), maps.left(x,y));
     }
 
+
     /**
-     * Metodo que inicia modo pánico
+     * Metodo panic
+     * Este metodo inicia el modo panico cuando pacman se comio una pildora
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void panic()
     {
@@ -455,8 +517,11 @@ public class ViewController extends JPanel implements ActionListener {
         }
     }
 
+
     /**
-     * Metodo que finaliza modo pánico
+     * Metodo endPanic
+     * Este metodo finaliza el modo panic
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void endPanic()
     {
@@ -469,9 +534,12 @@ public class ViewController extends JPanel implements ActionListener {
         }
     }
 
+
     /**
-     * Metodo que gestiona la muerte de los fantasmas
-     * @param ghost tipo Fantasmas
+     * Metodo deathGhost
+     * Este metodo elimina al Ghost cuando este muere
+     * @param ghost el fantasma que muere
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void deathGhost(Ghost ghost)
     {
@@ -479,8 +547,11 @@ public class ViewController extends JPanel implements ActionListener {
         houseTimer=20;
     }
 
+
     /**
-     * Metodo que gestiona la salida de los fantasmas de casa
+     * Metodo leaveHouse
+     * Este metodo gestiona la salida de los fantasma de la casa
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void leaveHouse(){
         for(Characters character: characters){
@@ -493,28 +564,36 @@ public class ViewController extends JPanel implements ActionListener {
         }
     }
 
+
     /**
-     * Metodo que gestiona la pausa del juego
-     * @return tipo booleano pausa
+     * Metodo pause
+     * Este metodo permite gestionar cuando el juego se encuentra en pausa
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public boolean stop(){
         stop = !stop;
         return stop;
     }
 
+
     /**
-     * Metodo que crea un nuevo juego
+     * Metodo nextGame
+     * Este metodo permite crear la siguiente partida
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void nextGame()
     {
         if((success) || (!life)){
-            //newGame(client);
+            //newGame();
             System.out.println("SE DEBERIA INICIAR UN NUEVO JUEGO");
         }
     }
 
+
     /**
-     * Metodo que gestiona el fin de partida
+     * Metodo endGame
+     * Este metodo gestiona el fin de la partida
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void endGame()
     {
@@ -523,9 +602,14 @@ public class ViewController extends JPanel implements ActionListener {
         timer.stop();
     }
 
+
     /**
-     * Método para consultar la posicion del eje X donde se encuentra el personaje
-     * @return int
+     * Metodo calcX
+     * Este metodo permite calcular la posicion en pixeles de una casilla a partir de
+     * su valor X
+     * @param x el valor en x de la matriz
+     * @return el valor en pixeles de la ubicacion de la casilla
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public int calcX(int x)
     {
@@ -533,18 +617,61 @@ public class ViewController extends JPanel implements ActionListener {
     }
 
     /**
-     * Método para consultar la posicion del eje Y donde se encuentra el personaje
-     * @return int
+     * Metodo calcY
+     * Este metodo permite calcular la posicion en pixeles de una casilla a partir de
+     * su valor Y
+     * @param y el valor en y de la matriz
+     * @return el valor en pixeles de la ubicacion de la casilla
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public int calcY(int y)
     {
         return y*60;
     }
 
+
+    /**
+     * Metodo addPill
+     * Este metodo permite agregar una pildora al juego en una fila y columan determinada
+     * @param row el valor de la fila
+     * @param col el valor de la columna
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
+
     public void addPill(java.lang.Integer row, java.lang.Integer col){
         maps.addPill(row,col);
     }
 
+
+    /**
+     * Metodo changeSpeed
+     * Este metodo permite cambiar la velocidad del juego
+     * 1 - Lento
+     * 2 - Medio
+     * 3 - Rapido
+     * @param newSpeed el nuevo valor de la velocidad
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
+    public void changeSpeed(java.lang.Integer newSpeed){
+
+        if(newSpeed == 1){
+            setGameSpeed(20);
+        }else if(newSpeed == 2){
+            setGameSpeed(30);
+        }else if(newSpeed == 3){
+            setGameSpeed(60);
+        }
+    }
+    /**
+     * Metodo addFruit
+     * Este metodo permite agregar una fruta al juego con un valor definido y
+     * en lugar determinado
+     * @param row el valor de la fila
+     * @param col el valor de la columna
+     * @param value el valor de la fruta
+     * @param fruit el tipo de friuta
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void addFruit(Character fruit, Integer row, Integer col, Integer value){
 
 
@@ -576,7 +703,13 @@ public class ViewController extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+     * Metodo getValue
+     * Este metodo permite agregar a un fantasma en una posicion determinada
+     * @param row el valor de la fila
+     * @param col el valor de la columna
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void addGhost(java.lang.Integer row, java.lang.Integer col){
 
         if(maps.verifyBox(row,col)){
@@ -606,7 +739,7 @@ public class ViewController extends JPanel implements ActionListener {
                 setTotalGhost(1);
             }
 
-            
+
 
         }else{
             System.out.println("NO SE PUEDE AGREGAR EL FANTASMA EN EL LUGAR SOLICITADO YA QUE ES UN MUERO, INTENTA CON OTRO");
@@ -617,7 +750,7 @@ public class ViewController extends JPanel implements ActionListener {
     /**
      * getInstance
      * @return instance
-     * Método singleton del Game
+     * Método singleton del ViewController
      * @author Mauricio C Yendry B Gabriel Vargas
      *
      */
@@ -631,7 +764,9 @@ public class ViewController extends JPanel implements ActionListener {
 
     //--------------Funciones para conexion socket---------------//
     /**
-     * Conecta el cliente con el servidor
+     * Metodo connect
+     * Este metodo permite conectar al cliente con el servidor
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void connect() {
         if (client.connect()) {
@@ -643,7 +778,9 @@ public class ViewController extends JPanel implements ActionListener {
     }
 
     /**
-     * Inicia un nuevo hilo para recibir los mensajes del servidor
+     * Metodo startReading
+     * Este metodo permite obtener el mensaje recibido por el Socket
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void startReading() {
         Thread thread = new Thread(new Runnable() {
@@ -666,14 +803,21 @@ public class ViewController extends JPanel implements ActionListener {
     }
 
     /**
-     * Envia mensajes hacia el servidor
-     * @param msg
+     * Metodo send
+     * Este metodo permite enviar mensajes hacia el servidor
+     * @author Mauricio C.Yendry B. Gabriel V.
      */
     public void send(String msg) {
         System.out.println("Enviando: " + msg);
         client.send(msg);
     }
 
+    /**
+     * Metodo keypress
+     * Este metodo permite detectar los eventos en teclado y ejecuta algun evento
+     * dependiendo de la tecla presionada
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     public void keypress(KeyEvent e)
     {
         int code = e.getKeyCode();
@@ -697,11 +841,18 @@ public class ViewController extends JPanel implements ActionListener {
             case 78:
                 Classify_Action.Action_recv("FM1000,3,7"); // EJEMPLO DE FRUTA
                 Classify_Action.Action_recv("G,3,7"); // EJEMPLO DE FANTASMA
+                Classify_Action.Action_recv("M,3,8"); // EJEMPLO DE PILDORA
+                Classify_Action.Action_recv("V,3"); // EJEMPLO DE VELOCIDAD
                 //nextGame();
                 break;
         }
     }
 
+    /**
+     * TAdapter class
+     * Esta clase hereda de KeyAdapter y permite llamar al Kerypressed
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
     private class TAdapter extends KeyAdapter
     {
         public void keyPressed(KeyEvent e)
