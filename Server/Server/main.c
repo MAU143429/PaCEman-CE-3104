@@ -1,17 +1,127 @@
-#include "server.h"
 #include "console.h"
+#include "server.h"
 
-DWORD WINAPI consoleThread(void* data) {
-    while(running){
-        int admin;
-        printf("ESTOY EN BUCLE");
-        printf(scanf_s("%d", &admin));
-        if(admin == 1){
-            init_console();
-        }
+int select_player() {
+    int player;
+    printf("Seleccione jugador:\n");
+    scanf_s("%d", &player);
+    if ((int) player < 1 | (int) player > 2) {
+        printf("Solo puede escoger entre los numeros 1 column 2\n");
+        select_player();
+    } else {
+        return player;
     }
     return 0;
+}
 
+struct position set_position() {
+    struct position pos;
+    char* instruction;
+    printf("Ingrese la fila column la columna donde se encontrara el fantasma\n");
+    printf("Fila:\n");
+    scanf_s("%d", &pos.row);
+    printf("Columna:\n");
+    scanf_s("%d", &pos.column);
+    if (pos.row < 0 | pos.row >= 13) {
+        printf("Son 13 filas, favor introducir un valor del 0 al 12\n");
+        set_position();
+    } else if (pos.column < 0 | pos.column >= 15) {
+        printf("Son 15 columnas, favor introducir un valor del 0 al 14\n");
+        set_position();
+    } else {
+        //return pos;
+        instruction = "FC1000,3,7/";
+        printf(instruction);
+        sendMessage(instruction, );
+    }
+
+
+
+
+    return pos;
+}
+
+struct fruit {
+    struct position pos;
+    int fruit_type;
+    int points;
+};
+
+struct fruit add_fruit() {
+    struct fruit fruit_result;
+    printf("Ingrese un numero para seleccionar la fruta que desea:\n");
+    printf("1) Cereza\n");
+    printf("2) Fresa\n");
+    printf("3) Naranja\n");
+    printf("4) Manzana\n");
+    printf("5) Melon\n");
+    scanf_s("%d", &fruit_result.fruit_type);
+    if (fruit_result.fruit_type < 1 | fruit_result.fruit_type > 5) {
+        printf("Solo puede escoger un numero en el rango del 1 al 5\n");
+        add_fruit();
+    }
+    printf("Ingrese el puntaje de la fruta:\n");
+    scanf_s("%d", &fruit_result.points);
+    fruit_result.pos = set_position();
+
+    return fruit_result;
+}
+
+int change_speed() {
+    int speed;
+    printf("Seleccione el nuevo valor de la velocidad:\n");
+    printf("1) Baja\n");
+    printf("2) Media\n");
+    printf("3) Alta\n"); //definir valor aleatorio
+    scanf_s("%d", &speed);
+    if (speed < 1 | speed > 3) {
+        printf("Solo puede escoger un numero en el rango del 1 al 5\n");
+        add_fruit();
+    }
+    return speed;
+}
+
+int select_menu() {
+    int select;
+    printf("Ingrese un numero para definir lo que desea hacer:\n");
+    printf("1) Crear fantasma\n");
+    printf("2) Crear pastilla\n");
+    printf("3) Crear fruta\n"); //definir valor aleatorio
+    printf("4) Cambiar velocidad de fantasmas\n"); //baja, media, alta
+    printf("5) Salir\n");
+    scanf_s("%d", &select);
+    if (select < 1 | select > 5) {
+        printf("Solo puede escoger un numero en el rango del 1 al 5\n");
+        select_menu();
+    } else {
+        switch (select) {
+            case 1:
+                set_position();
+                break;
+            case 2:
+                set_position();
+                break;
+            case 3:
+                add_fruit();
+                break;
+            case 4:
+                change_speed();
+                break;
+            case 5:
+                select_player();
+                break;
+            default:
+                select_menu();
+
+        }
+    }
+    return select;
+}
+
+void init_console() {
+    select_player();
+    select_menu();
+    init_console();
 }
 
 // Funcion que corre en un hilo aparte para ejecutar el servidor
@@ -22,16 +132,24 @@ static DWORD WINAPI serverThread(void *threadParams)
     return 0;
 }
 
+static DWORD WINAPI consoleThread(void *threadParams)
+{
+    init_console();
+    return 0;
+}
+
 int main()
 {
-
     message[0] = '\0'; // Inicializa el mensaje que se envia a todos los clientes
     char input[BUFLEN];
     DWORD threadDescriptor;
-    DWORD threadDescriptor1;
+    DWORD consoleThreadDescriptor;
     CreateThread(NULL, 0, serverThread, NULL, 0, &threadDescriptor); // Hilo para el servidor
-    //CreateThread(NULL, 0, consoleThread, NULL, 0, &threadDescriptor1); // Hilo de la consola
-    while (running)
+    //CreateThread(NULL, 0, consoleThread, NULL, 0, &consoleThreadDescriptor); // Hilo para el servidor
+
+    //message_receive("hola");
+
+    /*while (running)
     {
         scanf_s("%s", input, BUFLEN);
         if (strcmp("close", input) == 0)
@@ -45,7 +163,7 @@ int main()
         fflush(stdout);
     }
     printf("Cerrando el servidor...\n");
-    Sleep(1000);
-
+    Sleep(1000);*/
+    init_console();
     return 0;
 }

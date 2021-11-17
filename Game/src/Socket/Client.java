@@ -84,7 +84,7 @@ public class Client{
             int character;
             StringBuilder buffer = new StringBuilder();
 
-            while ((character = reader.read()) != -1 && character != ';') {
+            while ((character = reader.read()) != -1 && character != '/') {
                 buffer.append((char) character);
             }
             if (character == -1) {
