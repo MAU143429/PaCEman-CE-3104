@@ -265,11 +265,12 @@ public class ViewController extends JPanel implements ActionListener {
                 if (pacman.pacmanLives() < 3){
                     setScore(1000);
                     pacman.Lives();
-                    //send("L" + getClientType() + "+/");  ENVIO DE INFO
+                    //send("L" + getClientType() + "+/");  //ENVIO DE INFO
                 }
             }
 
-            //send("U"+ getClientType() + "," + pacman.getBoxX()+","+pacman.getBoxY()); ENVIO DE INFO
+            //send("U"+ getClientType() + "," + pacman.getBoxX()+","+pacman.getBoxY()); //ENVIO DE INFO
+            //send("C1");
 
             for(Characters character: characters){
                 verifyDirections(character);
