@@ -25,7 +25,6 @@ public class Client{
      * Este metodo recibe el numero de puerto y la direccion ip
      * en donde se desea realizar la conexion y almacena estos datos.
      * @param hostname direccion ip
-     * @param port puerto de conexion
      * @author Mauricio C.Yendry B. Gabriel V.
      */
     public Client(String hostname, int port) {

@@ -1,4 +1,6 @@
-package Game;
+package Objects;
+
+import Game.ViewController;
 
 import javax.swing.ImageIcon;
 import java.awt.Image;
@@ -11,7 +13,7 @@ import java.awt.Image;
  * @author Mauricio C.Yendry B. Gabriel V.
  */
 
-class Maps
+public class Maps
 {
 
     /**
@@ -45,7 +47,7 @@ class Maps
      * Constructor de la clase que establece el valor inicial de puntos en 0
      *@author Mauricio C.Yendry B. Gabriel V.
      */
-    Maps() { dots = 0;}
+    public Maps() { dots = 0;}
 
     /**
      * Metodo getImage

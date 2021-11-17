@@ -1,13 +1,17 @@
-package Game;
+package Observer;
+
 import Objects.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import Socket.Classify_Action;
 import Socket.Client;
-import Objects.Maps;
+import Socket.Observer_Action;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 /**
  * ViewController Class
@@ -15,7 +19,7 @@ import Objects.Maps;
  * y se implementa el ActionListener para detectar los movimiento del teclado.
  * @author Mauricio C.Yendry B. Gabriel V.
  */
-public class ViewController extends JPanel implements ActionListener {
+public class ObserverController extends JPanel implements ActionListener {
     private Timer timer;
     private int clientType;
     private Characters blinky, pinky, clyde ,inky;
@@ -25,11 +29,11 @@ public class ViewController extends JPanel implements ActionListener {
     private boolean life, stop, panic, success;
     private Maps maps;
     private int score, panicTimer, dots;
-    private java.lang.Integer gameSpeed = 30;
-    private java.lang.Integer houseTimer = 0;
-    private java.lang.Integer totalGhost = 0;
-    private java.lang.Integer apple_score, orange_score, melon_score,strawberry_score,cherry_score;
-    private static ViewController instance = null;
+    private Integer gameSpeed = 30;
+    private Integer houseTimer = 0;
+    private Integer totalGhost = 0;
+    private Integer apple_score, orange_score, melon_score,strawberry_score,cherry_score;
+    private static ObserverController instance = null;
 
     // Conexion Socket
     private String message_received;
@@ -40,12 +44,12 @@ public class ViewController extends JPanel implements ActionListener {
      * En el se crea el cliente para la conexion y se crea un hilo para la ejecucion del juego
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public ViewController(){
-        // Connection
-        //Client client = new Client("127.0.0.1", 8888);
-        //this.client = client; // instantiate a client
-        //connect(); // client connect
-        //send("P/");
+    public ObserverController(){
+        //Connection
+        Client client = new Client("127.0.0.1", 8888);
+        this.client = client; // instantiate a client
+        connect(); // client connect
+        //send("O/");
 
         Thread thread1 = new Thread(new Runnable() {
             @Override
@@ -266,12 +270,11 @@ public class ViewController extends JPanel implements ActionListener {
                 if (pacman.pacmanLives() < 3){
                     setScore(1000);
                     pacman.Lives();
-                    //send("L" + getClientType() + "+/");  //ENVIO DE INFO
+                    //send("L" + getClientType() + "+/");  ENVIO DE INFO
                 }
             }
 
-            //send("U"+ getClientType() + "," + pacman.getBoxX()+","+pacman.getBoxY()); //ENVIO DE INFO
-            //send("C1");
+            //send("U"+ getClientType() + "," + pacman.getBoxX()+","+pacman.getBoxY()); ENVIO DE INFO
 
             for(Characters character: characters){
                 verifyDirections(character);
@@ -640,7 +643,7 @@ public class ViewController extends JPanel implements ActionListener {
      * @author Mauricio C.Yendry B. Gabriel V.
      */
 
-    public void addPill(java.lang.Integer row, java.lang.Integer col){
+    public void addPill(Integer row, Integer col){
         maps.addPill(row,col);
     }
 
@@ -654,7 +657,7 @@ public class ViewController extends JPanel implements ActionListener {
      * @param newSpeed el nuevo valor de la velocidad
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public void changeSpeed(java.lang.Integer newSpeed){
+    public void changeSpeed(Integer newSpeed){
 
         if(newSpeed == 1){
             setGameSpeed(20);
@@ -664,6 +667,19 @@ public class ViewController extends JPanel implements ActionListener {
             setGameSpeed(60);
         }
     }
+    /**
+     * Metodo pacmanLocation
+     * Este metodo permite cambiar la posicion de pacman en el juego
+     * @param new_x el nuevo valor de x
+     * @param new_y el nuevo valor de y
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
+    public void pacmanLocation(Integer new_x, Integer new_y){
+        pacman.setX(new_x);
+        pacman.setY(new_y);
+
+    }
+
     /**
      * Metodo addFruit
      * Este metodo permite agregar una fruta al juego con un valor definido y
@@ -712,7 +728,7 @@ public class ViewController extends JPanel implements ActionListener {
      * @param col el valor de la columna
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public void addGhost(java.lang.Integer row, java.lang.Integer col){
+    public void addGhost(Integer row, Integer col){
 
         if(maps.verifyBox(row,col)){
             if (getTotalGhost() == 0){
@@ -756,9 +772,9 @@ public class ViewController extends JPanel implements ActionListener {
      * @author Mauricio C Yendry B Gabriel Vargas
      *
      */
-    public static ViewController getInstance(){
+    public static ObserverController getInstance(){
         if(instance == null){
-            instance = new ViewController();
+            instance = new ObserverController();
         }
         return instance;
     }
@@ -792,7 +808,7 @@ public class ViewController extends JPanel implements ActionListener {
                     message_received = client.read();
                     if (message_received != "-1") {
                         System.out.println("Recibido: " + message_received);
-                        Classify_Action.Action_recv(message_received);
+                        Observer_Action.Observer_recv(message_received);
                     } else {
                         break;
                     }
@@ -822,32 +838,7 @@ public class ViewController extends JPanel implements ActionListener {
      */
     public void keypress(KeyEvent e)
     {
-        int code = e.getKeyCode();
-        switch (code)
-        {
-            case 38:
-                pacman.moveUp();
-                break;
-            case 39:
-                pacman.moveRight();
-                break;
-            case 40:
-                pacman.moveDown();
-                break;
-            case 37:
-                pacman.moveLeft();
-                break;
-            case 80:
-                stop();
-                break;
-            case 78:
-                Classify_Action.Action_recv("FM1000,3,7"); // EJEMPLO DE FRUTA
-                Classify_Action.Action_recv("G,3,7"); // EJEMPLO DE FANTASMA
-                Classify_Action.Action_recv("M,3,8"); // EJEMPLO DE PILDORA
-                Classify_Action.Action_recv("V,3"); // EJEMPLO DE VELOCIDAD
-                //nextGame();
-                break;
-        }
+
     }
 
     /**

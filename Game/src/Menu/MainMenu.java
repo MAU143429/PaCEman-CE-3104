@@ -92,7 +92,6 @@ public class MainMenu extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == play_btn) {
-
             new Game();
             init_frame.setVisible(false);
 
