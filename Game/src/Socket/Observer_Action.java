@@ -44,6 +44,16 @@ public class Observer_Action {
                 col = Integer.parseInt(new_sms.substring(new_sms.lastIndexOf(',') + 1));
 
                 if (action == 'U') {
+
+                    if((ObserverController.getInstance().getPacmanBoxX()-row) == 1){
+                        ObserverController.getInstance().mLeft();
+                    }else if((ObserverController.getInstance().getPacmanBoxX()-row) == -1){
+                        ObserverController.getInstance().mRight();
+                    }else if((ObserverController.getInstance().getPacmanBoxY()- col) == 1){
+                        ObserverController.getInstance().mUp();
+                    }else if((ObserverController.getInstance().getPacmanBoxY()- col) == -1){
+                        ObserverController.getInstance().mDown();
+                    }
                     ObserverController.getInstance().pacmanLocation(row*60, col*60); // Nos indica la ubicacion de pacman
                 }
                 if (action == 'F') {

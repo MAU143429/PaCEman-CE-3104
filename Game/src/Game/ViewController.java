@@ -860,11 +860,7 @@ public class ViewController extends JPanel implements ActionListener {
                 stop();
                 break;
             case 78:
-                Classify_Action.actionRecv("FM1000,3,7"); // EJEMPLO DE FRUTA
-                Classify_Action.actionRecv("G,3,7"); // EJEMPLO DE FANTASMA
-                Classify_Action.actionRecv("M,3,8"); // EJEMPLO DE PILDORA
-                Classify_Action.actionRecv("V,3"); // EJEMPLO DE VELOCIDAD
-                //nextGame();
+                nextGame();
                 break;
         }
     }
