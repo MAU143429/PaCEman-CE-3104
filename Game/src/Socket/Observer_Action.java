@@ -31,7 +31,6 @@ public class Observer_Action {
     public static void observerRecv(String new_sms){
 
         client = new_sms.charAt(0);
-        System.out.println("SOY CLIENT: "+ String.valueOf(client) +" \n");
         if (String.valueOf(client).equals(String.valueOf(ObserverController.getInstance().getObserver()))){
             action = new_sms.charAt(1); // Palabra clave de la accion a ejecutar
             if (action == 'V') {
