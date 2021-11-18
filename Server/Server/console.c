@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include "variables.h"
-
+/*
 int select_player() {
     int player;
     printf("Seleccione jugador:\n");
@@ -143,4 +143,4 @@ void init_console() {
     int player = select_player();
     select_menu(player);
     init_console();
-}
+}*/

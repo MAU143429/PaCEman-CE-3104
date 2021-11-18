@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include "classify_action.h"
-#include "communication.h"
 
 /*C substring function: It returns a pointer to the substring */
 
@@ -29,19 +28,20 @@ char *substring(char *string, int position, int length)
     return p;
 }
 
-void message_receive(char *message_type, int clients){
+void message_receive(char *message_type){
     char instruction = message_type[0];
     char player = message_type[1];
 
     //printf("%s", "FUNCIONA");
 
     if(instruction == 'P'){
-        if(clients == 1){
-            sendMessage("C1",clients);
+        sendMessage("C2");
+        /*if(clients == 1){
+            sendMessage("C1");
         }
         else{
-            sendMessage("C2",clients);
-        }
+            sendMessage("C2");
+        }*/
     }
     else if(instruction == 'O'){
         if(player == '1'){
@@ -107,7 +107,7 @@ void message_receive(char *message_type, int clients){
         }
     }
 
-    //sendMessage(message_type);
+    sendMessage("message_type");
 
 }
 
