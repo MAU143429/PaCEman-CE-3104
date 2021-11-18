@@ -1,15 +1,19 @@
 package Observer;
 
+import Game.ViewController;
 import Objects.*;
 import Socket.Client;
 import Socket.Observer_Action;
 
 import javax.swing.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -33,6 +37,7 @@ public class ObserverController extends JPanel implements ActionListener {
     private Integer totalGhost = 0;
     private Integer appleScore, orangeScore, melonScore, strawberryScore, cherryScore;
     private static ObserverController instance = null;
+    private AudioClip eatDot, eatPill, eatGhost, death;
 
     // Conexion Socket
     private String messageReceived;
@@ -176,6 +181,16 @@ public class ObserverController extends JPanel implements ActionListener {
         life =true;
         success =false;
         score = 0;
+
+        //Genero los audios
+        URL url = ViewController.class.getResource("/Resources/eatDot.wav");
+        eatDot = Applet.newAudioClip(url);
+        URL url1 = ViewController.class.getResource("/Resources/eatPill.wav");
+        eatPill = Applet.newAudioClip(url1);
+        URL url2= ViewController.class.getResource("/Resources/eatGhost.wav");
+        eatGhost = Applet.newAudioClip(url2);
+        URL url3 = ViewController.class.getResource("/Resources/death.wav");
+        death = Applet.newAudioClip(url3);
     }
 
     /**
@@ -324,6 +339,7 @@ public class ObserverController extends JPanel implements ActionListener {
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("C" + getClientType() + "/"); ENVIO INFO
             score += 10;
+            eatDot.play();
             dots--;
         }
         //Sistema para comer las bolas de laberinto grandes
@@ -331,6 +347,7 @@ public class ObserverController extends JPanel implements ActionListener {
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("M" + getClientType() + "/"); ENVIO INFO
             score += 50;
+            eatPill.play();
             panicTimer = 40;
             panic();
             dots--;
@@ -454,6 +471,7 @@ public class ObserverController extends JPanel implements ActionListener {
                     if(ghostRect.intersects(pacmanRect)){
                         int lives = pacman.pacmanLives();
                         if(!panic){
+                            death.play();
                             pacman.pacmanDeath();
                             //send("L" + getClientType() + "-/"); ENVIO DE INFO
                             if(lives == 0) {
@@ -462,6 +480,7 @@ public class ObserverController extends JPanel implements ActionListener {
                         }
                         if(panic){
                             score = score + 500;
+                            eatGhost.play();
                             // send("G"+getClientType()+"/"); ENVIO INFO
                             Ghost ghost = (Ghost)character; //Cast al personaje para declararlo de la clase Fantasmas
                             deathGhost(ghost);

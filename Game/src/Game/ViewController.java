@@ -1,9 +1,13 @@
 package Game;
 import Objects.*;
+
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import Socket.Classify_Action;
 import Socket.Client;
@@ -30,6 +34,7 @@ public class ViewController extends JPanel implements ActionListener {
     private java.lang.Integer totalGhost = 0;
     private java.lang.Integer appleScore, orangeScore, melonScore, strawberryScore, cherryScore;
     private static ViewController instance = null;
+    private AudioClip eatDot, eatPill, eatGhost, death;
 
     // Conexion Socket
     private String messageReceived;
@@ -173,6 +178,16 @@ public class ViewController extends JPanel implements ActionListener {
         life =true;
         success =false;
         score = 0;
+
+        //Genero los audios
+        URL url = ViewController.class.getResource("/Resources/eatDot.wav");
+        eatDot = Applet.newAudioClip(url);
+        URL url1 = ViewController.class.getResource("/Resources/eatPill.wav");
+        eatPill = Applet.newAudioClip(url1);
+        URL url2= ViewController.class.getResource("/Resources/eatGhost.wav");
+        eatGhost = Applet.newAudioClip(url2);
+        URL url3 = ViewController.class.getResource("/Resources/death.wav");
+        death = Applet.newAudioClip(url3);
     }
 
     /**
@@ -321,6 +336,7 @@ public class ViewController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 1){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("C" + getClientType() + "/"); ENVIO INFO
+            eatDot.play();
             score += 10;
             dots--;
         }
@@ -328,6 +344,7 @@ public class ViewController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 2){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("M" + getClientType() + "/"); ENVIO INFO
+            eatPill.play();
             score += 50;
             panicTimer = 40;
             panic();
@@ -452,6 +469,7 @@ public class ViewController extends JPanel implements ActionListener {
                     if(ghostRect.intersects(pacmanRect)){
                         int lives = pacman.pacmanLives();
                         if(!panic){
+                            death.play();
                             pacman.pacmanDeath();
                             //send("L" + getClientType() + "-/"); ENVIO DE INFO
                             if(lives == 0) {
@@ -460,6 +478,7 @@ public class ViewController extends JPanel implements ActionListener {
                         }
                         if(panic){
                             score = score + 500;
+                            eatGhost.play();
                             // send("G"+getClientType()+"/"); ENVIO INFO
                             Ghost ghost = (Ghost)character; //Cast al personaje para declararlo de la clase Fantasmas
                             deathGhost(ghost);
