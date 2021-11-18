@@ -27,7 +27,7 @@ public class Classify_Action {
      */
 
     public static void actionRecv(String new_sms){
-
+        //1M,2,1
         client = new_sms.charAt(0);
         if (client == 'C'){
             numberOfClient = new_sms.charAt(1);

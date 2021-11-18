@@ -42,6 +42,8 @@ public class ObserverController extends JPanel implements ActionListener {
     // Conexion Socket
     private String messageReceived;
     private Client client;
+    private int observer;
+
 
     /**
      * Contructor de la clase
@@ -146,6 +148,13 @@ public class ObserverController extends JPanel implements ActionListener {
 
     public void setGameSpeed(Integer gameSpeed) {this.gameSpeed = gameSpeed;}
 
+    public int getObserver() {
+        return observer;
+    }
+
+    public void setObserver(int observer) {
+        this.observer = observer;
+    }
 
     /**
      * Metodo newGame

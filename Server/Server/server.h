@@ -267,7 +267,7 @@ int start_server()
                 {
                     // Imprime el mensaje recibido
                     recvbuf[res] = '\0';
-                    printf("Recibido (%d): %s\n", res, recvbuf);
+                    //printf("Recibido (%d): %s\n", res, recvbuf);
                     //sendRes = send(sd, recvbuf, strlen(recvbuf), 0);
 
 

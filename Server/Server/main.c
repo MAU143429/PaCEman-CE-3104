@@ -164,34 +164,24 @@ void init_console() {
 
 
 void messageReceive(char *messageType, int client){
-    char instruction = messageType[0];
-    char player = messageType[1];
-
+    char instruction = messageType[1]; //1U,1,2
+    char player = messageType[0];
     //printf("%s", "FUNCIONA");
 
-    if(instruction == 'P'){
+    if(player == 'P'){
         if(client > 1){
-            printf("%s", "FUNCIONA >1");
+            //printf("%s", "FUNCIONA >1");
             char user[3] = {'C','2','/'};
-            printf("%s", user);
+            //printf("%s", user);
             sendMessage(user);
         }else{
-            printf("%s", "FUNCIONA C1");
+            //printf("%s", "FUNCIONA C1");
             char user[3] = {'C','1','/'};
-            printf("%s", user);
+            //printf("%s", user);
             sendMessage(user);}
     }
-    else if(instruction == 'O'){
-        if(player == '1'){
-            //enviar O1
-        }
-        else{
-            //enviar O22
-        }
-    }
     else if(instruction == 'U'){
-        printf("%s", "DEBERIA ENVIAR\n");
-        //printf("%s", messageType);
+
         sendMessage(messageType);
     }
 }
@@ -237,6 +227,7 @@ int main()
     }
     printf("Cerrando el servidor...\n");
     Sleep(1000);*/
+    Sleep(1000);
     init_console();
     return 0;
 }

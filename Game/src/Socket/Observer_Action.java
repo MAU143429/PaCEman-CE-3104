@@ -15,9 +15,8 @@ public class Observer_Action {
      * Variables utilizadas para almacenar los valores enviados por el socket
      */
 
-    public static char action,fruit;
-    public static int row, col,value,speed,client;
-
+    public static char action,fruit,client;
+    public static int row, col,value,speed;
 
 
     /**
@@ -32,11 +31,11 @@ public class Observer_Action {
     public static void observerRecv(String new_sms){
 
         client = new_sms.charAt(0);
-        if (client == 'C'){
-            ObserverController.getInstance().setClientType(new_sms.charAt(1)); // Nos indica el numero de cliente que somos en el server
-        }
-        if (Integer.parseInt(String.valueOf(client)) == ViewController.getInstance().getClientType()) {
+        //System.out.println("CLIENTE: "+ String.valueOf(client) + "\n");
+        //System.out.println("OBSERVER: "+ String.valueOf(ObserverController.getInstance().getObserver()) + "\n");
+        if (String.valueOf(client).equals(String.valueOf(ObserverController.getInstance().getObserver()))){
             action = new_sms.charAt(1); // Palabra clave de la accion a ejecutar
+            //System.out.println("ACTION: " + action + "\n");
             if (action == 'V') {
                 speed = Integer.parseInt(new_sms.substring(new_sms.indexOf(',') + 1));
                 System.out.println(speed);
@@ -47,7 +46,8 @@ public class Observer_Action {
                 col = Integer.parseInt(new_sms.substring(new_sms.lastIndexOf(',') + 1));
 
                 if (action == 'U') {
-                    ObserverController.getInstance().pacmanLocation(row, col); // Nos indica la ubicacion de pacman
+                    //System.out.println("MOVIENDO OBSERVADOR\n");
+                    ObserverController.getInstance().pacmanLocation(row*60, col*60); // Nos indica la ubicacion de pacman
                 }
                 if (action == 'F') {
                     fruit = new_sms.charAt(2);
@@ -62,12 +62,5 @@ public class Observer_Action {
                 System.out.println(new_sms);
             }
         }
-
     }
-
-
-
-
-
-
 }

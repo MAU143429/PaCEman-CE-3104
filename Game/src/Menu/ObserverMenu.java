@@ -1,6 +1,6 @@
 package Menu;
 
-import Observer.observerGame;
+import Observer.ObserverGame;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -113,10 +113,10 @@ public class ObserverMenu extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == obsPlayer1) {
-            new observerGame(1);
+            new ObserverGame(1);
         }
         if (e.getSource() == obsPlayer2) {
-            new observerGame(2);
+            new ObserverGame(2);
         }
         if (e.getSource() == backBtn) {
             MainMenu.getInstance();
