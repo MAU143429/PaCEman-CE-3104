@@ -1,6 +1,5 @@
 #include "console.h"
 #include "server.h"
-
 int select_player() {
     int player;
     printf("Seleccione jugador:\n");
@@ -141,6 +140,7 @@ void init_console() {
     select_menu(player);
     init_console();
 }
+
 
 // Funcion que corre en un hilo aparte para ejecutar el servidor
 static DWORD WINAPI serverThread(void *threadParams)
