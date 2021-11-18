@@ -114,9 +114,11 @@ public class ObserverMenu extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == obsPlayer1) {
             new ObserverGame(1);
+            mFrame.setVisible(false);
         }
         if (e.getSource() == obsPlayer2) {
             new ObserverGame(2);
+            mFrame.setVisible(false);
         }
         if (e.getSource() == backBtn) {
             MainMenu.getInstance();

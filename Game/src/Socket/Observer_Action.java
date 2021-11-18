@@ -31,11 +31,9 @@ public class Observer_Action {
     public static void observerRecv(String new_sms){
 
         client = new_sms.charAt(0);
-        //System.out.println("CLIENTE: "+ String.valueOf(client) + "\n");
-        //System.out.println("OBSERVER: "+ String.valueOf(ObserverController.getInstance().getObserver()) + "\n");
+        System.out.println("SOY CLIENT: "+ String.valueOf(client) +" \n");
         if (String.valueOf(client).equals(String.valueOf(ObserverController.getInstance().getObserver()))){
             action = new_sms.charAt(1); // Palabra clave de la accion a ejecutar
-            //System.out.println("ACTION: " + action + "\n");
             if (action == 'V') {
                 speed = Integer.parseInt(new_sms.substring(new_sms.indexOf(',') + 1));
                 System.out.println(speed);
@@ -46,7 +44,6 @@ public class Observer_Action {
                 col = Integer.parseInt(new_sms.substring(new_sms.lastIndexOf(',') + 1));
 
                 if (action == 'U') {
-                    //System.out.println("MOVIENDO OBSERVADOR\n");
                     ObserverController.getInstance().pacmanLocation(row*60, col*60); // Nos indica la ubicacion de pacman
                 }
                 if (action == 'F') {
