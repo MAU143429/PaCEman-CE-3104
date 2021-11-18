@@ -110,23 +110,36 @@ const char* select_menu(int player) {
         switch (select) {
             case 1:
                 pos = set_position();
-                char ghost[5] = {'G', ',', pos.row + '0', ',', pos.column + '0'};
+                char ghost[6] = {'G', ',', pos.row + '0', ',', pos.column + '0'};
                 printf( "%s\n", ghost);
                 return ghost;
             case 2:
                 pos = set_position();
-                char pill[5] = {'M', ',', pos.row + '0', ',', pos.column + '0'};
+                char pill[6] = {'M', ',', pos.row + '0', ',', pos.column + '0'};
                 printf( "%s\n", pill);
                 return pill;
             case 3:
                 struct fruit fruit_selected =  add_fruit();
-                char fruit_code[12] = {'F', fruit_selected.fruit_type, fruit_selected.points + '0', ',',
-                                       fruit_selected.pos.row + '0', ',', fruit_selected.pos.column + '0'};
+                char points[128];
+                sprintf(points, "%d", fruit_selected.points);
+                char fruit_code[256] = {'F', fruit_selected.fruit_type};
+                int j = 2;
+                for (int i = 0; points[i]; ++i) {
+                    fruit_code[j] = points[i];
+                    j++;
+                }
+                fruit_code[j] = ',';
+                j++;
+                fruit_code[j] = fruit_selected.pos.row + '0';
+                j++;
+                fruit_code[j] = ',';
+                j++;
+                fruit_code[j] = fruit_selected.pos.column + '0';
                 printf( "%s\n", fruit_code);
                 return fruit_code;
             case 4:
                 char speed_level = change_speed() + '0';
-                char speed[3] = {'V', ',', speed_level};
+                char speed[4] = {'V', ',', speed_level};
                 printf( "%s\n", speed);
                 return speed;
             case 5:
