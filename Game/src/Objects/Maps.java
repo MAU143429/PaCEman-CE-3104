@@ -15,7 +15,6 @@ import java.awt.Image;
 
 public class Maps
 {
-
     /**
      * Intancias del mapa y imagenes que se utilizan para poder dibujar el mapa.
      *@author Mauricio C.Yendry B. Gabriel V.

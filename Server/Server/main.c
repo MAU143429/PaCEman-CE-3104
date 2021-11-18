@@ -192,6 +192,30 @@ void init_console() {
 }
 
 
+void messageReceive(char *messageType, int client){
+    char instruction = messageType[1]; //1U,1,2
+    char player = messageType[0];
+    //printf("%s", "FUNCIONA");
+
+    if(player == 'P'){
+        if(client > 1){
+            //printf("%s", "FUNCIONA >1");
+            char user[3] = {'C','2','/'};
+            //printf("%s", user);
+            sendMessage(user);
+        }else{
+            //printf("%s", "FUNCIONA C1");
+            char user[3] = {'C','1','/'};
+            //printf("%s", user);
+            sendMessage(user);}
+    }
+    else if(instruction == 'U'){
+
+        sendMessage(messageType);
+    }
+}
+
+
 // Funcion que corre en un hilo aparte para ejecutar el servidor
 static DWORD WINAPI serverThread(void *threadParams)
 {
@@ -215,7 +239,7 @@ int main()
     CreateThread(NULL, 0, serverThread, NULL, 0, &threadDescriptor); // Hilo para el servidor
     //CreateThread(NULL, 0, consoleThread, NULL, 0, &consoleThreadDescriptor); // Hilo para el servidor
 
-    //message_receive("hola");
+    //messageReceive("hola");
 
     /*while (running)
     {
@@ -232,6 +256,7 @@ int main()
     }
     printf("Cerrando el servidor...\n");
     Sleep(1000);*/
+    Sleep(1000);
     init_console();
     return 0;
 }

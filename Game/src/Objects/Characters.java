@@ -234,18 +234,18 @@ public abstract class Characters
      * Metodo availableDirections
      * Este metodo permite hacer update de los booleanos que nos determinan la disponibilidad de
      * movimiento en un sentido en concreto
-     * @param new_up boolean de disponibilidad hacia arriba
-     * @param new_down boolean de disponibilidad hacia abajo
-     * @param new_left boolean de disponibilidad hacia la izquierda
-     * @param new_right boolean de disponibilidad hacia la derecha
+     * @param newUp boolean de disponibilidad hacia arriba
+     * @param newDown boolean de disponibilidad hacia abajo
+     * @param newLeft boolean de disponibilidad hacia la izquierda
+     * @param newRight boolean de disponibilidad hacia la derecha
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public void availableDirections(boolean new_up, boolean new_down, boolean new_right, boolean new_left)
+    public void availableDirections(boolean newUp, boolean newDown, boolean newRight, boolean newLeft)
     {
-        this.up = new_up;
-        this.down = new_down;
-        this.right = new_right;
-        this.left = new_left;
+        this.up = newUp;
+        this.down = newDown;
+        this.right = newRight;
+        this.left = newLeft;
     }
 
 }

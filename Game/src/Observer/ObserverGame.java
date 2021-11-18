@@ -1,5 +1,7 @@
 package Observer;
 
+import Socket.Observer_Action;
+
 import javax.swing.*;
 
 
@@ -18,7 +20,7 @@ public class ObserverGame extends JFrame
      * Este metodo crea la ventana y llama al juego a traves del ViewController
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public ObserverGame(int O_Player)
+    public ObserverGame(int oPlayer)
     {
         high = 900;
         breadth = 915;
@@ -29,6 +31,7 @@ public class ObserverGame extends JFrame
         setLocationRelativeTo(null);
         game = ObserverController.getInstance();
         add(game);
+        ObserverController.getInstance().setObserver(oPlayer);
 
         setVisible(true);//Hacemos visible el JFrame.
     }

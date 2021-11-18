@@ -1,16 +1,19 @@
 package Observer;
 
+import Game.ViewController;
 import Objects.*;
-import Socket.Classify_Action;
 import Socket.Client;
 import Socket.Observer_Action;
 
 import javax.swing.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -32,12 +35,15 @@ public class ObserverController extends JPanel implements ActionListener {
     private Integer gameSpeed = 30;
     private Integer houseTimer = 0;
     private Integer totalGhost = 0;
-    private Integer apple_score, orange_score, melon_score,strawberry_score,cherry_score;
+    private Integer appleScore, orangeScore, melonScore, strawberryScore, cherryScore;
     private static ObserverController instance = null;
+    private AudioClip eatDot, eatPill, eatGhost, death;
 
     // Conexion Socket
-    private String message_received;
+    private String messageReceived;
     private Client client;
+    private int observer;
+
 
     /**
      * Contructor de la clase
@@ -62,44 +68,44 @@ public class ObserverController extends JPanel implements ActionListener {
 
     //////////////////////////////////////////////////// Getter and Setter Section ////////////////////////////////////////////////////////////
 
-    public Integer getApple_score() {
-        return apple_score;
+    public Integer getAppleScore() {
+        return appleScore;
     }
 
-    public void setApple_score(Integer apple_score) {
-        this.apple_score = apple_score;
+    public void setAppleScore(Integer appleScore) {
+        this.appleScore = appleScore;
     }
 
-    public Integer getOrange_score() {
-        return orange_score;
+    public Integer getOrangeScore() {
+        return orangeScore;
     }
 
-    public void setOrange_score(Integer orange_score) {
-        this.orange_score = orange_score;
+    public void setOrangeScore(Integer orangeScore) {
+        this.orangeScore = orangeScore;
     }
 
-    public Integer getMelon_score() {
-        return melon_score;
+    public Integer getMelonScore() {
+        return melonScore;
     }
 
-    public void setMelon_score(Integer melon_score) {
-        this.melon_score = melon_score;
+    public void setMelonScore(Integer melonScore) {
+        this.melonScore = melonScore;
     }
 
-    public Integer getStrawberry_score() {
-        return strawberry_score;
+    public Integer getStrawberryScore() {
+        return strawberryScore;
     }
 
-    public void setStrawberry_score(Integer strawberry_score) {
-        this.strawberry_score = strawberry_score;
+    public void setStrawberryScore(Integer strawberryScore) {
+        this.strawberryScore = strawberryScore;
     }
 
-    public Integer getCherry_score() {
-        return cherry_score;
+    public Integer getCherryScore() {
+        return cherryScore;
     }
 
-    public void setCherry_score(Integer cherry_score) {
-        this.cherry_score = cherry_score;
+    public void setCherryScore(Integer cherryScore) {
+        this.cherryScore = cherryScore;
     }
 
     public void setDots(Integer dots) {
@@ -142,6 +148,13 @@ public class ObserverController extends JPanel implements ActionListener {
 
     public void setGameSpeed(Integer gameSpeed) {this.gameSpeed = gameSpeed;}
 
+    public int getObserver() {
+        return observer;
+    }
+
+    public void setObserver(int observer) {
+        this.observer = observer;
+    }
 
     /**
      * Metodo newGame
@@ -177,6 +190,16 @@ public class ObserverController extends JPanel implements ActionListener {
         life =true;
         success =false;
         score = 0;
+
+        //Genero los audios
+        URL url = ViewController.class.getResource("/Resources/eatDot.wav");
+        eatDot = Applet.newAudioClip(url);
+        URL url1 = ViewController.class.getResource("/Resources/eatPill.wav");
+        eatPill = Applet.newAudioClip(url1);
+        URL url2= ViewController.class.getResource("/Resources/eatGhost.wav");
+        eatGhost = Applet.newAudioClip(url2);
+        URL url3 = ViewController.class.getResource("/Resources/death.wav");
+        death = Applet.newAudioClip(url3);
     }
 
     /**
@@ -269,7 +292,7 @@ public class ObserverController extends JPanel implements ActionListener {
             if(getScore() >= 1000){
                 if (pacman.pacmanLives() < 3){
                     setScore(1000);
-                    pacman.Lives();
+                    pacman.lives();
                     //send("L" + getClientType() + "+/");  ENVIO DE INFO
                 }
             }
@@ -325,6 +348,7 @@ public class ObserverController extends JPanel implements ActionListener {
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("C" + getClientType() + "/"); ENVIO INFO
             score += 10;
+            eatDot.play();
             dots--;
         }
         //Sistema para comer las bolas de laberinto grandes
@@ -332,6 +356,7 @@ public class ObserverController extends JPanel implements ActionListener {
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("M" + getClientType() + "/"); ENVIO INFO
             score += 50;
+            eatPill.play();
             panicTimer = 40;
             panic();
             dots--;
@@ -342,7 +367,7 @@ public class ObserverController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 4){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "C" + getCherry_score() + "/"); ENVIO INFO
-            score += getCherry_score();
+            score += getCherryScore();
             dots--;
         }
 
@@ -350,7 +375,7 @@ public class ObserverController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 5){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "W" + getMelon_score() + "/"); ENVIO INFO
-            score += getMelon_score();
+            score += getMelonScore();
             dots--;
         }
 
@@ -358,7 +383,7 @@ public class ObserverController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 6){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "M" + getApple_score() + "/"); ENVIO INFO
-            score += getApple_score();
+            score += getAppleScore();
             dots--;
         }
 
@@ -366,7 +391,7 @@ public class ObserverController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 7){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "N" + getOrange_score() + "/"); ENVIO INFO
-            score += getOrange_score();
+            score += getOrangeScore();
             dots--;
         }
 
@@ -374,7 +399,7 @@ public class ObserverController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 8){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "F" + getStrawberry_score() + "/"); ENVIO INFO
-            score += getStrawberry_score();
+            score += getStrawberryScore();
             dots--;
         }
 
@@ -455,6 +480,7 @@ public class ObserverController extends JPanel implements ActionListener {
                     if(ghostRect.intersects(pacmanRect)){
                         int lives = pacman.pacmanLives();
                         if(!panic){
+                            death.play();
                             pacman.pacmanDeath();
                             //send("L" + getClientType() + "-/"); ENVIO DE INFO
                             if(lives == 0) {
@@ -463,6 +489,7 @@ public class ObserverController extends JPanel implements ActionListener {
                         }
                         if(panic){
                             score = score + 500;
+                            eatGhost.play();
                             // send("G"+getClientType()+"/"); ENVIO INFO
                             Ghost ghost = (Ghost)character; //Cast al personaje para declararlo de la clase Fantasmas
                             deathGhost(ghost);
@@ -696,28 +723,28 @@ public class ObserverController extends JPanel implements ActionListener {
         //fresa
         if(fruit == 'F'){
             maps.addFruit(row,col,8);
-            setStrawberry_score(value);
+            setStrawberryScore(value);
         }
         //naranja
         if(fruit == 'N'){
             maps.addFruit(row,col,7);
-            setOrange_score(value);
+            setOrangeScore(value);
         }
         //manzana
         if(fruit == 'M'){
             maps.addFruit(row,col,6);
-            setApple_score(value);
+            setAppleScore(value);
         }
         //melon
         if(fruit == 'W'){
             maps.addFruit(row,col,5);
-            setMelon_score(value);
+            setMelonScore(value);
         }
 
         //cereza
         if(fruit == 'C'){
             maps.addFruit(row,col,4);
-            setCherry_score(value);
+            setCherryScore(value);
         }
     }
 
@@ -805,10 +832,10 @@ public class ObserverController extends JPanel implements ActionListener {
             @Override
             public void run() {
                 while (true) {
-                    message_received = client.read();
-                    if (message_received != "-1") {
-                        System.out.println("Recibido: " + message_received);
-                        Observer_Action.Observer_recv(message_received);
+                    messageReceived = client.read();
+                    if (messageReceived != "-1") {
+                        System.out.println("Recibido: " + messageReceived);
+                        Observer_Action.observerRecv(messageReceived);
                     } else {
                         break;
                     }
@@ -836,7 +863,7 @@ public class ObserverController extends JPanel implements ActionListener {
      * dependiendo de la tecla presionada
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public void keypress(KeyEvent e)
+    public void keyPress(KeyEvent e)
     {
 
     }
@@ -850,7 +877,7 @@ public class ObserverController extends JPanel implements ActionListener {
     {
         public void keyPressed(KeyEvent e)
         {
-            keypress(e);
+            keyPress(e);
         }
     }
 }

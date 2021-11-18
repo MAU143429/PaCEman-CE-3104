@@ -19,8 +19,8 @@ public class ObserverMenu extends JFrame implements ActionListener {
      */
     public JFrame mFrame;
     public JPanel mPanel;
-    private JLabel O_Background;
-    private JButton obs_player1, obs_player2,back_btn;
+    private JLabel oBackground;
+    private JButton obsPlayer1, obsPlayer2, backBtn;
 
 
     /**
@@ -54,35 +54,35 @@ public class ObserverMenu extends JFrame implements ActionListener {
 
         //############################Botones###############################
 
-        obs_player1 = new JButton();
-        obs_player2 = new JButton();
-        back_btn = new JButton();
+        obsPlayer1 = new JButton();
+        obsPlayer2 = new JButton();
+        backBtn = new JButton();
 
-        obs_player1.setBounds(162, 350, 238, 250);
+        obsPlayer1.setBounds(162, 350, 238, 250);
         ImageIcon btnurl1 = new ImageIcon(getClass().getResource("/Resources/p1_btn.png"));
-        obs_player1.setIcon(btnurl1);
-        obs_player1.addActionListener(this);
-        mPanel.add(obs_player1);
+        obsPlayer1.setIcon(btnurl1);
+        obsPlayer1.addActionListener(this);
+        mPanel.add(obsPlayer1);
 
-        obs_player2.setBounds(512, 350, 238, 250);
+        obsPlayer2.setBounds(512, 350, 238, 250);
         ImageIcon btnurl2 = new ImageIcon(getClass().getResource("/Resources/p2_btn.png"));
-        obs_player2.setIcon(btnurl2);
-        obs_player2.addActionListener(this);
-        mPanel.add(obs_player2);
+        obsPlayer2.setIcon(btnurl2);
+        obsPlayer2.addActionListener(this);
+        mPanel.add(obsPlayer2);
 
-        back_btn.setBounds(10, 800, 100, 50);
+        backBtn.setBounds(10, 800, 100, 50);
         ImageIcon btnurl3 = new ImageIcon(getClass().getResource("/Resources/back_btn.png"));
-        back_btn.setIcon(btnurl3);
-        back_btn.addActionListener(this);
-        mPanel.add(back_btn);
+        backBtn.setIcon(btnurl3);
+        backBtn.addActionListener(this);
+        mPanel.add(backBtn);
 
         //###############################-Background-#######################################
-        O_Background = new JLabel();
-        O_Background.setBounds(0, 0, 1280, 900);
+        oBackground = new JLabel();
+        oBackground.setBounds(0, 0, 1280, 900);
         ImageIcon bgurl = new ImageIcon(getClass().getResource("/Resources/observer_menu.png"));
-        O_Background.setIcon(bgurl);
+        oBackground.setIcon(bgurl);
         validate();
-        mPanel.add(O_Background);
+        mPanel.add(oBackground);
         mFrame.setVisible(true);
 
 
@@ -112,13 +112,13 @@ public class ObserverMenu extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == obs_player1) {
+        if (e.getSource() == obsPlayer1) {
             new ObserverGame(1);
         }
-        if (e.getSource() == obs_player2) {
+        if (e.getSource() == obsPlayer2) {
             new ObserverGame(2);
         }
-        if (e.getSource() == back_btn) {
+        if (e.getSource() == backBtn) {
             MainMenu.getInstance();
             mFrame.setVisible(false);
             instance = null;

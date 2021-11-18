@@ -27,6 +27,7 @@ void sendMessage(char* instruction){
             curNoClients--;
         }
     }
-    message[0] = '\0';
+    instruction[0] = '\0';
 }
+
 #endif //SERVER_COMMUNICATION_H
