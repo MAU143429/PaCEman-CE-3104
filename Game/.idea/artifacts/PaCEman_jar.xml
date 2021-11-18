@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PaCEman:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PaCEman_jar</output-path>
+    <root id="archive" name="PaCEman.jar">
+      <element id="module-output" name="PaCEman" />
+    </root>
+  </artifact>
+</component>
