@@ -98,6 +98,72 @@ public class Pacman extends Characters
             pendingDirection =4;}
     }
 
+
+    /**
+     * Metodo mUp
+     * Este metodo permite actualizar la imagen de pacman al moverse hacia arriba
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
+    public void mUp(){
+        if(up && (x%60 == 0)){
+            updateImage("/Resources/up.gif");
+            emptyDirection();
+            right=left=false;
+        }
+        else{
+            pendingDirection =1;}
+    }
+
+    /**
+     * Metodo mDown
+     * Este metodo permite actualizar la imagen de pacman al moverse hacia abajo
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
+    public void mDown(){
+        if(down && (x%60 == 0)){
+            updateImage("/Resources/down.gif");
+            emptyDirection();
+            right=left=false;
+        }
+        else{
+            pendingDirection =2;}
+    }
+
+    /**
+     * Metodo mRight
+     * Este metodo permite actualizar la imagen de pacman al moverse hacia la derecha
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
+    public void mRight(){
+        if(y%60 == 0){
+            updateImage("/Resources/right.gif");
+            emptyDirection();
+            down=up=false;
+        }
+        else{
+            pendingDirection =3;}
+    }
+
+    /**
+     * Metodo mLeft
+     * Este metodo permite actualizar la imagen de pacman al moverse hacia la izquierda
+     * @author Mauricio C.Yendry B. Gabriel V.
+     */
+    public void mLeft(){
+        if(y%60 == 0){
+            updateImage("/Resources/left.gif");
+            emptyDirection();
+            down=up=false;
+        }
+        else{
+            pendingDirection =4;}
+    }
+
+
+
+
+
+
     /**
      * Metodo emptyDirection
      * Este metodo permite cambiar el status de las direcciones pendientes a 0

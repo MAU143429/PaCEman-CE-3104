@@ -156,6 +156,23 @@ public class ObserverController extends JPanel implements ActionListener {
         this.observer = observer;
     }
 
+    public int getPacmanBoxX() {
+        return pacman.getBoxX();
+    }
+
+    public int getPacmanBoxY() {
+        return pacman.getBoxY();
+    }
+
+    public void mUp() {pacman.mUp();}
+
+    public void mDown() {pacman.mDown();}
+
+    public void mRight() {pacman.mRight();}
+
+    public void mLeft() {pacman.mLeft();}
+
+
     /**
      * Metodo newGame
      * Este metodo es llamado por le contructor ya que en el se inicializan los valores de juego
