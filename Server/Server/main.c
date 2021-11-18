@@ -22,10 +22,10 @@ struct position set_position() {
     scanf_s("%d", &pos.column);
     printf("Columna:\n");
     scanf_s("%d", &pos.row);
-    if (pos.column <= 0 | pos.column > 15) {
+    if (pos.column <= 0 | pos.column > 13) {
         printf("Son 13 filas, favor introducir un valor del 0 al 12\n");
         set_position();
-    } else if (pos.row <= 0 | pos.row > 13) {
+    } else if (pos.row <= 0 | pos.row > 15) {
         printf("Son 15 columnas, favor introducir un valor del 0 al 14\n");
         set_position();
     } else {
