@@ -1,0 +1,3 @@
+C:/Users/mau14/Escritorio/PaCEman/Server/cmake-build-debug/CMakeFiles/Server.dir
+C:/Users/mau14/Escritorio/PaCEman/Server/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/mau14/Escritorio/PaCEman/Server/cmake-build-debug/CMakeFiles/rebuild_cache.dir

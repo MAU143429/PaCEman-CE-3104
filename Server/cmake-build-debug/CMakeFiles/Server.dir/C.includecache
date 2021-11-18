@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/communication.h
+server.h
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/server.h
+
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/console.h
+
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/main.c
+console.h
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/console.h
+server.h
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/server.h
+
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/server.h
+stdlib.h
+-
+variables.h
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/variables.h
+communication.h
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/communication.h
+
+C:/Users/mau14/Escritorio/PaCEman/Server/Server/variables.h
+winsock2.h
+-
+windows.h
+-
+ws2tcpip.h
+-
+iphlpapi.h
+-
+stdio.h
+-
+
