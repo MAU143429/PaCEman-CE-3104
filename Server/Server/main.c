@@ -17,13 +17,13 @@ struct position set_position() {
     struct position pos;
     printf("Ingrese la fila y la columna donde se encontrara el fantasma\n");
     printf("Fila:\n");
-    scanf_s("%d", &pos.row);
-    printf("Columna:\n");
     scanf_s("%d", &pos.column);
-    if (pos.row < 0 | pos.row >= 13) {
+    printf("Columna:\n");
+    scanf_s("%d", &pos.row);
+    if (pos.row <= 0 | pos.row > 13) {
         printf("Son 13 filas, favor introducir un valor del 0 al 12\n");
         set_position();
-    } else if (pos.column < 0 | pos.column >= 15) {
+    } else if (pos.column <= 0 | pos.column > 15) {
         printf("Son 15 columnas, favor introducir un valor del 0 al 14\n");
         set_position();
     } else {
@@ -87,7 +87,7 @@ int change_speed() {
     return speed;
 }
 
-const char* select_menu(int player) {
+char* select_menu(int player) {
     int select;
     printf("Ingrese un numero para definir lo que desea hacer:\n");
     printf("1) Crear fantasma\n");
@@ -104,13 +104,15 @@ const char* select_menu(int player) {
         switch (select) {
             case 1:
                 pos = set_position();
-                char ghost[6] = {'G', ',', pos.row + '0', ',', pos.column + '0'};
+                char ghost[7] = {'G', ',', pos.row + '0', ',', pos.column + '0', '/'};
                 printf( "%s\n", ghost);
+                sendMessage(ghost);
                 return ghost;
             case 2:
                 pos = set_position();
-                char pill[6] = {'M', ',', pos.row + '0', ',', pos.column + '0'};
+                char pill[7] = {'M', ',', pos.row + '0', ',', pos.column + '0', '/'};
                 printf( "%s\n", pill);
+                sendMessage(pill);
                 return pill;
             case 3:
                 struct fruit fruit_selected =  add_fruit();
@@ -129,12 +131,17 @@ const char* select_menu(int player) {
                 fruit_code[j] = ',';
                 j++;
                 fruit_code[j] = fruit_selected.pos.column + '0';
+                j++;
+                fruit_code[j] = '/';
                 printf( "%s\n", fruit_code);
+
+                sendMessage(fruit_code);
                 return fruit_code;
             case 4:
                 char speed_level = change_speed() + '0';
-                char speed[4] = {'V', ',', speed_level};
+                char speed[5] = {'V', ',', speed_level, '/'};
                 printf( "%s\n", speed);
+                sendMessage(speed);
                 return speed;
             case 5:
                 select_player();

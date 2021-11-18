@@ -42,9 +42,9 @@ public class ViewController extends JPanel implements ActionListener {
      */
     public ViewController(){
         // Connection
-        //Client client = new Client("127.0.0.1", 8888);
-        //this.client = client; // instantiate a client
-        //connect(); // client connect
+        Client client = new Client("127.0.0.1", 8888);
+        this.client = client; // instantiate a client
+        connect(); // client connect
         //send("P/");
 
         Thread thread1 = new Thread(new Runnable() {
