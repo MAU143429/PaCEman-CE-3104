@@ -16,7 +16,7 @@ public class Observer_Action {
      */
 
     public static char action,fruit;
-    public static int ROW,COL,value,speed;
+    public static int row, col,value,speed,client;
 
 
 
@@ -29,32 +29,38 @@ public class Observer_Action {
      * @author Mauricio C.Yendry B. Gabriel V.
      */
 
-    public static void Observer_recv(String new_sms){
-        action = new_sms.charAt(0); // Palabra clave de la accion a ejecutar
+    public static void observerRecv(String new_sms){
 
-        if (action == 'V'){
-            speed = Integer.parseInt(new_sms.substring(new_sms.indexOf(',')+1));
-            System.out.println(speed);
-            ObserverController.getInstance().changeSpeed(speed); // Ejecuta el cambio de velocidad del juego
+        client = new_sms.charAt(0);
+        if (client == 'C'){
+            ObserverController.getInstance().setClientType(new_sms.charAt(1)); // Nos indica el numero de cliente que somos en el server
+        }
+        if (Integer.parseInt(String.valueOf(client)) == ViewController.getInstance().getClientType()) {
+            action = new_sms.charAt(1); // Palabra clave de la accion a ejecutar
+            if (action == 'V') {
+                speed = Integer.parseInt(new_sms.substring(new_sms.indexOf(',') + 1));
+                System.out.println(speed);
+                ObserverController.getInstance().changeSpeed(speed); // Ejecuta el cambio de velocidad del juego
 
-        }else if (action == 'F' || action == 'M' || action == 'G'|| action == 'U'){
-            ROW = Integer.parseInt(new_sms.substring(new_sms.indexOf(',')+1, new_sms.lastIndexOf(',')));
-            COL = Integer.parseInt(new_sms.substring(new_sms.lastIndexOf(',')+1));
+            } else if (action == 'F' || action == 'M' || action == 'G' || action == 'U') {
+                row = Integer.parseInt(new_sms.substring(new_sms.indexOf(',') + 1, new_sms.lastIndexOf(',')));
+                col = Integer.parseInt(new_sms.substring(new_sms.lastIndexOf(',') + 1));
 
-            if (action == 'U'){
-                ObserverController.getInstance().pacmanLocation(ROW,COL); // Nos indica la ubicacion de pacman
+                if (action == 'U') {
+                    ObserverController.getInstance().pacmanLocation(row, col); // Nos indica la ubicacion de pacman
+                }
+                if (action == 'F') {
+                    fruit = new_sms.charAt(2);
+                    value = Integer.parseInt(new_sms.substring(3, new_sms.indexOf(',')));
+                    ObserverController.getInstance().addFruit(fruit, row, col, value); // Agrega una nueva fruta al juego
+                } else if (action == 'M') {
+                    ObserverController.getInstance().addPill(row, col); // Agrega una pildora en el juego
+                } else if (action == 'G') {
+                    ObserverController.getInstance().addGhost(row, col); // Agrega un nuevo fantasma al juego
+                }
+            } else {
+                System.out.println(new_sms);
             }
-            if (action == 'F'){
-                fruit = new_sms.charAt(1);
-                value = Integer.parseInt(new_sms.substring(2 , new_sms.indexOf(',')));
-                ObserverController.getInstance().addFruit(fruit,ROW,COL,value); // Agrega una nueva fruta al juego
-            }else if (action == 'M'){
-                ObserverController.getInstance().addPill(ROW,COL); // Agrega una pildora en el juego
-            }else if (action == 'G') {
-                ObserverController.getInstance().addGhost(ROW,COL); // Agrega un nuevo fantasma al juego
-            }
-        }else{
-            System.out.println(new_sms);
         }
 
     }

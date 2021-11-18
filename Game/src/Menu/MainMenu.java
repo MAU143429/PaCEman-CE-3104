@@ -1,7 +1,6 @@
 package Menu;
 
 import Game.Game;
-import Socket.Client;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -18,9 +17,9 @@ public class MainMenu extends JFrame implements ActionListener {
      * Botones y etiquetas utilizados en la interfaz
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    private JButton play_btn, observer_btn;
-    private JFrame init_frame;
-    private JPanel init_panel;
+    private JButton playBtn, observerBtn;
+    private JFrame initFrame;
+    private JPanel initPanel;
     private JLabel Background;
 
 
@@ -41,33 +40,33 @@ public class MainMenu extends JFrame implements ActionListener {
 
         ////////////////////////////Creación del Frame y el Panel///////////////////////
 
-        init_frame = new JFrame("PaCEman");
-        init_frame.setBounds(0, 0, 920, 900);
-        init_frame.setTitle("PaCEman");
-        init_frame.setLocationRelativeTo(null);
-        init_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        initFrame = new JFrame("PaCEman");
+        initFrame.setBounds(0, 0, 920, 900);
+        initFrame.setTitle("PaCEman");
+        initFrame.setLocationRelativeTo(null);
+        initFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        init_panel = new JPanel();
-        init_panel.setLayout(null);
-        init_panel.setSize(920, 900);
-        init_frame.add(init_panel);
+        initPanel = new JPanel();
+        initPanel.setLayout(null);
+        initPanel.setSize(920, 900);
+        initFrame.add(initPanel);
 
         ///////////////////////////Creación de los botones///////////////////////////////
 
-        play_btn = new JButton();
-        observer_btn = new JButton();
+        playBtn = new JButton();
+        observerBtn = new JButton();
 
-        play_btn.setBounds(162, 350, 238, 250);
+        playBtn.setBounds(162, 350, 238, 250);
         ImageIcon play_url = new ImageIcon(getClass().getResource("/Resources/play_btn.png"));
-        play_btn.setIcon(play_url);
-        play_btn.addActionListener(this);
-        init_panel.add(play_btn);
+        playBtn.setIcon(play_url);
+        playBtn.addActionListener(this);
+        initPanel.add(playBtn);
 
-        observer_btn.setBounds(512, 350, 238, 250);
+        observerBtn.setBounds(512, 350, 238, 250);
         ImageIcon btnurl2 = new ImageIcon(getClass().getResource("/Resources/show_btn.png"));
-        observer_btn.setIcon(btnurl2);
-        observer_btn.addActionListener(this);
-        init_panel.add(observer_btn);
+        observerBtn.setIcon(btnurl2);
+        observerBtn.addActionListener(this);
+        initPanel.add(observerBtn);
 
         ///////////////////////////Creación del Background///////////////////////////////
 
@@ -76,9 +75,9 @@ public class MainMenu extends JFrame implements ActionListener {
         ImageIcon bgurl = new ImageIcon(getClass().getResource("/Resources/init.png"));
         Background.setIcon(bgurl);
         validate();
-        init_panel.add(Background);
+        initPanel.add(Background);
 
-        init_frame.setVisible(true);
+        initFrame.setVisible(true);
 
     }
 
@@ -91,14 +90,14 @@ public class MainMenu extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() == play_btn) {
+        if (e.getSource() == playBtn) {
             new Game();
-            init_frame.setVisible(false);
+            initFrame.setVisible(false);
 
         }
-        if (e.getSource() == observer_btn) {
+        if (e.getSource() == observerBtn) {
             ObserverMenu newObserver = ObserverMenu.getInstance();
-            init_frame.setVisible(false);
+            initFrame.setVisible(false);
             instance = null;
         }
 

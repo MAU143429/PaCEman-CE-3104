@@ -8,7 +8,7 @@ import javax.swing.*;
  * Se crea un JFrame, se le asignan ciertos valores y se añade un objeto ViewController
  * @author Mauricio C Yendry B Gabriel Vargas
  */
-public class ObserverGame extends JFrame
+public class observerGame extends JFrame
 {
     private int high, breadth; //Variables para las dimensiones del JFrame
     private ObserverController game;
@@ -18,7 +18,7 @@ public class ObserverGame extends JFrame
      * Este metodo crea la ventana y llama al juego a traves del ViewController
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public ObserverGame(int O_Player)
+    public observerGame(int O_Player)
     {
         high = 900;
         breadth = 915;

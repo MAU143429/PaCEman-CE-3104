@@ -144,7 +144,7 @@ public class Pacman extends Characters
      * Este metodo permite sumarle una vida a pacman
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public void Lives()
+    public void lives()
     {
         lives++;
     }

@@ -28,11 +28,11 @@ public class ViewController extends JPanel implements ActionListener {
     private java.lang.Integer gameSpeed = 30;
     private java.lang.Integer houseTimer = 0;
     private java.lang.Integer totalGhost = 0;
-    private java.lang.Integer apple_score, orange_score, melon_score,strawberry_score,cherry_score;
+    private java.lang.Integer appleScore, orangeScore, melonScore, strawberryScore, cherryScore;
     private static ViewController instance = null;
 
     // Conexion Socket
-    private String message_received;
+    private String messageReceived;
     private Client client;
 
     /**
@@ -58,44 +58,44 @@ public class ViewController extends JPanel implements ActionListener {
 
     //////////////////////////////////////////////////// Getter and Setter Section ////////////////////////////////////////////////////////////
 
-    public Integer getApple_score() {
-        return apple_score;
+    public Integer getAppleScore() {
+        return appleScore;
     }
 
-    public void setApple_score(Integer apple_score) {
-        this.apple_score = apple_score;
+    public void setAppleScore(Integer appleScore) {
+        this.appleScore = appleScore;
     }
 
-    public Integer getOrange_score() {
-        return orange_score;
+    public Integer getOrangeScore() {
+        return orangeScore;
     }
 
-    public void setOrange_score(Integer orange_score) {
-        this.orange_score = orange_score;
+    public void setOrangeScore(Integer orangeScore) {
+        this.orangeScore = orangeScore;
     }
 
-    public Integer getMelon_score() {
-        return melon_score;
+    public Integer getMelonScore() {
+        return melonScore;
     }
 
-    public void setMelon_score(Integer melon_score) {
-        this.melon_score = melon_score;
+    public void setMelonScore(Integer melonScore) {
+        this.melonScore = melonScore;
     }
 
-    public Integer getStrawberry_score() {
-        return strawberry_score;
+    public Integer getStrawberryScore() {
+        return strawberryScore;
     }
 
-    public void setStrawberry_score(Integer strawberry_score) {
-        this.strawberry_score = strawberry_score;
+    public void setStrawberryScore(Integer strawberryScore) {
+        this.strawberryScore = strawberryScore;
     }
 
-    public Integer getCherry_score() {
-        return cherry_score;
+    public Integer getCherryScore() {
+        return cherryScore;
     }
 
-    public void setCherry_score(Integer cherry_score) {
-        this.cherry_score = cherry_score;
+    public void setCherryScore(Integer cherryScore) {
+        this.cherryScore = cherryScore;
     }
 
     public void setDots(Integer dots) {
@@ -265,7 +265,7 @@ public class ViewController extends JPanel implements ActionListener {
             if(getScore() >= 1000){
                 if (pacman.pacmanLives() < 3){
                     setScore(1000);
-                    pacman.Lives();
+                    pacman.lives();
                     //send("L" + getClientType() + "+/");  //ENVIO DE INFO
                 }
             }
@@ -339,7 +339,7 @@ public class ViewController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 4){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "C" + getCherry_score() + "/"); ENVIO INFO
-            score += getCherry_score();
+            score += getCherryScore();
             dots--;
         }
 
@@ -347,7 +347,7 @@ public class ViewController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 5){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "W" + getMelon_score() + "/"); ENVIO INFO
-            score += getMelon_score();
+            score += getMelonScore();
             dots--;
         }
 
@@ -355,7 +355,7 @@ public class ViewController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 6){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "M" + getApple_score() + "/"); ENVIO INFO
-            score += getApple_score();
+            score += getAppleScore();
             dots--;
         }
 
@@ -363,7 +363,7 @@ public class ViewController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 7){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "N" + getOrange_score() + "/"); ENVIO INFO
-            score += getOrange_score();
+            score += getOrangeScore();
             dots--;
         }
 
@@ -371,7 +371,7 @@ public class ViewController extends JPanel implements ActionListener {
         if(maps.getValue(pacman.getBoxX(), pacman.getBoxY()) == 8){
             maps.eatDot(pacman.getBoxX(),pacman.getBoxY());
             // send("F" + getClientType() + "F" + getStrawberry_score() + "/"); ENVIO INFO
-            score += getStrawberry_score();
+            score += getStrawberryScore();
             dots--;
         }
 
@@ -680,28 +680,28 @@ public class ViewController extends JPanel implements ActionListener {
         //fresa
         if(fruit == 'F'){
             maps.addFruit(row,col,8);
-            setStrawberry_score(value);
+            setStrawberryScore(value);
         }
         //naranja
         if(fruit == 'N'){
             maps.addFruit(row,col,7);
-            setOrange_score(value);
+            setOrangeScore(value);
         }
         //manzana
         if(fruit == 'M'){
             maps.addFruit(row,col,6);
-            setApple_score(value);
+            setAppleScore(value);
         }
         //melon
         if(fruit == 'W'){
             maps.addFruit(row,col,5);
-            setMelon_score(value);
+            setMelonScore(value);
         }
 
         //cereza
         if(fruit == 'C'){
             maps.addFruit(row,col,4);
-            setCherry_score(value);
+            setCherryScore(value);
         }
     }
 
@@ -789,10 +789,10 @@ public class ViewController extends JPanel implements ActionListener {
             @Override
             public void run() {
                 while (true) {
-                    message_received = client.read();
-                    if (message_received != "-1") {
-                        System.out.println("Recibido: " + message_received);
-                        Classify_Action.Action_recv(message_received);
+                    messageReceived = client.read();
+                    if (messageReceived != "-1") {
+                        System.out.println("Recibido: " + messageReceived);
+                        Classify_Action.actionRecv(messageReceived);
                     } else {
                         break;
                     }
@@ -820,7 +820,7 @@ public class ViewController extends JPanel implements ActionListener {
      * dependiendo de la tecla presionada
      * @author Mauricio C.Yendry B. Gabriel V.
      */
-    public void keypress(KeyEvent e)
+    public void keyPress(KeyEvent e)
     {
         int code = e.getKeyCode();
         switch (code)
@@ -841,10 +841,10 @@ public class ViewController extends JPanel implements ActionListener {
                 stop();
                 break;
             case 78:
-                Classify_Action.Action_recv("FM1000,3,7"); // EJEMPLO DE FRUTA
-                Classify_Action.Action_recv("G,3,7"); // EJEMPLO DE FANTASMA
-                Classify_Action.Action_recv("M,3,8"); // EJEMPLO DE PILDORA
-                Classify_Action.Action_recv("V,3"); // EJEMPLO DE VELOCIDAD
+                Classify_Action.actionRecv("FM1000,3,7"); // EJEMPLO DE FRUTA
+                Classify_Action.actionRecv("G,3,7"); // EJEMPLO DE FANTASMA
+                Classify_Action.actionRecv("M,3,8"); // EJEMPLO DE PILDORA
+                Classify_Action.actionRecv("V,3"); // EJEMPLO DE VELOCIDAD
                 //nextGame();
                 break;
         }
@@ -859,7 +859,7 @@ public class ViewController extends JPanel implements ActionListener {
     {
         public void keyPressed(KeyEvent e)
         {
-            keypress(e);
+            keyPress(e);
         }
     }
 }
