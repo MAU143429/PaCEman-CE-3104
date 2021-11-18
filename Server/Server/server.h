@@ -175,7 +175,8 @@ int start_server()
                 }
             }
             message[0] = '\0';
-        }*/
+
+        }
 
 
         // Determina si el listener presenta actividad
