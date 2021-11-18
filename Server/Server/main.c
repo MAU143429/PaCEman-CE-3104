@@ -1,5 +1,7 @@
 #include "console.h"
 #include "server.h"
+
+
 int select_player() {
     int player;
     printf("Seleccione jugador:\n");
@@ -104,13 +106,13 @@ char* select_menu(int player) {
         switch (select) {
             case 1:
                 pos = set_position();
-                char ghost[7] = {'G', ',', pos.row + '0', ',', pos.column + '0', '/'};
+                char ghost[16] = {player + '0','G', ',', pos.row + '0', ',', pos.column + '0', '/'};
                 printf( "%s\n", ghost);
                 sendMessage(ghost);
                 return ghost;
             case 2:
                 pos = set_position();
-                char pill[7] = {'M', ',', pos.row + '0', ',', pos.column + '0', '/'};
+                char pill[16] = {player + '0','M', ',', pos.row + '0', ',', pos.column + '0', '/'};
                 printf( "%s\n", pill);
                 sendMessage(pill);
                 return pill;
@@ -118,7 +120,7 @@ char* select_menu(int player) {
                 struct fruit fruit_selected =  add_fruit();
                 char points[128];
                 sprintf(points, "%d", fruit_selected.points);
-                char fruit_code[256] = {'F', fruit_selected.fruit_type};
+                char fruit_code[256] = {player + '0', 'F', fruit_selected.fruit_type};
                 int j = 2;
                 for (int i = 0; points[i]; ++i) {
                     fruit_code[j] = points[i];
@@ -139,7 +141,7 @@ char* select_menu(int player) {
                 return fruit_code;
             case 4:
                 char speed_level = change_speed() + '0';
-                char speed[5] = {'V', ',', speed_level, '/'};
+                char speed[5] = {player + '0','V', ',', speed_level, '/'};
                 printf( "%s\n", speed);
                 sendMessage(speed);
                 return speed;
