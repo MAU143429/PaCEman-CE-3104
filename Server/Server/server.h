@@ -1,13 +1,34 @@
 //
 // Created by mau14 on 06/11/2021.
 //
+#ifndef SERVER_H
+#define SERVER_H
 #include <stdlib.h>
+#include <stdio.h>
 #include "variables.h"
+
+
 
 char running = !0; // estado del servidir, mantiene vivo el loop principal
 char message[BUFLEN];
+char console_sms[BUFLEN];
+char *b = console_sms;
+size_t bufsize= BUFLEN;
+size_t characters;
+
 SOCKET players[MAX_PLAYERS];
 SOCKET observers[MAX_OBSERVERS];
+
+// Variables relacionadas a los clientes
+fd_set socketSet;              // set de clientes activos
+SOCKET clients[MAX_CLIENTS];   // lista de clientes
+int curNoClients = 0;          // slots activos en la lista de clientes
+SOCKET sd, max_sd;             // placeholders para los clientes
+struct sockaddr_in clientAddr; // direccion del cliente
+int clientAddrlen;             // tamaño de la direccion del cliente
+
+#include "classify_action.h"
+#include "communication.h"
 
 // Funcion que crea y ejecuta el servidor.
 // Retorna 0 si no ocurren errores durante el proceso, 1 en caso contrario.
@@ -78,26 +99,21 @@ int start_server()
     // Configuracion exitosa
     printf("Configuracion finalizada. Aceptando conexiones en: %s:%d\n", ADDRESS, PORT);
 
+
+
+
+
     // ==========================================
 
     // LOOP PRINCIPAL ================================
 
-    // Variables relacionadas a los clientes
-    fd_set socketSet;              // set de clientes activos
-    SOCKET clients[MAX_CLIENTS];   // lista de clientes
-    int curNoClients = 0;          // slots activos en la lista de clientes
-    SOCKET sd, max_sd;             // placeholders para los clientes
-    struct sockaddr_in clientAddr; // direccion del cliente
-    int clientAddrlen;             // tamaño de la direccion del cliente
-
-    char recvbuf[BUFLEN]; // buffer para los mensajes recibidos
-
-    // Algunos mensajes comunes enviados al cliente
-    char *welcome = "Bienvenido al servidor!;";
+    char recvbuf[BUFLEN]; // buffer para los mensajes recibido
+// Algunos mensajes comunes enviados al cliente
+    char *welcome = "Bienvenido al servidor!/";
     int welcomeLength = strlen(welcome);
-    char *full = "Servidor lleno.;";
+    char *full = "Servidor lleno./";
     int fullLength = strlen(full);
-    char *goodbye = "Adios.;";
+    char *goodbye = "Adios./";
     int goodbyeLength = strlen(goodbye);
 
     // Limpia el array de clientes
@@ -136,7 +152,7 @@ int start_server()
         {
             continue;
         }
-
+        /*
         // Envia el mensaje a todos los clientes
         if (strlen(message) > 0)
         {
@@ -151,7 +167,7 @@ int start_server()
                 sendRes = send(sd, message, strlen(message), 0);
                 if (sendRes == SOCKET_ERROR)
                 {
-                    printf("Error al enviar mensaje devuelta: %d\n", WSAGetLastError());
+                    printf("Error al enviar mensaje de regreso: %d\n", WSAGetLastError());
                     shutdown(sd, SD_BOTH);
                     closesocket(sd);
                     clients[i] = 0;
@@ -159,7 +175,8 @@ int start_server()
                 }
             }
             message[0] = '\0';
-        }
+        }*/
+
 
         // Determina si el listener presenta actividad
         if (FD_ISSET(listener, &socketSet))
@@ -238,13 +255,16 @@ int start_server()
                     // Imprime el mensaje recibido
                     recvbuf[res] = '\0';
                     printf("Recibido (%d): %s\n", res, recvbuf);
+                    sendRes = send(sd, recvbuf, strlen(recvbuf), 0);
 
 
                     // Revisa si el mensaje es para cerrar el servidor
-                    if (!memcmp(recvbuf, "/quit", 5 * sizeof(char)))
+                    if (!memcmp(recvbuf, "/quit", 5 * sizeof(char))) //5 caracteres
                     {
                         running = 0; // false
                         break;
+                    }else{ // cuando llega un mensaje distinto a quit, se realiza otra accion
+                        message_receive(recvbuf, sizeof(clients));
                     }
 
                 }
@@ -262,6 +282,29 @@ int start_server()
                 }
             }
         }
+
+        printf("Type something: ");
+        characters = getline(&b,&bufsize,stdin);
+        if (console_sms > 0 ) {
+            for (int i = 0; i < MAX_CLIENTS; i++) {
+                if (!clients[i]) {
+                    continue;
+                }
+
+                sd = clients[i];
+                sendRes = send(sd, console_sms, strlen(console_sms), 0);
+                if (sendRes == SOCKET_ERROR) {
+                    printf("Error al enviar mensaje devuelta: %d\n", WSAGetLastError());
+                    shutdown(sd, SD_BOTH);
+                    closesocket(sd);
+                    clients[i] = 0;
+                    curNoClients--;
+                }
+            }
+        }
+        console_sms[0] = '\0';
+
+
     }
 
     // ==========================================
@@ -307,3 +350,5 @@ void save_client(char *client_type, SOCKET client){
         observers[((client_type[CLIENT_TYPE] - '0')- LAST_CLIENT)] = client;
     }
 }
+
+#endif //SERVER_H

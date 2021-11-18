@@ -1,5 +1,7 @@
 package Menu;
 
+import Observer.ObserverGame;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -111,10 +113,10 @@ public class ObserverMenu extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == obs_player1) {
-            System.out.println("ABRIENDO EL MODO ESPECTADOR 1");
+            new ObserverGame(1);
         }
         if (e.getSource() == obs_player2) {
-            System.out.println("ABRIENDO EL MODO ESPECTADOR 2");
+            new ObserverGame(2);
         }
         if (e.getSource() == back_btn) {
             MainMenu.getInstance();
