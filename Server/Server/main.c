@@ -114,10 +114,22 @@ const char* select_menu(int player) {
                 return pill;
             case 3:
                 struct fruit fruit_selected =  add_fruit();
-                char fruit_code[12] = {'F', fruit_selected.fruit_type, fruit_selected.points + '0', ',',
-                                       fruit_selected.pos.row + '0', ',', fruit_selected.pos.column + '0'};
+                char points[128];
+                sprintf(points, "%d", fruit_selected.points);
+                char fruit_code[256] = {'F', fruit_selected.fruit_type};
+                int j = 2;
+                for (int i = 0; points[i]; ++i) {
+                    fruit_code[j] = points[i];
+                    j++;
+                }
+                fruit_code[j] = ',';
+                j++;
+                fruit_code[j] = fruit_selected.pos.row + '0';
+                j++;
+                fruit_code[j] = ',';
+                j++;
+                fruit_code[j] = fruit_selected.pos.column + '0';
                 printf( "%s\n", fruit_code);
-                sendMessage(fruit_code);
                 return fruit_code;
             case 4:
                 char speed_level = change_speed() + '0';
