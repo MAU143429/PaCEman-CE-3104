@@ -19,12 +19,38 @@ SOCKET sd, max_sd;             // placeholders para los clientes
 struct sockaddr_in clientAddr; // direccion del cliente
 int clientAddrlen;             // tamaño de la direccion del cliente
 
-#include "classify_action.h"
 #include "communication.h"
+
+
+//C substring function: It returns a pointer to the substring
+char *substring(char *string, int position, int length)
+{
+    char *p;
+    int c;
+
+    p = malloc(length+1);
+
+    if (p == NULL)
+    {
+        exit(1);
+    }
+
+    for (c = 0; c < length; c++)
+    {
+        *(p+c) = *(string+position-1);
+        string++;
+    }
+
+    *(p+c) = '\0';
+
+    return p;
+}
+
+
+void messageReceive(char *messageType, int client);
 
 // Funcion que crea y ejecuta el servidor.
 // Retorna 0 si no ocurren errores durante el proceso, 1 en caso contrario.
-
 int start_server()
 {
     printf("Iniciando servidor...\n");
@@ -142,28 +168,28 @@ int start_server()
         }
 
         // Envia el mensaje a todos los clientes
-        if (strlen(message) > 0)
-        {
-            for (int i = 0; i < MAX_CLIENTS; i++)
-            {
-                if (!clients[i])
-                {
-                    continue;
-                }
-
-                sd = clients[i];
-                sendRes = send(sd, message, strlen(message), 0);
-                if (sendRes == SOCKET_ERROR)
-                {
-                    printf("Error al enviar mensaje de regreso: %d\n", WSAGetLastError());
-                    shutdown(sd, SD_BOTH);
-                    closesocket(sd);
-                    clients[i] = 0;
-                    curNoClients--;
-                }
-            }
-            message[0] = '\0';
-        }
+//        if (strlen(message) > 0)
+//        {
+//            for (int i = 0; i < MAX_CLIENTS; i++)
+//            {
+//                if (!clients[i])
+//                {
+//                    continue;
+//                }
+//
+//                sd = clients[i];
+//                sendRes = send(sd, message, strlen(message), 0);
+//                if (sendRes == SOCKET_ERROR)
+//                {
+//                    printf("Error al enviar mensaje de regreso: %d\n", WSAGetLastError());
+//                    shutdown(sd, SD_BOTH);
+//                    closesocket(sd);
+//                    clients[i] = 0;
+//                    curNoClients--;
+//                }
+//            }
+//            message[0] = '\0';
+//        }
 
         // Determina si el listener presenta actividad
         if (FD_ISSET(listener, &socketSet))
@@ -242,7 +268,7 @@ int start_server()
                     // Imprime el mensaje recibido
                     recvbuf[res] = '\0';
                     printf("Recibido (%d): %s\n", res, recvbuf);
-                    sendRes = send(sd, recvbuf, strlen(recvbuf), 0);
+                    //sendRes = send(sd, recvbuf, strlen(recvbuf), 0);
 
 
                     // Revisa si el mensaje es para cerrar el servidor
@@ -251,7 +277,7 @@ int start_server()
                         running = 0; // false
                         break;
                     }else{ // cuando llega un mensaje distinto a quit, se realiza otra accion
-                        message_receive(recvbuf);
+                        messageReceive(recvbuf, curNoClients);
                     }
 
                 }
@@ -314,5 +340,6 @@ void save_client(char *client_type, SOCKET client){
         observers[((client_type[CLIENT_TYPE] - '0')- LAST_CLIENT)] = client;
     }
 }
+
 
 #endif //SERVER_H

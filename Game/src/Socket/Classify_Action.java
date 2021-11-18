@@ -13,9 +13,8 @@ public class Classify_Action {
      * Variables utilizadas para almacenar los valores enviados por el socket
      */
 
-    public static char action,fruit;
+    public static char action,fruit,numberOfClient;
     public static int row,col,value,speed,client;
-
 
 
     /**
@@ -31,7 +30,9 @@ public class Classify_Action {
 
         client = new_sms.charAt(0);
         if (client == 'C'){
-            ViewController.getInstance().setClientType(new_sms.charAt(1)); // Nos indica el numero de cliente que somos en el server
+            numberOfClient = new_sms.charAt(1);
+            ViewController.getInstance().setClientType(Integer.parseInt(String.valueOf(numberOfClient))); // Nos indica el numero de cliente que somos en el server
+            System.out.println("Soy clientType: " + ViewController.getInstance().getClientType());
         }
         if (Integer.parseInt(String.valueOf(client)) == ViewController.getInstance().getClientType()) {
             action = new_sms.charAt(1); // Palabra clave de la accion a ejecutar

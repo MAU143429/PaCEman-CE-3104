@@ -27,6 +27,7 @@ public class ViewController extends JPanel implements ActionListener {
     private ArrayList <Characters> characters;
     private ArrayList <Intersection> intersections;
     private boolean life, stop, panic, success;
+    private boolean prueba = true;
     private Maps maps;
     private int score, panicTimer, dots;
     private java.lang.Integer gameSpeed = 30;
@@ -50,7 +51,7 @@ public class ViewController extends JPanel implements ActionListener {
         Client client = new Client("127.0.0.1", 8888);
         this.client = client; // instantiate a client
         connect(); // client connect
-        //send("P/");
+        send("P/");
 
         Thread thread1 = new Thread(new Runnable() {
             @Override
@@ -284,10 +285,9 @@ public class ViewController extends JPanel implements ActionListener {
                     //send("L" + getClientType() + "+/");  //ENVIO DE INFO
                 }
             }
-
-            //send("U"+ getClientType() + "," + pacman.getBoxX()+","+pacman.getBoxY()); //ENVIO DE INFO
-            //send("C1");
-
+            if(getClientType()!=0) {
+                send("U" + getClientType() + "," + pacman.getBoxX() + "," + pacman.getBoxY() + "/"); //ENVIO DE INFO
+            }
             for(Characters character: characters){
                 verifyDirections(character);
                 verifyIntersection(character);
