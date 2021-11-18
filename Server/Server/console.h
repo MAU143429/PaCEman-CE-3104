@@ -24,7 +24,7 @@ struct fruit add_fruit();
 
 int change_speed();
 
-char* select_menu();
+void select_menu();
 
 void init_console();
 

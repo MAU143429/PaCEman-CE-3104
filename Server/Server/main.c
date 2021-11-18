@@ -22,16 +22,15 @@ struct position set_position() {
     scanf_s("%d", &pos.column);
     printf("Columna:\n");
     scanf_s("%d", &pos.row);
-    if (pos.row <= 0 | pos.row > 13) {
+    if (pos.column <= 0 | pos.column > 15) {
         printf("Son 13 filas, favor introducir un valor del 0 al 12\n");
         set_position();
-    } else if (pos.column <= 0 | pos.column > 15) {
+    } else if (pos.row <= 0 | pos.row > 13) {
         printf("Son 15 columnas, favor introducir un valor del 0 al 14\n");
         set_position();
     } else {
         return pos;
     }
-    return pos;
 }
 
 struct fruit add_fruit() {
@@ -71,7 +70,6 @@ struct fruit add_fruit() {
         scanf_s("%d", &fruit_result.points);
         fruit_result.pos = set_position();
     }
-
     return fruit_result;
 }
 
@@ -89,13 +87,13 @@ int change_speed() {
     return speed;
 }
 
-char* select_menu(int player) {
+void select_menu(int player) {
     int select;
     printf("Ingrese un numero para definir lo que desea hacer:\n");
     printf("1) Crear fantasma\n");
     printf("2) Crear pastilla\n");
-    printf("3) Crear fruta\n"); //definir valor aleatorio
-    printf("4) Cambiar velocidad de fantasmas\n"); //baja, media, alta
+    printf("3) Crear fruta\n");
+    printf("4) Cambiar velocidad de fantasmas\n");
     printf("5) Salir\n");
     scanf_s("%d", &select);
     if (select < 1 | select > 5) {
@@ -103,57 +101,88 @@ char* select_menu(int player) {
         select_menu(player);
     } else {
         struct position pos;
+        char strpos[16];
+        int j = 3;
         switch (select) {
             case 1:
                 pos = set_position();
-                char ghost[16] = {player + '0','G', ',', pos.row + '0', ',', pos.column + '0', '/'};
+                char ghost[16] = {player + '0','G', ','};
+                sprintf(strpos, "%d", pos.row);
+                for (int i = 0; strpos[i]; ++i) {
+                    ghost[j] = strpos[i];
+                    j++;
+                }
+                ghost[j] = ',';
+                j++;
+                sprintf(strpos, "%d", pos.column);
+                for (int i = 0; strpos[i]; ++i) {
+                    ghost[j] = strpos[i];
+                    j++;
+                }
+                ghost[j] = '/';
                 printf( "%s\n", ghost);
                 sendMessage(ghost);
-                return ghost;
+                break;
             case 2:
                 pos = set_position();
-                char pill[16] = {player + '0','M', ',', pos.row + '0', ',', pos.column + '0', '/'};
+                char pill[16] = {player + '0','M', ',',};
+                sprintf(strpos, "%d", pos.row);
+                for (int i = 0; strpos[i]; ++i) {
+                    pill[j] = strpos[i];
+                    j++;
+                }
+                pill[j] = ',';
+                j++;
+                sprintf(strpos, "%d", pos.column);
+                for (int i = 0; strpos[i]; ++i) {
+                    pill[j] = strpos[i];
+                    j++;
+                }
+                pill[j] = '/';
                 printf( "%s\n", pill);
                 sendMessage(pill);
-                return pill;
+                break;
             case 3:
                 struct fruit fruit_selected =  add_fruit();
                 char points[128];
                 sprintf(points, "%d", fruit_selected.points);
                 char fruit_code[256] = {player + '0', 'F', fruit_selected.fruit_type};
-                int j = 2;
                 for (int i = 0; points[i]; ++i) {
                     fruit_code[j] = points[i];
                     j++;
                 }
                 fruit_code[j] = ',';
                 j++;
-                fruit_code[j] = fruit_selected.pos.row + '0';
-                j++;
+                sprintf(strpos, "%d", fruit_selected.pos.row);
+                for (int i = 0; strpos[i]; ++i) {
+                    fruit_code[j] = strpos[i];
+                    j++;
+                }
                 fruit_code[j] = ',';
                 j++;
-                fruit_code[j] = fruit_selected.pos.column + '0';
-                j++;
+                sprintf(strpos, "%d", fruit_selected.pos.column);
+                for (int i = 0; strpos[i]; ++i) {
+                    fruit_code[j] = strpos[i];
+                    j++;
+                }
                 fruit_code[j] = '/';
                 printf( "%s\n", fruit_code);
-
                 sendMessage(fruit_code);
-                return fruit_code;
+                break;
             case 4:
                 char speed_level = change_speed() + '0';
                 char speed[5] = {player + '0','V', ',', speed_level, '/'};
                 printf( "%s\n", speed);
                 sendMessage(speed);
-                return speed;
+                break;
             case 5:
                 select_player();
                 break;
             default:
                 select_menu(player);
-
+                break;
         }
     }
-    return (const char *) select;
 }
 
 void init_console() {
