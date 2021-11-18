@@ -152,7 +152,7 @@ int start_server()
         {
             continue;
         }
-
+        /*
         // Envia el mensaje a todos los clientes
         if (strlen(message) > 0)
         {
@@ -175,8 +175,7 @@ int start_server()
                 }
             }
             message[0] = '\0';
-
-        }
+        }*/
 
 
         // Determina si el listener presenta actividad

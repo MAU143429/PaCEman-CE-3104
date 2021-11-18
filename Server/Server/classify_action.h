@@ -12,6 +12,6 @@ int lives_2;
 
 char *substring(char *string, int position, int length);
 
-void message_receive(char *message_type, int clients);
+void message_receive(char *message_type);
 
 #endif //SERVER_CLASSIFY_ACTION_H
