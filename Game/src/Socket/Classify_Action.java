@@ -27,15 +27,18 @@ public class Classify_Action {
      */
 
     public static void actionRecv(String new_sms){
-        //1M,2,1
+
         client = new_sms.charAt(0);
+        System.out.println("SOY CLIENT: "+ String.valueOf(client) +" \n");
         if (client == 'C'){
             numberOfClient = new_sms.charAt(1);
             ViewController.getInstance().setClientType(Integer.parseInt(String.valueOf(numberOfClient))); // Nos indica el numero de cliente que somos en el server
             System.out.println("Soy clientType: " + ViewController.getInstance().getClientType());
         }
-        if (Integer.parseInt(String.valueOf(client)) == ViewController.getInstance().getClientType()) {
+        System.out.println("No voy a entrar pendejo: "+ ViewController.getInstance().getClientType() +" \n");
+        if (client == '1' && (String.valueOf(ViewController.getInstance().getClientType())).equals("1")){
             action = new_sms.charAt(1); // Palabra clave de la accion a ejecutar
+            System.out.println("ACTION: " + action + "\n");
             if (action == 'V') {
                 speed = Integer.parseInt(new_sms.substring(new_sms.indexOf(',') + 1));
                 System.out.println(speed);

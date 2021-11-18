@@ -285,7 +285,7 @@ public class ViewController extends JPanel implements ActionListener {
                     //send("L" + getClientType() + "+/");  //ENVIO DE INFO
                 }
             }
-            if(getClientType()!=0) {
+            if(getClientType() != 0) {
                 send(getClientType() + "U" + "," + pacman.getBoxX() + "," + pacman.getBoxY() + "/"); //ENVIO DE INFO
             }
             for(Characters character: characters){
@@ -810,7 +810,7 @@ public class ViewController extends JPanel implements ActionListener {
                 while (true) {
                     messageReceived = client.read();
                     if (messageReceived != "-1") {
-                        //System.out.println("Recibido: " + messageReceived);
+                        System.out.println("Recibido: " + messageReceived);
                         Classify_Action.actionRecv(messageReceived);
                     } else {
                         break;
