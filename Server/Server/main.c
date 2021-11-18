@@ -196,7 +196,7 @@ void messageReceive(char *messageType, int client){
     char instruction = messageType[1]; //1U,1,2
     char player = messageType[0];
     //printf("%s", "FUNCIONA");
-
+    
     if(player == 'P'){
         if(client > 1){
             //printf("%s", "FUNCIONA >1");
