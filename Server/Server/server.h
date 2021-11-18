@@ -4,18 +4,10 @@
 #ifndef SERVER_H
 #define SERVER_H
 #include <stdlib.h>
-#include <stdio.h>
 #include "variables.h"
-
-
 
 char running = !0; // estado del servidir, mantiene vivo el loop principal
 char message[BUFLEN];
-char console_sms[BUFLEN];
-char *b = console_sms;
-size_t bufsize= BUFLEN;
-size_t characters;
-
 SOCKET players[MAX_PLAYERS];
 SOCKET observers[MAX_OBSERVERS];
 
@@ -99,10 +91,6 @@ int start_server()
     // Configuracion exitosa
     printf("Configuracion finalizada. Aceptando conexiones en: %s:%d\n", ADDRESS, PORT);
 
-
-
-
-
     // ==========================================
 
     // LOOP PRINCIPAL ================================
@@ -152,7 +140,7 @@ int start_server()
         {
             continue;
         }
-        /*
+
         // Envia el mensaje a todos los clientes
         if (strlen(message) > 0)
         {
@@ -175,8 +163,7 @@ int start_server()
                 }
             }
             message[0] = '\0';
-        }*/
-
+        }
 
         // Determina si el listener presenta actividad
         if (FD_ISSET(listener, &socketSet))
@@ -264,7 +251,7 @@ int start_server()
                         running = 0; // false
                         break;
                     }else{ // cuando llega un mensaje distinto a quit, se realiza otra accion
-                        message_receive(recvbuf, sizeof(clients));
+                        message_receive(recvbuf);
                     }
 
                 }
@@ -282,29 +269,6 @@ int start_server()
                 }
             }
         }
-
-        printf("Type something: ");
-        characters = getline(&b,&bufsize,stdin);
-        if (console_sms > 0 ) {
-            for (int i = 0; i < MAX_CLIENTS; i++) {
-                if (!clients[i]) {
-                    continue;
-                }
-
-                sd = clients[i];
-                sendRes = send(sd, console_sms, strlen(console_sms), 0);
-                if (sendRes == SOCKET_ERROR) {
-                    printf("Error al enviar mensaje devuelta: %d\n", WSAGetLastError());
-                    shutdown(sd, SD_BOTH);
-                    closesocket(sd);
-                    clients[i] = 0;
-                    curNoClients--;
-                }
-            }
-        }
-        console_sms[0] = '\0';
-
-
     }
 
     // ==========================================
