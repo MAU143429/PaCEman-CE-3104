@@ -152,7 +152,7 @@ int start_server()
         {
             continue;
         }
-
+        /*
         // Envia el mensaje a todos los clientes
         if (strlen(message) > 0)
         {

@@ -7,7 +7,7 @@
 
 #include "server.h"
 
-void sendMessage(char* instruction, int clientNumber){
+void sendMessage(char* instruction){
     int sendRes;
     for (int i = 0; i < MAX_CLIENTS; i++)
     {
@@ -16,9 +16,7 @@ void sendMessage(char* instruction, int clientNumber){
             continue;
         }
         sd = clients[i];
-        if(i == clientNumber){
-            sendRes = send(sd, instruction, strlen(instruction), 0);
-        }
+        sendRes = send(sd, instruction, strlen(instruction), 0);
 
         if (sendRes == SOCKET_ERROR)
         {

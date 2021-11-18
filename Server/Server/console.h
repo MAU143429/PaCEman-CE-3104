@@ -12,15 +12,19 @@ struct position {
     int column;
 };
 
-struct position set_position();
+struct fruit {
+    struct position pos;
+    char fruit_type;
+    int points;
+};
 
-struct fruit;
+struct position set_position();
 
 struct fruit add_fruit();
 
 int change_speed();
 
-int select_menu();
+const char* select_menu();
 
 void init_console();
 
